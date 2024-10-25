@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/images/logosmall.ico">
+    <title>R&R</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="nav-left">
+            <span>&nbsp;</span>
+            <img src="static/images/logo.png" style="height: 50px;">
+        </div>
+        
+        <div class="nav-logo">
+        </div>
+    
+        <!-- Enlaces del lado derecho -->
+        <div class="nav-right">
+            <span>&nbsp;</span>
+        </div>
+    </div>
+    
+
+    <div class="container">
+        <div class="login-container">
+            <div class="login-box">
+                <h1>*******</h1>
+                <div class="input-box">
+                    <a type="button" id="customButton" href="{{url_for('descargar_clave')}}">Download Key</a>
+                </div>
+                <form method="post" action="{{url_for('confirmar_descarga')}}">
+                    <div class="button-box">
+                        <button type="submit" id="customButton">Done!</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 Streetwear & Accessories. Secure payment information system.</p>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook">Facebook</a>
+                <a href="#" aria-label="Instagram">Instagram</a>
+                <a href="#" aria-label="Twitter">Twitter</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

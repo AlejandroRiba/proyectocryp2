@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
+
+body {
+    font-family: 'Squada One', sans-serif;
+    margin: 0; /* Elimina márgenes predeterminados */
+    padding: 0; /* Elimina relleno predeterminado */
+    height: 100%; /* Asegura que el cuerpo y html ocupen toda la altura */
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #fff;
+    padding: 1em;
+    border-bottom: 2px solid #000;
+}
+
+.nav-left, .nav-right {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-logo {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: black;
+    font-size: 2em;
+    font-weight: bold;
+    padding: 4px 6px;
+    position: relative; /* Necesario para posicionar el pseudo-elemento */
+    transition: color 0.3s; /* Suaviza el cambio de color */
+}
+
+.navbar a:hover {
+    color: white; /* Cambia el color del texto al pasar el mouse */
+    background-color: black; /* Color de fondo negro */
+}
+
+
+.navbar img {
+    height: 50px; /* Ajusta el tamaño del logo */
+    vertical-align: middle;
+}
+
+footer {
+    background-color: #f1f1f1; /* Color de fondo */
+    padding: 20px; /* Espaciado interno */
+    text-align: center; /* Centrar el contenido */
+    border-top: 2px solid #000; /* Línea superior */
+    margin-top: 60px;
+}
+
+.footer-content {
+    max-width: 800px; /* Ancho máximo del contenido */
+    margin: 0 auto; /* Centra el contenido */
+}
+
+.footer-content p {
+    margin: 0; /* Elimina margen */
+    color: #333; /* Color del texto */
+}
+
+.social-links {
+    margin-top: 10px; /* Espacio entre el texto y los enlaces de redes sociales */
+}
+
+.social-links a {
+    text-decoration: none; /* Sin subrayado */
+    color: black; /* Color del texto */
+    margin: 0 10px; /* Espacio entre los enlaces */
+    transition: color 0.3s; /* Suaviza el cambio de color */
+}
+
+.social-links a:hover {
+    color: #007bff; /* Color al pasar el mouse */
+}
+
+
+
+.container {
+    display: flex;
+    height: 80vh;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+
+}
+
+.category {
+    text-align: center;
+    position: relative;
+}
+
+.image-container {
+    position: relative;
+    height: 100%;
+    border-radius: 4%;
+    overflow: hidden; /* Esto evita que el zoom se salga de los bordes de la imagen */
+}
+
+.image-container img {
+    width: 430px;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4%;
+    transition: transform 0.5s ease; /* Transición suave al hacer zoom */
+}
+
+.image-container h1 {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 6em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Sombras para hacer el texto más legible */
+    z-index: 2; /* Asegura que el texto esté siempre sobre la imagen */
+    pointer-events: none; /* Evita que el texto interfiera con el hover en la imagen */
+}
+
+/* Efecto zoom al hacer hover */
+.image-container:hover img {
+    transform: scale(1.1); /* Ajusta el valor para más o menos zoom */
+}
