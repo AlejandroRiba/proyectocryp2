@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="static/images/logosmall.ico">
-    <title>R&R</title>
+    <title>R&R PRODUCTS</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
 </head>
 <body>
@@ -13,7 +13,6 @@
         <!-- Logo centrado -->
         <div class="nav-left">
             <span>&nbsp;</span>
-            {% if status %}
             <div class="menu-container">
                 <a>MENU</a>
                 <div class="menuContent">
@@ -32,53 +31,21 @@
                     </ul>
                 </div>
             </div>            
-            {% else %}
-                <img src="static/images/logo.png" style="height: 50px;">
-            {% endif %}
         </div>
         
         <div class="nav-logo">
-            {% if status %} 
-                <img src="static/images/logo.png" style="height: 50px;">
-            {% else %}
-                <span></span>
-            {% endif %}
+            <a href="{{ url_for('home') }}" id="logo"><img src="static/images/logo.png" style="height: 50px;"></a>
         </div>
     
         <!-- Enlaces del lado derecho -->
         <div class="nav-right">
-            {% if status %} 
                 <a href="{{ url_for('logout')}}">SIGN OUT</a>
-            {% else %}
-                <a href="{{ url_for('login_route') }}">SIGN IN</a>
-                <a href="{{ url_for('new_user')}}">SIGN UP</a>
-            {% endif %}
             <span>&nbsp;</span>
         </div>
     </div>
-    
-
-    <div class="container">
-        <div class="category" onclick="redireccion('/clients')">
-            <div class="image-container">
-                <img src="static/images/products/clients.jpg" alt="Clients">
-                <h1>CLIENTS</h1>
-            </div>
-        </div>
-        <div class="category" onclick="redireccion('/sales')">
-            <div class="image-container">
-                <img src="static/images/products/sales.jpg" alt="Sales">
-                <h1>SALES</h1>
-            </div>
-        </div>
-        <div class="category" onclick="redireccion('/consulta_productos')">
-            <div class="image-container">
-                <img src="static/images/products/statistics.jpg" alt="Products">
-                <h1>PRODUCTS</h1>
-            </div>
-        </div>
-    </div>
-
+     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+      <h1>CONSULTA PRODUCTOS</h1>
+     <!-- TERMINA CONTENIDO DE PÁGINA -->
     <footer>
         <div class="footer-content">
             <p>&copy; 2024 Streetwear & Accessories. Secure payment information system.</p>
@@ -89,6 +56,5 @@
             </div>
         </div>
     </footer>
-    <script src="static/app.js" ></script>
 </body>
 </html>

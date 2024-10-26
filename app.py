@@ -29,17 +29,21 @@ def home():
     # Verificar si el usuario está logueado
     if 'username' in session:
         username = session['username']
+        cargo = session['cargo']
     else:
         username = None
-    return render_template("index.html", status=username)
+        cargo = None
+    return render_template("index.html", status=username, cargo=cargo)
 
 # Ruta para crear iniciar sesión (renderiza un formulario)
 @app.route('/login_route', methods=['GET', 'POST'])
 def login_route():
     if request.method == 'POST':
         data = request.form
-        if mainfunc.auth(data['id'], data['password']):
+        access, cargo = mainfunc.auth(data['id'], data['password'])
+        if access:
             session['username'] = data['id']
+            session['cargo'] = cargo
         return redirect('/')  # Redirigir a la página principal después de crear el usuario
     else:
         if 'username' in session: #si ya hay una sesión iniciada, entonces manda a al pantalla de inicio
@@ -56,6 +60,7 @@ def new_user():
         private_key_path = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
         if private_key_path != None:
             session['username'] = data['id']
+            session['cargo'] = 'employee'
             session['private_key_path'] = private_key_path
             return redirect(url_for('mostrar_descarga'))  # Redirigir a la página principal después de crear el usuario
         else:
@@ -95,9 +100,161 @@ def confirmar_descarga():
         session.pop('private_key_path', None)
     return redirect('/')
 
+# Ruta para consultar empleados
+@app.route('/consulta_empleado', methods=['GET', 'POST'])
+def consulta_empleado():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session) and (session['cargo'] == 'admin'): #si ya hay una sesión iniciada y es el admin
+            cargo = session['cargo']
+            return render_template('consulta_empleado.html', cargo=cargo)
+        else:
+            return redirect('/')
+
+# Ruta para consultar informes
+@app.route('/consulta_informes', methods=['GET', 'POST'])
+def consulta_informes():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('consulta_informes.html', status=username, cargo=cargo)
+        else:
+            return redirect('/')
+        
+# Ruta para consultar productos
+@app.route('/consulta_productos', methods=['GET', 'POST'])
+def consulta_productos():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('consulta_productos.html', status=username, cargo=cargo)
+        else:
+            return redirect('/login_route')
+        
+# Ruta para crear/registrar un cliente
+@app.route('/registra_cliente', methods=['GET', 'POST'])
+def registra_cliente():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('registra_cliente.html', status=username, cargo=cargo)
+        else:
+            return redirect('/')
+        
+# Ruta para consultar clientes
+@app.route('/consulta_clientes', methods=['GET', 'POST'])
+def consulta_clientes():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('consulta_clientes.html', status=username, cargo=cargo)
+        else:
+            return redirect('/')
+        
+# Ruta para crear/registrar un ventas
+@app.route('/registra_venta', methods=['GET', 'POST'])
+def registra_venta():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('registra_venta.html', status=username, cargo=cargo)
+        else:
+            return redirect('/')
+        
+# Ruta para consultar ventas
+@app.route('/consulta_venta', methods=['GET', 'POST'])
+def consulta_venta():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('consulta_venta.html', status=username, cargo=cargo)
+        else:
+            return redirect('/')
+        
+# Ruta para manejar el inicio de sesión del admin
+@app.route('/datos_admin', methods=['GET', 'POST'])
+def datos_admin():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            return redirect('/') 
+        else:
+            return render_template('datos_admin.html')
+        
+# Ruta para generar un informe
+@app.route('/generar_informe', methods=['GET', 'POST'])
+def generar_informe():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('generar_informe.html', status=username, cargo=cargo)
+        else:
+            return redirect('/')
+        
+# Ruta para desplegar opciones sobre clientes
+@app.route('/clients', methods=['GET', 'POST'])
+def clients():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('opciones_clientes.html', status=username, cargo=cargo)
+        else:
+            return redirect('/login_route')
+        
+# Ruta para desplegar opciones sobre ventas
+@app.route('/sales', methods=['GET', 'POST'])
+def sales():
+    if request.method == 'POST':
+        #manejar la lógica
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('opciones_ventas.html', status=username, cargo=cargo)
+        else:
+            return redirect('/login_route')
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.pop('cargo', None)
     return redirect('/')
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@
     position: relative;
     z-index: 1; /* Asegura que esté por encima del SVG */
     width: 300px;
-    padding: 40px;
+    padding: 20px 40px;
     background: #252525;
     border-radius: 10px;
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
@@ -36,7 +36,7 @@
 
 .login-box h1 {
     color: #fff;
-    margin-bottom: 20px;
+    font-size:50px;
 }
 
 .input-box {

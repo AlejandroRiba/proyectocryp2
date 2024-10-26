@@ -14,7 +14,7 @@
         <!-- Logo centrado -->
         <div class="nav-left">
             <span>&nbsp;</span>
-            <img src="static/images/logo.png" style="height: 50px;">
+            <a href="{{ url_for('home') }}" id="logo"><img src="static/images/logo.png" style="height: 50px;"></a>
         </div>
         
         <div class="nav-logo">
@@ -30,7 +30,7 @@
 
     <div class="login-container">
         <div class="login-box login-box2">
-            <h1>Sign up</h1>
+            <h1>Sign up</h1><br>
             <form method="post" action="{{ url_for('new_user') }}">
                 <div class="container_cols">
                     <div class="columna">

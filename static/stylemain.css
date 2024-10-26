@@ -41,6 +41,10 @@ body {
     background-color: black; /* Color de fondo negro */
 }
 
+#logo{
+    background-color: transparent;
+}
+
 
 .navbar img {
     height: 50px; /* Ajusta el tamaño del logo */
@@ -52,7 +56,7 @@ footer {
     padding: 20px; /* Espaciado interno */
     text-align: center; /* Centrar el contenido */
     border-top: 2px solid #000; /* Línea superior */
-    margin-top: 60px;
+    margin-top: 40px;
 }
 
 .footer-content {
@@ -88,7 +92,6 @@ footer {
     gap: 10px;
     justify-content: center;
     margin-top: 20px;
-
 }
 
 .category {
@@ -126,4 +129,33 @@ footer {
 /* Efecto zoom al hacer hover */
 .image-container:hover img {
     transform: scale(1.1); /* Ajusta el valor para más o menos zoom */
+}
+
+.menu-container {
+    position: relative;
+}
+
+
+.menu-container:hover .menuContent{
+    display: block;
+}
+  
+.menuContent {
+    display: none;
+    position: absolute;
+    width: 80vw; /* Ocupa todo el ancho de la pantalla */
+    height: calc(90vh - 50px);
+    top: 100%; /* Coloca el contenido debajo del menú */
+    background-color: white;
+    z-index: 3; /* Asegura que el menú esté sobre otros elementos */
+}
+
+.menuContent ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menuContent li {
+    padding: 10px 10px; /* Agrega algo de relleno dentro de cada elemento para que se vea bien */
 }

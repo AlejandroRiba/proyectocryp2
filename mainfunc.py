@@ -23,6 +23,6 @@ def auth(id, password):
     usuario = obtener_usuario_por_id(id)
     real_password = hasheo(password)
     if real_password == usuario.password:
-        return True
+        return True, usuario.cargo
     else:
         return False

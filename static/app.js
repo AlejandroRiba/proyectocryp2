@@ -13,3 +13,7 @@ realFileBtn.addEventListener('change', function() {
         customTxt.textContent = "No file selected";
     }
 });
+
+function redireccion(paginaDest){
+    location.href=paginaDest
+}
