@@ -102,7 +102,7 @@ footer {
 .image-container {
     position: relative;
     height: 100%;
-    border-radius: 4%;
+    border-radius: 3%;
     overflow: hidden; /* Esto evita que el zoom se salga de los bordes de la imagen */
 }
 
@@ -110,7 +110,7 @@ footer {
     width: 430px;
     height: 100%;
     object-fit: cover;
-    border-radius: 4%;
+    border-radius: 3%;
     transition: transform 0.5s ease; /* Transición suave al hacer zoom */
 }
 
