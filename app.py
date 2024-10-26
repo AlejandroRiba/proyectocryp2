@@ -1,7 +1,8 @@
 from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
-import mainfunc
+from models.Producto import obtener_productos, crear_producto_con_variantes
+import pyFunctions.mainfunc as mainfunc
 import os
 import secrets
 import tempfile
@@ -11,6 +12,10 @@ app = Flask(__name__, template_folder="templates")
 # Generar una clave secreta aleatoria cada vez que la app se inicializa
 app.secret_key = secrets.token_hex(16)  # Genera una clave de 32 caracteres hexadecimales
 #La clave secreta es obligatoria para mantener seguras las sesiones.
+
+# Configura el directorio donde se guardarán las imágenes de los productos
+UPLOAD_FOLDER = 'static/images/products'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Configuración de la base de datos MySQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/proyecto2'
@@ -139,7 +144,37 @@ def consulta_productos():
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
             cargo = session['cargo']
-            return render_template('consulta_productos.html', status=username, cargo=cargo)
+            productos = obtener_productos()
+            return render_template('consulta_productos.html', status=username, cargo=cargo, productos=productos)
+        else:
+            return redirect('/login_route')
+        
+# Ruta para crear producto
+@app.route('/crear_producto', methods=['GET', 'POST'])
+def crear_producto():
+    if request.method == 'POST':
+        id = request.form['id_product']
+        nombre = request.form['nombre']
+        color = request.form['color']
+        precio = request.form['precio']
+
+        file = request.files['image']
+        variantes = []
+        tallas = request.form.getlist('talla')
+        stocks = request.form.getlist('stock')
+
+        # Agrupar tallas y stocks
+        for talla, stock in zip(tallas, stocks):
+            variantes.append({'talla': talla, 'stock': stock})
+        crear_producto_con_variantes(id, nombre, color, precio, variantes, file.filename)
+        #guardar la imagen del producto
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        return redirect('/')
+    else:
+        if ('username' in session): #si ya hay una sesión iniciada
+            username = session['username']
+            cargo = session['cargo']
+            return render_template('crear_producto.html', status=username, cargo=cargo)
         else:
             return redirect('/login_route')
         

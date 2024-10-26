@@ -1,5 +1,5 @@
 from models.Usuario import crear_usuario, obtener_usuario_por_id
-from cryptoUtils import hasheo, generate_key_pair
+from pyFunctions.cryptoUtils import hasheo, generate_key_pair
 import os
 import tempfile
 

@@ -9,11 +9,44 @@
 </head>
 <body>
 
-    <!-- Footer -->
+    <!-- NAVBAR -->
     {% include "shared/navbar.html" %}
-    <!-- Footer -->
+    <!-- NAVBAR -->
      <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-      <h1>CONSULTA PRODUCTOS</h1>
+
+    <h1>CONSULTA PRODUCTOS</h1>
+    <a href="/crear_producto">Crear producto nuevo</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Talla</th>
+                <th>Color</th>
+                <th>Stock</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+                {% for variante in producto.variantes %}
+                    <tr>
+                        <td><img src="static/images/products/{{producto.archivo}}" style="height: 50px;"></td>
+                        <td>{{ producto.nombre }}</td>
+                        <td>${{ producto.precio }}</td>
+                        <td>{{ variante.talla }}</td>
+                        <td>{{ producto.color }}</td>
+                        <td>{{ variante.stock }}</td>
+                        <td><img src="static/images/edit.svg" style="height: 30px;"></td>
+                        <td><img src="static/images/delete.svg" style="height: 30px;"></td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+
      <!-- TERMINA CONTENIDO DE PÁGINA -->
     <!-- Footer -->
     {% include "shared/footer.html" %}

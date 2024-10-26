@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/images/logosmall.ico">
+    <title>R&R PRODUCTS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    {% include "shared/navbar.html" %}
+    <!-- NAVBAR -->
+     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+
+    <h1>CREAR PRODUCTO</h1>
+    
+    <form method="POST" action="/crear_producto" enctype="multipart/form-data">
+        <h3>Tipo de Producto:</h3><br>
+        <input type="radio" id="calzado" name="tipo_producto" value="calzado" onchange="cambiarTipoProducto()" required>
+        <label for="calzado">Calzado</label><br>
+        <input type="radio" id="ropa" name="tipo_producto" value="ropa" onchange="cambiarTipoProducto()" required>
+        <label for="ropa">Ropa/Accesorios</label><br><br>
+        <div id="formulario" style="display: none;">
+            <label for="id_product">Nombre del Producto:</label>
+            <input type="text" id="id_product" name="id_product" required><br><br>
+            <label for="nombre">Nombre del Producto:</label>
+            <input type="text" id="nombre" name="nombre" required><br><br>
+
+            <label for="color">Color:</label>
+            <input type="text" id="color" name="color" required><br><br>
+
+            <label for="precio">Precio:</label>
+            <input type="number" step="0.01" id="precio" name="precio" required><br><br>
+
+            <h3>Variantes</h3>
+            <div id="variantes">
+                <div class="variante">
+                    <label for="talla-0">Talla:</label>
+                    <select id="talla-0" name="talla" required>
+                        <option value="" disabled selected>Selecciona una talla</option>
+                    </select>
+
+                    <label for="stock-0">Stock:</label>
+                    <input id="stock-0" type="number" name="stock" required>
+                    <br><br>
+                </div>
+            </div>
+
+            <button type="button" onclick="agregarVariante()">Agregar Variante</button><br><br>
+
+            <label for="image">Selecciona una imagen:</label>
+            <input type="file" id="image" name="image" accept="image/*" required> <br>
+
+            <input type="submit" value="Crear Producto">
+        </div>
+        
+    </form>
+     <!-- TERMINA CONTENIDO DE PÁGINA -->
+    <!-- Footer -->
+    {% include "shared/footer.html" %}
+    <!-- Footer -->
+    <script src="static/app.js" ></script>
+</body>
+</html>
