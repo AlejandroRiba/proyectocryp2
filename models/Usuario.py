@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from models.Database import getDatabase
 
-db = SQLAlchemy()
+db = getDatabase()
 
 class Usuario(db.Model):
     id = db.Column(db.String(10), primary_key=True)

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response
 from flask_sqlalchemy import SQLAlchemy
-from queries import db
+from models.Database import getDatabase
 import mainfunc
 import os
 import secrets
@@ -15,6 +15,8 @@ app.secret_key = secrets.token_hex(16)  # Genera una clave de 32 caracteres hexa
 # Configuración de la base de datos MySQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/proyecto2'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = getDatabase()
 
 # Inicializar la base de datos
 db.init_app(app)
