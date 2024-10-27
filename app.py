@@ -4,10 +4,14 @@ from models.Database import getDatabase
 from models.Producto import obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes
 from models.Usuario import obtener_usuario_por_id
 from models.Cliente import crear_cliente_con_tarjeta
+from models.Transaccion import crear_transaccion_con_detalles
+from models.Tarjeta import obtener_tarjeta_por_numero
+from datetime import datetime
 import pyFunctions.mainfunc as mainfunc
 import os
 import secrets
 import tempfile
+import json
 
 app = Flask(__name__, template_folder="templates")
 
@@ -301,9 +305,38 @@ def registra_venta():
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
             cargo = session['cargo']
-            return render_template('registra_venta.html', status=username, cargo=cargo)
+            productos = obtener_productos()
+            return render_template('registra_venta.html', status=username, cargo=cargo, productos=productos)
         else:
             return redirect('/')
+        
+@app.route('/procesar_venta', methods=['GET', 'POST'])
+def procesar_venta():
+    if request.method == 'POST':
+        data = request.form
+
+        productos = json.loads(data.get('seleccionados'))
+        nombre = data['nombre']
+        apellido = data['apellido']
+        numero = data['numero']
+        card = data['card']
+        username = session['username']
+        monto = 0
+        
+        tarjeta = obtener_tarjeta_por_numero(card)
+        print(tarjeta.id)
+
+        for producto in productos:
+            item = obtener_producto_por_id(producto["id"])
+            monto += item.precio * int(producto['cantidad'])
+
+        crear_cliente_con_tarjeta(nombre=nombre, apellido=apellido, telefono=numero, numero_tarjeta=card)
+        crear_transaccion_con_detalles(empleado_id=username, fecha=datetime.now(), monto=monto, productos=productos, tarjeta_id=tarjeta.id)
+
+        return redirect('/')
+    else:
+        return redirect('/')
+
         
 # Ruta para consultar ventas
 @app.route('/consulta_venta', methods=['GET', 'POST'])

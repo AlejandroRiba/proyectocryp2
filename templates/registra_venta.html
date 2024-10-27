@@ -10,27 +10,118 @@
 <body>
 
     <!-- Navbar -->
-     {% include "shared/navbar.html" %}
+    {% include "shared/navbar.html" %}
     <!-- Navbar -->
 
-     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-      <h1>REGISTRAR VENTA</h1>
-      <form>
-        <input type="text" name="nombre">
+    <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+    <h1>REGISTRAR VENTA</h1>
+    <form id="ventaForm" method="post" action="/procesar_venta" onsubmit="return prepareSelectedProducts()">
+        <input type="text" id="nombre" name="nombre" required>
         <label for="nombre">Name</label><br>
-        <input type="text" name="apellido">
+        
+        <input type="text" id="apellido" name="apellido" required>
         <label for="apellido">Last Name</label><br>
-        <input type="tel" name="numero">
+        
+        <input type="tel" id="numero" name="numero" required>
         <label for="numero">Phone Number</label><br>
-        <input type="text" name="card">
+        
+        <input type="text" id="card" name="card" required>
         <label for="card">Card Number</label><br>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Type</th>
+                    <th>Talla</th>
+                    <th>Color</th>
+                    <th>Stock</th>
+                    <th>Cantidad</th>
+                    <th>Seleccionar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                    <tr>
+                        <td><div class="contenedor-square"><img src="static/images/products/{{producto.archivo}}" class="cuadrada"></div></td>
+                        <td>{{ producto.nombre }}</td>
+                        <td>${{ producto.precio }}</td>
+                        <td>{{ producto.categoria }}</td>
+                        {% for variante in producto.variantes %}
+                            <td>{{ variante.talla }}</td>
+                            <td>{{ producto.color }}</td>
+                            <td>{{ variante.stock }}</td>
+                            <td><input type="number" min="1" max="{{ variante.stock }}" placeholder="Cantidad" id="cantidad_{{producto.id}}"></td>
+                            <td><input type="checkbox" value="{{producto.id}}" class="producto-checkbox" data-cantidad="cantidad_{{producto.id}}"></td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         <div class="button-box">
             <button type="submit">Ok</button>
         </div>
-      </form>
-     <!-- TERMINA CONTENIDO DE PÁGINA -->
+    </form>
+    <!-- TERMINA CONTENIDO DE PÁGINA -->
+
     <!-- Footer -->
-     {% include "shared/footer.html" %}
+    {% include "shared/footer.html" %}
     <!-- Footer -->
+
+    <script>
+        function prepareSelectedProducts() {
+            const checkboxes = document.querySelectorAll(".producto-checkbox");
+            const seleccionados = []; // Arreglo para productos seleccionados
+
+            // Recorrer cada checkbox para construir el arreglo seleccionados
+            for (const checkbox of checkboxes) {
+                if (checkbox.checked) {
+                    const productoId = checkbox.value;
+                    const cantidadInput = document.getElementById(checkbox.getAttribute("data-cantidad"));
+                    const cantidad = parseInt(cantidadInput.value, 10);
+
+                    // Validar que la cantidad sea mayor a 1
+                    if (cantidad && cantidad > 1) {
+                        seleccionados.push({ id: productoId, cantidad: cantidad });
+                    } else {
+                        alert("Por favor, ingresa una cantidad mayor a 1 para cada producto seleccionado.");
+                        return false;
+                    }
+                }
+            }
+
+            if (seleccionados.length === 0) {
+                alert("Debes seleccionar al menos un producto con una cantidad mayor a 1.");
+                return false;
+            }
+
+            // Eliminar nombres de los checkboxes y campos de cantidad seleccionados para evitar su envío
+            for (const checkbox of checkboxes) {
+                if (checkbox.checked) {
+                    checkbox.removeAttribute("name");
+                    const cantidadInput = document.getElementById(checkbox.getAttribute("data-cantidad"));
+                    cantidadInput.removeAttribute("name");
+                }
+            }
+
+            // Remover campo oculto previo si existe para evitar duplicados
+            let hiddenField = document.getElementById("hiddenSeleccionados");
+            if (hiddenField) {
+                hiddenField.remove();
+            }
+
+            // Crear un campo oculto para enviar el arreglo de seleccionados
+            hiddenField = document.createElement("input");
+            hiddenField.type = "hidden";
+            hiddenField.name = "seleccionados";
+            hiddenField.id = "hiddenSeleccionados";
+            hiddenField.value = JSON.stringify(seleccionados); // Convertir el arreglo a JSON
+            document.getElementById("ventaForm").appendChild(hiddenField);
+
+            return true; // Permitir el envío del formulario
+        }
+    </script>
 </body>
 </html>

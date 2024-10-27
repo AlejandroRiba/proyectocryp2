@@ -23,3 +23,11 @@ def eliminar_tarjeta(tarjeta_id):
         print(f'Tarjeta eliminada exitosamente.')
     else:
         print(f'Tarjeta con ID {tarjeta_id} no encontrada.')
+
+def obtener_tarjeta_por_numero(numero_tarjeta):
+    tarjeta = Tarjeta.query.filter_by(numero_tarjeta=numero_tarjeta).first()
+    if tarjeta:
+        return tarjeta
+    else:
+        print(f'Tarjeta con número {numero_tarjeta} no encontrada.')
+        return None

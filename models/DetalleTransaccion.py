@@ -5,8 +5,8 @@ db = getDatabase()
 
 class DetalleTransaccion(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    transaccion_id = db.Column(db.String(10), db.ForeignKey('transaccion.id'), nullable=False)
-    producto_id = db.Column(db.String(10), db.ForeignKey('producto.id'), nullable=False)
+    transaccion_id = db.Column(db.Integer, db.ForeignKey('transaccion.id'), nullable=False)
+    producto_id = db.Column(db.String(6), db.ForeignKey('producto.id'), nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)
 
 def crear_detalle_transaccion(transaccion_id, producto_id, cantidad):
