@@ -34,7 +34,7 @@
                     <th>Imagen</th>
                     <th>Nombre</th>
                     <th>Precio</th>
-                    <th>Type</th>
+                    <th>Tipo</th>
                     <th>Talla</th>
                     <th>Color</th>
                     <th>Stock</th>
@@ -49,13 +49,23 @@
                         <td>{{ producto.nombre }}</td>
                         <td>${{ producto.precio }}</td>
                         <td>{{ producto.categoria }}</td>
-                        {% for variante in producto.variantes %}
-                            <td>{{ variante.talla }}</td>
-                            <td>{{ producto.color }}</td>
-                            <td>{{ variante.stock }}</td>
-                            <td><input type="number" min="1" max="{{ variante.stock }}" placeholder="Cantidad" id="cantidad_{{producto.id}}"></td>
-                            <td><input type="checkbox" value="{{producto.id}}" class="producto-checkbox" data-cantidad="cantidad_{{producto.id}}"></td>
-                        {% endfor %}
+                        <td>
+                            {% if producto.variantes and producto.variantes|length > 1 %}
+                                <select id="talla_{{producto.id}}" name="talla_{{producto.id}}">
+                                    {% for variante in producto.variantes %}
+                                        <option value="{{ variante.talla }}" data-stock="{{ variante.stock }}">{{ variante.talla }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                <span id="talla_{{producto.id}}" data-stock="{{ producto.variantes[0].stock if producto.variantes else 0 }}">{{ producto.variantes[0].talla }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ producto.color }}</td>
+                        <td>
+                            <span id="stock_{{producto.id}}">{{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
+                        </td>
+                        <td><input type="number" min="1" max="{{ producto.variantes[0].stock if producto.variantes else 0 }}" placeholder="Cantidad" id="cantidad_{{producto.id}}"></td>
+                        <td><input type="checkbox" value="{{producto.id}}" class="producto-checkbox" data-cantidad="cantidad_{{producto.id}}"></td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -82,18 +92,27 @@
                     const cantidadInput = document.getElementById(checkbox.getAttribute("data-cantidad"));
                     const cantidad = parseInt(cantidadInput.value, 10);
 
-                    // Validar que la cantidad sea mayor a 1
-                    if (cantidad && cantidad > 1) {
-                        seleccionados.push({ id: productoId, cantidad: cantidad });
+                    // Obtener la talla según el número de variantes
+                    let talla;
+                    const tallaSelect = document.getElementById(`talla_${productoId}`);
+                    if (tallaSelect) {  // Si existe el select (múltiples variantes)
+                        talla = tallaSelect.value;
+                    } else {  // Si no, obtener el texto de la talla fija
+                        talla = document.getElementById(`talla_${productoId}`).innerText;
+                    }
+
+                    // Validar que la cantidad sea mayor a 0
+                    if (cantidad && cantidad > 0) {
+                        seleccionados.push({ id: productoId, cantidad: cantidad, talla: talla });
                     } else {
-                        alert("Por favor, ingresa una cantidad mayor a 1 para cada producto seleccionado.");
+                        alert("Por favor, ingresa una cantidad mayor a 0 para cada producto seleccionado.");
                         return false;
                     }
                 }
             }
 
             if (seleccionados.length === 0) {
-                alert("Debes seleccionar al menos un producto con una cantidad mayor a 1.");
+                alert("Debes seleccionar al menos un producto con una cantidad mayor a 0.");
                 return false;
             }
 
