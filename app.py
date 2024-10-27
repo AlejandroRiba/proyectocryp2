@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from models.Producto import obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes
 from models.Usuario import obtener_usuario_por_id
+from models.Cliente import crear_cliente_con_tarjeta
 import pyFunctions.mainfunc as mainfunc
 import os
 import secrets
@@ -261,8 +262,13 @@ def eliminar_producto(id):
 @app.route('/registra_cliente', methods=['GET', 'POST'])
 def registra_cliente():
     if request.method == 'POST':
-        #manejar la lógica
-        return redirect('/')
+        data = request.form
+        status, detalle = crear_cliente_con_tarjeta(data['nombre'], data['apellido'], data['numero'], data['card'])
+        if status:
+            return redirect('/')
+        else:
+            print(f"Error: {detalle}")
+            #Manejar el error
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
