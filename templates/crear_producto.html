@@ -18,12 +18,12 @@
     
     <form method="POST" action="/crear_producto" enctype="multipart/form-data">
         <h3>Tipo de Producto:</h3><br>
-        <input type="radio" id="calzado" name="tipo_producto" value="calzado" onchange="cambiarTipoProducto()" required>
-        <label for="calzado">Calzado</label><br>
-        <input type="radio" id="ropa" name="tipo_producto" value="ropa" onchange="cambiarTipoProducto()" required>
-        <label for="ropa">Ropa</label><br><br>
-        <input type="radio" id="ropa" name="tipo_producto" value="accesorios" onchange="cambiarTipoProducto()" required>
-        <label for="ropa">Accesorios</label><br><br>
+        <input type="radio" id="calzado" name="tipo_producto" value="Shoes" onchange="cambiarTipoProducto()" required>
+        <label for="calzado">Shoes</label><br>
+        <input type="radio" id="ropa" name="tipo_producto" value="Clothing" onchange="cambiarTipoProducto()" required>
+        <label for="ropa">Clothing</label><br><br>
+        <input type="radio" id="accesorios" name="tipo_producto" value="Accessories" onchange="cambiarTipoProducto()" required>
+        <label for="accesorios">Accessories</label><br><br>
         <div id="formulario" style="display: none;">
             <label for="id_product">Nombre del Producto:</label>
             <input type="text" id="id_product" name="id_product" required><br><br>

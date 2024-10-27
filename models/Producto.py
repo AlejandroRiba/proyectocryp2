@@ -12,7 +12,7 @@ class Producto(db.Model):
     color = db.Column(db.String(50), nullable=False)
     salidas = db.Column(db.Integer, nullable=False)
     archivo = db.Column(db.String(10), nullable=False)
-    categoria = db.Column(db.String(10), nullable=False)
+    categoria = db.Column(db.String(11), nullable=False)
     # Relación con ProductoVariante
     variantes = relationship('ProductoVariante', backref='producto', cascade="all, delete-orphan")
 

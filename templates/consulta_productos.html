@@ -23,9 +23,9 @@
                 <th>Nombre</th>
                 <th>Precio</th>
                 <th>Type</th>
-                <th>Talla</th>
+                <!-- <th>Talla</th> -->
                 <th>Color</th>
-                <th>Stock</th>
+                <!-- <th>Stock</th> -->
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -37,11 +37,12 @@
                     <td>{{ producto.nombre }}</td>
                     <td>${{ producto.precio }}</td>
                     <td>{{ producto.categoria }}</td>
-                        {% for variante in producto.variantes %}
+                    <td>{{ producto.color }}</td>
+                        <!-- {% for variante in producto.variantes %}
                             <td>{{ variante.talla }}</td>
                             <td>{{ producto.color }}</td>
                             <td>{{ variante.stock }}</td>
-                        {% endfor %}
+                        {% endfor %} -->
                     <td><a href="/editar_producto/{{producto.id}}"><img src="static/images/edit.svg" style="height: 30px;"></a></td>
                     <td><a href="/eliminar_producto/{{producto.id}}"><img src="static/images/delete.svg" style="height: 30px;"></a></td>
                 </tr>

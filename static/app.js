@@ -38,8 +38,8 @@ function actualizarOpcionesTalla(tallaSelect, tipoProducto, option) {
     tallaSelect.appendChild(defaultOption);
 
     // Agregar opciones según el tipo de producto
-    if (tipoProducto === 'calzado') {
-        const tallasUS = ['5', '6', '7', '8', '9', '10']; //agregar equivalencias MX
+    if (tipoProducto === 'Shoes') {
+        const tallasUS = ['3.5','4','4.5','5','5.5','6','6.5', '7', '7.5', '8', '8.5', '9', '9.5','10','10.5','11','11.5','12','13']; //agregar equivalencias MX
 
         tallasUS.forEach(talla => {
             const option = document.createElement('option');
@@ -48,8 +48,9 @@ function actualizarOpcionesTalla(tallaSelect, tipoProducto, option) {
             tallaSelect.appendChild(option);
         });
 
-    } else if (tipoProducto === 'ropa') {
-        const tallasRopa = ['Unitalla', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+    } else if (tipoProducto === 'Clothing') {
+        const tallasRopa = ['One Size', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '28', '30', '32', '34', '36', '38', '40', '42'];
+
 
         tallasRopa.forEach(talla => {
             const option = document.createElement('option');
@@ -57,8 +58,8 @@ function actualizarOpcionesTalla(tallaSelect, tipoProducto, option) {
             option.textContent = talla;
             tallaSelect.appendChild(option);
         });
-    } else if (tipoProducto === 'accesorios') {
-        const tallasRopa = ['Unitalla', 'Ajustable'];
+    } else if (tipoProducto === 'Accessories') {
+        const tallasRopa = ['One Size', 'Adjustable'];
 
         tallasRopa.forEach(talla => {
             const option = document.createElement('option');
