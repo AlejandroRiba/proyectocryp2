@@ -2,6 +2,7 @@ from flask import Flask, render_template, session, request, redirect, send_file,
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from models.Producto import obtener_productos, crear_producto_con_variantes
+from models.Cliente import crear_cliente_con_tarjeta
 import pyFunctions.mainfunc as mainfunc
 import os
 import secrets
@@ -182,8 +183,13 @@ def crear_producto():
 @app.route('/registra_cliente', methods=['GET', 'POST'])
 def registra_cliente():
     if request.method == 'POST':
-        #manejar la lógica
-        return redirect('/')
+        data = request.form
+        status, detalle = crear_cliente_con_tarjeta(data['nombre'], data['apellido'], data['numero'], data['card'])
+        if status:
+            return redirect('/')
+        else:
+            print(f"Error: {detalle}")
+            #Manejar el error
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']

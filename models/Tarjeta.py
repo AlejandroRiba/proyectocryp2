@@ -7,7 +7,7 @@ db = getDatabase()
 class Tarjeta(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     numero_tarjeta = db.Column(db.String(16), unique=True, nullable=False)
-    cliente_id = db.Column(db.String(10), db.ForeignKey('cliente.id'), nullable=False)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)  # Cambiado a Integer
 
 def crear_tarjeta(numero_tarjeta, cliente_id):
     nueva_tarjeta = Tarjeta(numero_tarjeta=numero_tarjeta, cliente_id=cliente_id)
