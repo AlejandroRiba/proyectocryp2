@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/images/logosmall.ico">
+    <title>R&R EDIT USER</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    {% include "shared/navbar.html" %}
+    <!-- NAVBAR -->
+
+    <div class="login-container">
+        <div class="login-box login-box2">
+            <h1>Sign up</h1><br>
+            <form method="post" action="{{ url_for('editar_empleado') }}">
+                <div class="container_cols">
+                    <div class="columna">
+                        <div class="input-box">
+                            <input type="text" name="name" value="{{usuario.nombre}}">
+                            <label for="name">Name</label>
+                        </div>
+                        <div class="input-box">
+                            <input type="text" name="lstname" value="{{usuario.apellido}}">
+                            <label for="lstname">Last name</label>
+                        </div>
+                        <div class="input-box">
+                            <input type="text" name="email" value="{{usuario.email}}">
+                            <label for="email">Email</label>
+                        </div>
+                    </div>
+                    <div class="columna">
+                        <div class="input-box">
+                            <input type="tel" name="number" value="{{usuario.phone}}">
+                            <label for="number">Phone Number</label>
+                        </div>
+                        <div class="input-box">
+                            {% if cargo == 'admin' %}
+                                <input type="text" name="id" value="{{usuario.id}}">
+                            {% else %}
+                                <input type="text" name="id" value="{{usuario.id}}" disabled>
+                            {% endif %}
+                            <label for="id">Employee ID</label>
+                        </div>
+                        <div class="input-box">
+                            <input type="password" name="lasrpassword">
+                            <label for="lastpassword">Last Password</label>
+                        </div>
+                        <div class="input-box">
+                            <input type="password" name="password">
+                            <label for="password">New Password</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-box">
+                    <button type="submit">Sign up</button>
+                </div>
+                <div class="links">
+                    <a href="{{ url_for('login_route') }}">Already have an account? Sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    {% include "shared/footer.html" %}
+    <!-- Footer -->
+    <script src="static/app.js" ></script>
+</body>
+</html>
+
+

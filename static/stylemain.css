@@ -160,3 +160,20 @@ footer {
     padding: 10px 10px; /* Agrega algo de relleno dentro de cada elemento para que se vea bien */
 }
 
+.contenedor-square{
+    height: 100px;
+    border-radius: 4%;
+}
+
+.cuadrada{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 4%;
+}
+
+/* Efecto zoom al hacer hover */
+.contenedor-square:hover img {
+    transform: scale(3.5); /* Ajusta el valor para más o menos zoom */
+}

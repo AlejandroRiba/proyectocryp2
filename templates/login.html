@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="static/images/logosmall.ico">
+    <link rel="icon" href="{{ url_for('static', filename='images/logosmall.ico') }}">
     <title>R&R SIGN IN</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
@@ -13,7 +13,7 @@
     <div class="navbar">
         <div class="nav-left">
             <span>&nbsp;</span>
-            <a href="{{ url_for('home') }}" id="logo"><img src="static/images/logo.png" style="height: 50px;"></a>
+            <a href="{{ url_for('home') }}" id="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" style="height: 50px;"></a>
         </div>
         
         <div class="nav-logo">

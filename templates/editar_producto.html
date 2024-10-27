@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='images/logosmall.ico') }}">
+    <title>R&R PRODUCTS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    {% include "shared/navbar.html" %}
+    <!-- NAVBAR -->
+     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+
+    <h1>CREAR PRODUCTO</h1>
+    
+    <form method="POST" action="/editar_producto_query" enctype="multipart/form-data">
+        <h3>Tipo de Producto:</h3><br>
+        <label for="tipo_producto">{{producto.categoria}}</label><br>
+        <input type="text" id="tipo_producto" name="tipo_producto" value="{{producto.categoria}}" style="display: none;">
+        <div id="formulario">
+            <label for="id_product">Nombre del Producto:</label>
+            <input type="text" id="id_product" name="id_product" value="{{producto.id}}" disabled required><br><br>
+            <label for="nombre">Nombre del Producto:</label>
+            <input type="text" id="nombre" name="nombre" value="{{producto.nombre}}" required><br><br>
+
+            <label for="color">Color:</label>
+            <input type="text" id="color" name="color" value="{{producto.color}}" required><br><br>
+
+            <label for="precio">Precio:</label>
+            <input type="number" step="0.01" id="precio" name="precio" value="{{producto.precio}}" required><br><br>
+
+            <h3>Variantes</h3>
+            <div id="variantes">
+            {% for variante in producto.variantes %}
+                <div class="variante variantedefinida">
+                    <input name="id_variante" value="{{variante.id}}" style="display: none;">
+                    <label for="talla-{{ loop.index }}">Talla:</label>
+                    <select id="talla-{{ loop.index }}" name="talla" required>
+                        <option value="{{variante.talla}}" selected>{{variante.talla}}</option>
+                    </select>
+
+                    <label for="stock-{{ loop.index }}">Stock:</label>
+                    <input id="stock-{{ loop.index }}" type="number" name="stock" value="{{variante.stock}}" required>
+                    <label for="delete-{{loop.index}}">DELETE?</label>
+                    <input id="delete-{{loop.index}}" type="checkbox" name="delete" value="{{variante.id}}" onclick="toggleInputs('{{ loop.index }}')">
+                    <br><br>
+                </div>
+            {% endfor %}
+            </div>
+            <button type="button" onclick="agregarVariante('{{ producto.variantes|length if producto.variantes else 0 }}')">Agregar Variante</button><br><br>
+
+            <label for="image">Edit image:</label>
+            <input type="file" id="image" name="image" accept="image/*" disabled required>
+            <label for="editimage">Edit image?</label>
+            <input id="editimage" type="checkbox" name="edit-image" value="{{producto.archivo}}" onclick="edit_image()">
+            <br><br>
+
+            <input type="submit" value="Actualizar Producto" onclick="activarIdinput()">
+        </div>
+        
+    </form>
+     <!-- TERMINA CONTENIDO DE PÁGINA -->
+    <!-- Footer -->
+    {% include "shared/footer.html" %}
+    <!-- Footer -->
+    <script>
+        function toggleInputs(index) {
+            const stockInput = document.getElementById(`stock-${index}`);
+            const tallaSelect = document.getElementById(`talla-${index}`);
+            const checkbox = document.getElementById(`delete-${index}`);
+
+            // Deshabilitar o habilitar inputs según el estado del checkbox
+            if (checkbox.checked) {
+                stockInput.disabled = true;
+                tallaSelect.disabled = true;
+            } else {
+                stockInput.disabled = false;
+                tallaSelect.disabled = false;
+            }
+        }
+
+        function edit_image(){
+            const inputImg = document.getElementById('image');
+            const checkbox = document.getElementById('editimage');
+            if(checkbox.checked){
+                inputImg.disabled = false;
+            } else{
+                inputImg.disabled = true;
+            }
+        }
+
+        function inicializarVariantes() {
+            const variantes = document.querySelectorAll('.variantedefinida');
+            variantes.forEach(variante => {
+                const tallaSelect = variante.querySelector(`select[name="talla"]`);
+                const tipoProducto = document.getElementById('tipo_producto').value;
+                actualizarOpcionesTalla(tallaSelect, tipoProducto, tallaSelect.value)
+            });
+        }
+        
+        // Llama a la función después de que el DOM haya sido cargado
+        document.addEventListener('DOMContentLoaded', inicializarVariantes);
+    </script>
+    <script src="{{ url_for('static', filename='app.js') }}" ></script>
+</body>
+</html>

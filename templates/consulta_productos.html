@@ -22,6 +22,7 @@
                 <th>Imagen</th>
                 <th>Nombre</th>
                 <th>Precio</th>
+                <th>Type</th>
                 <th>Talla</th>
                 <th>Color</th>
                 <th>Stock</th>
@@ -31,18 +32,19 @@
         </thead>
         <tbody>
             {% for producto in productos %}
-                {% for variante in producto.variantes %}
-                    <tr>
-                        <td><img src="static/images/products/{{producto.archivo}}" style="height: 50px;"></td>
-                        <td>{{ producto.nombre }}</td>
-                        <td>${{ producto.precio }}</td>
-                        <td>{{ variante.talla }}</td>
-                        <td>{{ producto.color }}</td>
-                        <td>{{ variante.stock }}</td>
-                        <td><img src="static/images/edit.svg" style="height: 30px;"></td>
-                        <td><img src="static/images/delete.svg" style="height: 30px;"></td>
-                    </tr>
-                {% endfor %}
+                <tr>
+                    <td><div class="contenedor-square"><img src="static/images/products/{{producto.archivo}}" class="cuadrada"></div></td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>${{ producto.precio }}</td>
+                    <td>{{ producto.categoria }}</td>
+                        {% for variante in producto.variantes %}
+                            <td>{{ variante.talla }}</td>
+                            <td>{{ producto.color }}</td>
+                            <td>{{ variante.stock }}</td>
+                        {% endfor %}
+                    <td><a href="/editar_producto/{{producto.id}}"><img src="static/images/edit.svg" style="height: 30px;"></a></td>
+                    <td><a href="/eliminar_producto/{{producto.id}}"><img src="static/images/delete.svg" style="height: 30px;"></a></td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>

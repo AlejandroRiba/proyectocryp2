@@ -20,14 +20,21 @@ function cambiarTipoProducto() {
     });
 }
 
-function actualizarOpcionesTalla(tallaSelect, tipoProducto) {
+function actualizarOpcionesTalla(tallaSelect, tipoProducto, option) {
     // Limpiar las opciones actuales
     tallaSelect.innerHTML = '';
     const defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    defaultOption.disabled = true;
+    if (option != null){
+        defaultOption.value = option;
+        defaultOption.textContent = option;
+        defaultOption.disabled = false;
+    } else{
+        defaultOption.value = '';
+        defaultOption.textContent = 'Selecciona una talla';
+        defaultOption.disabled = true;
+    }
+    console.log(defaultOption.value)
     defaultOption.selected = true;
-    defaultOption.textContent = 'Selecciona una talla';
     tallaSelect.appendChild(defaultOption);
 
     // Agregar opciones según el tipo de producto
@@ -50,12 +57,25 @@ function actualizarOpcionesTalla(tallaSelect, tipoProducto) {
             option.textContent = talla;
             tallaSelect.appendChild(option);
         });
+    } else if (tipoProducto === 'accesorios') {
+        const tallasRopa = ['Unitalla', 'Ajustable'];
+
+        tallasRopa.forEach(talla => {
+            const option = document.createElement('option');
+            option.value = talla;
+            option.textContent = talla;
+            tallaSelect.appendChild(option);
+        });
     }
 }
 
-function agregarVariante() {
+function agregarVariante(contador) {
     const varianteDiv = document.createElement('div');
     varianteDiv.className = 'variante';
+    console.log(contador)
+    if(contador > varianteCount){
+        varianteCount = contador + 1;
+    }
     varianteDiv.id = `variante-${varianteCount}`;
 
     varianteDiv.innerHTML = `
@@ -73,11 +93,18 @@ function agregarVariante() {
     document.getElementById('variantes').appendChild(varianteDiv);
 
     // Actualizar opciones de talla para la nueva variante
-    const tipoProducto = document.querySelector('input[name="tipo_producto"]:checked').value;
+    const tipoProductoElement = document.querySelector('input[name="tipo_producto"]:checked');
+    let tipoProducto = null
+    if (tipoProductoElement) { //si no existe el input de ese tipo, entonces existe el segundo
+        tipoProducto = tipoProductoElement.value;
+    } else {
+        tipoProducto = document.getElementById('tipo_producto').value;
+    }
     const tallaSelect = varianteDiv.querySelector(`select[name="talla"]`);
-    actualizarOpcionesTalla(tallaSelect, tipoProducto);
+    actualizarOpcionesTalla(tallaSelect, tipoProducto, null);
 
     varianteCount++; // Incrementar el contador para el próximo ID único
+    
 }
 
 function eliminarVariante(varianteId) {
@@ -85,4 +112,9 @@ function eliminarVariante(varianteId) {
     if (varianteDiv) {
         varianteDiv.remove(); // Eliminar el div de variante del DOM
     }
+}
+
+function activarIdinput(){
+    const input = document.getElementById('id_product');
+    input.disabled = false;
 }

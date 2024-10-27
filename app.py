@@ -1,7 +1,8 @@
 from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
-from models.Producto import obtener_productos, crear_producto_con_variantes
+from models.Producto import obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes
+from models.Usuario import obtener_usuario_por_id
 import pyFunctions.mainfunc as mainfunc
 import os
 import secrets
@@ -119,6 +120,24 @@ def consulta_empleado():
             return render_template('consulta_empleado.html', cargo=cargo)
         else:
             return redirect('/')
+        
+#Ruta para renderizar la plantilla de editar empleado
+@app.route('/edit_user/<string:id>', methods=['GET'])
+def edit_user(id):
+    if 'username' in session:
+        usuario = obtener_usuario_por_id(id)
+        username = session['username']
+        cargo = session['cargo']
+        return render_template('editar_usuario.html', usuario=usuario, status=username, cargo=cargo) #se mantienen los datos de status y cargo pq puede editar el dueño
+    return redirect('/consulta_productos')
+
+#Ruta para editar los datos de un empleado 
+@app.route('/editar_empleado', methods=['POST'])
+def editar_empleado():
+    if 'username' in session:
+        #llamar a la funcion
+        print('hola')
+    return redirect('/')
 
 # Ruta para consultar informes
 @app.route('/consulta_informes', methods=['GET', 'POST'])
@@ -157,19 +176,19 @@ def crear_producto():
         nombre = request.form['nombre']
         color = request.form['color']
         precio = request.form['precio']
+        categoria = request.form['tipo_producto']
 
         file = request.files['image']
         variantes = []
         tallas = request.form.getlist('talla')
         stocks = request.form.getlist('stock')
-
         # Agrupar tallas y stocks
         for talla, stock in zip(tallas, stocks):
             variantes.append({'talla': talla, 'stock': stock})
-        crear_producto_con_variantes(id, nombre, color, precio, variantes, file.filename)
+        crear_producto_con_variantes(id, nombre, color, precio, variantes, file.filename, categoria=categoria)
         #guardar la imagen del producto
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-        return redirect('/')
+        return redirect('/consulta_productos')
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
@@ -178,6 +197,66 @@ def crear_producto():
         else:
             return redirect('/login_route')
         
+#Ruta para renderizar la plantilla de editar
+@app.route('/editar_producto/<string:id>', methods=['GET'])
+def editar_producto(id):
+    if 'username' in session:
+        producto = obtener_producto_por_id(id)
+        username = session['username']
+        cargo = session['cargo']
+        return render_template('editar_producto.html', producto=producto, status=username, cargo=cargo)
+    return redirect('/consulta_productos')
+
+#Ruta para editar un producto 
+@app.route('/editar_producto_query', methods=['POST'])
+def editar_producto_query():
+    if 'username' in session:
+        id = request.form['id_product']
+        nombre = request.form['nombre']
+        color = request.form['color']
+        precio = request.form['precio']
+        variantes = []
+        variantes_a_eliminar = request.form.getlist('delete')
+        tallas = request.form.getlist('talla')
+        stocks = request.form.getlist('stock')
+        ids = request.form.getlist('id_variante')
+        # Agrupar tallas y stocks
+        for index, (talla, stock) in enumerate(zip(tallas, stocks)):
+            # Verifica si el índice existe en la lista ids
+            if index < len(ids):  # Solo si hay un ID correspondiente
+                id_v = ids[index]
+                variantes.append({'talla': talla, 'id': id_v, 'stock': stock})
+            else:
+                variantes.append({'talla': talla, 'id': 0, 'stock': stock})  # ID despreciable
+        if 'image' in request.files: #si si se activo la checkbox de editar
+            file = request.files['image']
+            lastFile = request.form['edit-image']
+            nuevo_path = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
+            last_path = os.path.join(app.config['UPLOAD_FOLDER'],lastFile)
+            # Elimina la imagen existente si el archivo es diferente
+            if os.path.isfile(last_path) and file.filename != lastFile:
+                os.remove(last_path)
+
+            # Guarda el nuevo archivo (se reemplazará si tiene el mismo nombre)
+            file.save(nuevo_path)
+            print(f'Vieja ruta = {last_path}')
+            print(f'Nueva ruta = {nuevo_path}')
+            editar_producto_con_variantes(id,nombre,color,precio,variantes,variantes_a_eliminar, file.filename)
+        else:
+            editar_producto_con_variantes(id,nombre,color,precio,variantes,variantes_a_eliminar, None)
+    return redirect('/consulta_productos')
+
+#Ruta para eliminar un producto 
+@app.route('/eliminar_producto/<string:id>', methods=['GET'])
+def eliminar_producto(id):
+    if 'username' in session:
+        borrado, filename = delete_product(id)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if borrado: # Verificar si el archivo existe y eliminarlo
+            if os.path.isfile(file_path):
+                os.remove(file_path) #elimina la imagen si la consulta de delete se ejecuta con éxito
+    return redirect('/consulta_productos')
+
 # Ruta para crear/registrar un cliente
 @app.route('/registra_cliente', methods=['GET', 'POST'])
 def registra_cliente():

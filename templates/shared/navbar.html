@@ -14,6 +14,7 @@
                         <li><a href="{{ url_for('consulta_informes')}}">Consultar Informes de Ventas</a></li>
                         <li><a href="{{ url_for('consulta_productos')}}">Consultar Productos</a></li>
                         <li><a href="{{ url_for('generar_informe')}}">Generar Informe de ventas mensuales</a></li>
+                        <li><a href="{{ url_for('edit_user', id=status)}}">Editar datos</a></li>
                         {% if cargo == 'admin' %} 
                             <li><a href="{{ url_for('consulta_empleado')}}">Consultar Empleados</a></li>
                         {% endif %}
@@ -22,13 +23,13 @@
                 </div>
             </div>            
         {% else %}
-            <img src="static/images/logo.png" style="height: 50px;">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" style="height: 50px;">
         {% endif %}            
     </div>
     
     <div class="nav-logo">
         {% if status %} 
-            <a href="{{ url_for('home') }}" id="logo"><img src="static/images/logo.png" style="height: 50px;"></a>
+            <a href="{{ url_for('home') }}" id="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" style="height: 50px;"></a>
         {% else %}
             <span></span>
         {% endif %}
