@@ -121,10 +121,10 @@ def new_user():
                 session['private_key_path'] = private_key_path
                 return redirect(url_for('mostrar_descarga'))  # Redirigir a la página principal después de crear el usuario
             else:
-                #no se pudo crear el usuario
-                return redirect('/')
+                flash("Error. The user may already exists; please check that your information is correct.", "error")
+                return redirect('/new_user')
         else:
-            flash("El admin aún no se registra. Intenta de nuevo más tarde.", "error")
+            flash("The admin has not registered yet. Please try again later.", "adminerror")
             return redirect('/new_user')
     else:
         if 'username' in session: #si ya hay una sesión iniciada, entonces manda a al pantalla de inicio
