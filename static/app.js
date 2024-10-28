@@ -115,7 +115,50 @@ function eliminarVariante(varianteId) {
     }
 }
 
-function activarIdinput(){
-    const input = document.getElementById('id_product');
-    input.disabled = false;
+function activarIdinput(id){
+    const input = document.getElementById(id);
+    if(input){
+        input.disabled = false;
+    }
+}
+
+function ocultaError(){
+    const error = document.getElementById('error');
+    if (error){
+        error.style.display = 'none';
+    }
+}
+
+function edit_password(){
+    const checkbox = document.getElementById('editpassword');
+    const divPass = document.getElementById('columna-edit');
+    const divPadre = document.getElementById('columnas');
+    const inputpassword1 = document.getElementById('newpassword'); 
+    const inputpassword2 = document.getElementById('newpassword2'); 
+    const message = document.getElementById('password-match-message');
+    if(checkbox.checked){
+        divPadre.classList.add('container_cols2');
+        divPadre.classList.remove('container_cols');
+        inputpassword1.disabled = false;
+        inputpassword2.disabled = false;
+        divPass.style.display = 'block';
+    }else{
+        divPass.style.display = 'none';
+        inputpassword1.disabled = true;
+        inputpassword2.disabled = true;
+        inputpassword1.value = '';
+        inputpassword2.value = '';
+        message.style.display = 'none'; //En caso de que que se hubieran dejado un par de contraseñas incorrectas 
+        divPadre.classList.add('container_cols');
+        divPadre.classList.remove('container_cols2');
+    }
+}
+
+function togglecheckBox(id){ //FUNCIÓN PARA ACTIVAR/DESACTIVAR UN CHECKBOX DESDE OTRO LADO
+    const checkbox = document.getElementById(id)
+    if(checkbox.checked){
+        checkbox.checked = false;
+    }else{
+        checkbox.checked = true;
+    }
 }

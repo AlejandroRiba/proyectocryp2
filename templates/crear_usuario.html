@@ -27,37 +27,47 @@
             <span>&nbsp;</span>
         </div>
     </div>
-
+    <script>
+        window.onbeforeunload = function() {
+            // Limpiar los campos del formulario
+            const form = document.getElementById('form-signup');
+            if (form) {
+                form.reset(); // Restablece todos los campos del formulario
+            }
+        };
+    </script>
     <div class="login-container">
         <div class="login-box login-box2">
             <h1>Sign up</h1><br>
-            <form method="post" action="{{ url_for('new_user') }}">
+            <form id="form-signup" method="post" action="{{ url_for('new_user') }}" onsubmit="validateForm(event)">
                 <div class="container_cols">
                     <div class="columna">
                         <div class="input-box">
-                            <input type="text" name="name">
+                            <input type="text" name="name" oninput="validarLetras(this)">
                             <label for="name">Name</label>
                         </div>
                         <div class="input-box">
-                            <input type="text" name="lstname">
+                            <input type="text" name="lstname" oninput="validarLetras(this)">
                             <label for="lstname">Last name</label>
                         </div>
                         <div class="input-box">
-                            <input type="text" name="email">
+                            <input type="text" name="email" oninput="validarCorreo(this)">
                             <label for="email">Email</label>
+                            <small id="message"></small>
                         </div>
                     </div>
                     <div class="columna">
                         <div class="input-box">
-                            <input type="tel" name="number">
+                            <input id="number" type="tel" name="number" maxlength="10" minlength="8" oninput="validarNumeros(this), validarTelefono(this)">
                             <label for="number">Phone Number</label>
+                            <small id="message1"></small>
                         </div>
                         <div class="input-box">
-                            <input type="text" name="id">
+                            <input type="text" name="id" maxlength="10" minlength="10">
                             <label for="id">Employee ID</label>
                         </div>
                         <div class="input-box">
-                            <input type="password" name="password">
+                            <input type="password" name="password" autocomplete="off">
                             <label for="password">Password</label>
                         </div>
                     </div>
@@ -77,6 +87,7 @@
     {% include "shared/footer.html" %}
     <!-- Footer -->
     <script src="static/app.js" ></script>
+    <script src="{{ url_for('static', filename='validations.js') }}" ></script>
 </body>
 </html>
 
