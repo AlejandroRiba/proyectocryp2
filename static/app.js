@@ -2,6 +2,11 @@ function redireccion(paginaDest){
     location.href=paginaDest
 }
 
+function bloquearFormulario(){
+    const form = document.getElementById('form-signup');
+    form.style.display = 'none';
+}
+
 let varianteCount = 1; // Contador para asignar IDs únicos a cada variante
 
 function cambiarTipoProducto() {
@@ -119,6 +124,7 @@ function activarIdinput(id){
     const input = document.getElementById(id);
     if(input){
         input.disabled = false;
+        console.log('Se activa el campo de id.')
     }
 }
 

@@ -6,6 +6,7 @@
     <link rel="icon" href="static/images/logosmall.ico">
     <title>R&R</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 
@@ -21,16 +22,74 @@
     
         <!-- Enlaces del lado derecho -->
         <div class="nav-right">
-            <a href="#reg">FILL OUT THE FORM</a>
+            <a href="#form-signup">FILL OUT THE FORM</a>
             <span>&nbsp;</span>
         </div>
     </div>
-     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-      <h1 id="reg">REGISTRAR DATOS DEL ADMIN</h1>
+    <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+    <script>
+        window.onbeforeunload = function() {
+            // Limpiar los campos del formulario
+            const form = document.getElementById('form-signup');
+            if (form) {
+                form.reset(); // Restablece todos los campos del formulario
+            }
+        };
+    </script>
+    {% if status == 'admin' %}
+        <div class="login-container">
+            <div class="login-box login-box3">
+                <h1>Edit User</h1><br>
+                <form id="form-signup" method="post" action="/datos_admin" onsubmit="return validateForm()">
+                    <div id="columnas" class="container_cols">
+                        <div class="columna">
+                            <div class="input-box">
+                                <input id="id" type="text" name="id" value="{{status}}" disabled>
+                                <label for="id">Employee ID</label>
+                            </div>
+                            <div class="input-box">
+                                <input type="text" name="name" required oninput="validarLetras(this)">
+                                <label for="name">Name</label>
+                            </div>
+                            <div class="input-box">
+                                <input type="text" name="lstname" required oninput="validarLetras(this)">
+                                <label for="lstname">Last name</label>
+                            </div>
+                        </div>
+                        <div class="columna">
+                            <div class="input-box">
+                                <input id="number" type="text" name="number" maxlength="10" minlength="8" required oninput="validarNumeros(this), validarTelefono(this)">
+                                <label for="number">Phone Number</label>
+                                <small id="message1"></small>
+                            </div>
+                            <div class="input-box">
+                                <input type="text" id='email' name="email" required oninput="validarCorreo(this)">
+                                <label for="email">Email</label>
+                                <small id="message"></small>
+                            </div>
+                            <div class="input-box" id="div_password">
+                                <input id="password" type="password" name="password" required autocomplete="off">
+                                <label for="password">New Password</label>
+                            </div>
+                        </div>
+                    </div>
+                    {% set mensaje = get_flashed_messages(with_categories=true) %}
+                    {% if mensaje %}
+                        <p id="{{ mensaje[0][0] }}">{{ mensaje[0][1] }}</p>
+                    {% endif %}
+                    <div class="button-box">
+                        <button type="submit">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
      <!-- TERMINA CONTENIDO DE PÁGINA -->
       
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
+    <script src="{{ url_for('static', filename='app.js') }}" ></script>
+    <script src="{{ url_for('static', filename='validations.js') }}" ></script>
 </body>
 </html>

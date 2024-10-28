@@ -1,4 +1,4 @@
-from models.Usuario import crear_usuario, obtener_usuario_por_id
+from models.Usuario import crear_usuario, obtener_usuario_por_id, editar_usuario
 from pyFunctions.cryptoUtils import hasheo, generate_key_pair
 import os
 import tempfile
@@ -29,3 +29,19 @@ def auth(id, password):
             return False, None
     else:
         return False, None
+    
+def autoriza_edit(id, password, nombre, apellido,email,phone,newpassword):
+    usuario = obtener_usuario_por_id(id)
+    if usuario:
+        real_password = hasheo(password)
+        if real_password == usuario.password:
+            if newpassword != None:
+                newpassword = hasheo(newpassword)
+                return editar_usuario(usuario,nombre,apellido,email,phone,newpassword, None)
+            else:
+                return editar_usuario(usuario,nombre,apellido,email,phone,newpassword, None)
+        else:
+            return False
+    else:
+        return False
+    

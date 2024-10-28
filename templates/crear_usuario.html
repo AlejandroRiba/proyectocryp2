@@ -72,7 +72,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="button-box">
                     <button type="submit">Sign up</button>
                 </div>
@@ -80,6 +79,16 @@
                     <a href="{{ url_for('login_route') }}">Already have an account? Sign in</a>
                 </div>
             </form>
+            <!-- Recuperar y mostrar el mensaje flash -->
+            {% set mensaje = get_flashed_messages(with_categories=true) %}
+            {% if mensaje %}
+                <p id="{{ mensaje[0][0] }}">{{ mensaje[0][1] }}</p>
+                <script>
+                   document.addEventListener('DOMContentLoaded', function() {
+                        bloquearFormulario(); // Llama a la función cuando se carga el DOM
+                    });
+                </script>
+            {% endif %}
         </div>
     </div>
 

@@ -1,12 +1,12 @@
 function validatePasswords() {
     // Obtén los valores de los dos campos de contraseña
-    const password = document.getElementById('newpassword').value;
-    const password2 = document.getElementById('newpassword2').value;
+    const password = document.getElementById('newpassword');
+    const password2 = document.getElementById('newpassword2');
     const message = document.getElementById('password-match-message');
 
     // Comprueba si las contraseñas coinciden y muestra u oculta el mensaje
     if (password && password2) {
-        if (password === password2) {
+        if (password.value === password2.value) {
             message.style.display = 'none';
             return true;
         } else {
@@ -15,7 +15,9 @@ function validatePasswords() {
             return false;
         }
     } else {
-        message.style.display = 'none';
+        if(message){
+            message.style.display = 'none';
+        }
         return true; //permite el envío si no hay contraseñas
     }
 }
@@ -55,20 +57,18 @@ function validarNumeros(input){
     input.value = input.value.replace(/\D/g, '');
 }
 
-function validateForm(event) {
+function validateForm() {
     // Realiza las validaciones de los campos
     const correo = document.getElementById('email');
     const phone = document.getElementById('number');
     if (!validatePasswords()) {
-        event.preventDefault(); // Evita el envío del formulario
         return false; // No permite el envío del formulario
     }else if(!validarTelefono(phone)){
-        event.preventDefault(); // Evita el envío del formulario
         return false;
     }else if(!validarCorreo(correo)){
-        event.preventDefault(); // Evita el envío del formulario
         return false;
     }
     activarIdinput('id') //si todo sale bien se activa el campo id 
     return true;
 }
+

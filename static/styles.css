@@ -136,7 +136,7 @@ input[type="tel"]{
     background: linear-gradient(to right, #ff4b2b, #ff416c);
 }
 
-#customButton {
+.customButton {
     font-family: 'Squada One';
     color: white;
     padding: 10px;
@@ -149,7 +149,23 @@ input[type="tel"]{
     font-size: 16px;
 }
 
-#customButton:hover {
+.customButtondisabled{
+    font-family: 'Squada One';
+    color: white;
+    padding: 10px;
+    background-color: transparent;
+    border: solid 1px white;
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    font-size: 16px;
+}
+.customButtondisabled:hover{
+    background-color: #252525;
+}
+
+.customButton:hover {
     background: linear-gradient(to right, #ff416c, #b12810);
 }
 
@@ -158,6 +174,7 @@ input[type="tel"]{
     font-size: 14px;
     display: block;
     margin-top: 10px;
+    width: 100%;
 }
 
 .links {

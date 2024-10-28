@@ -2,7 +2,7 @@ from flask import Flask, render_template, session, request, redirect, send_file,
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from models.Producto import modificar_salidas_producto, modificar_stock_variante, obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes, obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
-from models.Usuario import obtener_usuario_por_id
+from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin
 from models.Cliente import crear_cliente_con_tarjeta
 from models.Transaccion import crear_transaccion_con_detalles
 from models.Tarjeta import obtener_tarjeta_por_numero
@@ -53,35 +53,78 @@ def home():
 def login_route():
     if request.method == 'POST':
         data = request.form
-        access, cargo = mainfunc.auth(data['id'], data['password'])
-        if access:
-            session['username'] = data['id']
-            session['cargo'] = cargo
-            return redirect('/')  # Redirigir a la página principal después de iniciar sesión
+        if confirma_existencia_admin(): ##si el admin ya se registro
+            access, cargo = mainfunc.auth(data['id'], data['password'])
+            if access:
+                session['username'] = data['id']
+                session['cargo'] = cargo
+                return redirect('/')  # Redirigir a la página principal después de iniciar sesión
+            elif 'file' not in request.files:
+                flash("Try again. Admin already exists.", "error")
+                return redirect('/login_route')
+            else:
+                flash("Usuario o contraseña incorrectos.", "error")
+                return redirect('/login_route')
+        elif (data['id'] == 'admin' and data['password'] == 'admin'): ##el admin no se ha registrado
+            ### AVISOOOOOOOOOO 
+            ### AVISOOOOOOOOOO la validación del password = admin sería mejor cambiarla a una contraseña de un solo uso no tan obvia
+            session['temporal'] = 'admin'
+            return redirect('/datos_admin')
         else:
-            flash("Incorrect username or password", "error")
+            flash("El admin aún no se registra, intenta de nuevo más tarde.", "error")
             return redirect('/login_route')
     else:
         if 'username' in session: #si ya hay una sesión iniciada, entonces manda a al pantalla de inicio
             return redirect('/')
         else:
             return render_template('login.html')
-    
+        
+#Ruta para manejar el registro del admin
+@app.route('/datos_admin', methods=['GET','POST'])
+def datos_admin():
+    if request.method == 'POST':
+        data = request.form
+        if data['password'] != 'admin':
+            private_key_path = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
+            if private_key_path != None:
+                session['username'] = data['id']
+                session['private_key_path'] = private_key_path
+                session['cargo'] = 'admin'
+                session.pop('temporal', None)
+                return redirect(url_for('mostrar_descarga'))  # Redirigir a la página principal después de crear el usuario
+            else:
+                #no se pudo crear el usuario
+                return redirect('/')
+        else:
+            flash("La contraseña no puede ser admin.", "error")
+            return redirect('/datos_admin')
+    else:
+        if 'temporal' in session:
+            tmp = session['temporal']
+            return render_template('datos_admin.html', status=tmp)
+        else:
+            return redirect('/')
+ 
+        
 
 # Ruta para crear iniciar sesión (renderiza un formulario)
 @app.route('/new_user', methods=['GET', 'POST'])
 def new_user():
     if request.method == 'POST':
-        data = request.form
-        private_key_path = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
-        if private_key_path != None:
-            session['username'] = data['id']
-            session['cargo'] = 'employee'
-            session['private_key_path'] = private_key_path
-            return redirect(url_for('mostrar_descarga'))  # Redirigir a la página principal después de crear el usuario
+        if confirma_existencia_admin(): ##si el admin ya se registro
+            data = request.form
+            private_key_path = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
+            if private_key_path != None:
+                session['username'] = data['id']
+                session['cargo'] = 'employee'
+                session['private_key_path'] = private_key_path
+                return redirect(url_for('mostrar_descarga'))  # Redirigir a la página principal después de crear el usuario
+            else:
+                #no se pudo crear el usuario
+                return redirect('/')
         else:
-            #no se pudo crear el usuario
-            return redirect('/')
+            flash("El admin aún no se registra. Intenta de nuevo más tarde.", "error")
+            return redirect('/new_user')
     else:
         if 'username' in session: #si ya hay una sesión iniciada, entonces manda a al pantalla de inicio
             return redirect('/')
@@ -125,7 +168,8 @@ def consulta_empleado():
     else:
         if ('username' in session) and (session['cargo'] == 'admin'): #si ya hay una sesión iniciada y es el admin
             cargo = session['cargo']
-            return render_template('consulta_empleado.html', cargo=cargo)
+            username=session['username']
+            return render_template('consulta_empleado.html', status=username, cargo=cargo)
         else:
             return redirect('/')
         
@@ -144,19 +188,19 @@ def edit_user(id):
 def editar_empleado():
     if 'username' in session:
         id = request.form['id']
-        name = request.form['name']
-        lastname = request.form['lstname']
+        nombre = request.form['name']
+        apellido = request.form['lstname']
         number = request.form['number']
         email = request.form['email']
         password = request.form['password']
+        newpassword = None
         if 'newpassword' in request.form:
             newpassword = request.form['newpassword']
-            newpassword2 = request.form['newpassword2']
-            print(newpassword, newpassword2)
-            print('hola, detecto el cambio de contraseña')
-        print(id,name,lastname,number,email,password)
-        flash("Usuario o contraseña incorrectos", "error")
-        return redirect(f'/edit_user/{id}')
+        if mainfunc.autoriza_edit(id,password,nombre,apellido,email,number,newpassword):
+            return redirect('/')
+        else:
+            flash("Usuario o contraseña incorrectos", "error")
+            return redirect(f'/edit_user/{id}')
     return redirect('/')
 
 # Ruta para consultar informes
@@ -380,17 +424,6 @@ def consulta_venta():
         else:
             return redirect('/')
         
-# Ruta para manejar el inicio de sesión del admin
-@app.route('/datos_admin', methods=['GET', 'POST'])
-def datos_admin():
-    if request.method == 'POST':
-        #manejar la lógica
-        return redirect('/')
-    else:
-        if ('username' in session): #si ya hay una sesión iniciada
-            return redirect('/') 
-        else:
-            return render_template('datos_admin.html')
         
 # Ruta para generar un informe
 @app.route('/generar_informe', methods=['GET', 'POST'])

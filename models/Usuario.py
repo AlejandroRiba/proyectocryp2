@@ -16,9 +16,13 @@ class Usuario(db.Model):
 
 def crear_usuario(id, nombre, apellido, email, phone, password, key):
     try:
-        nuevo_usuario = Usuario(id=id, nombre=nombre, apellido=apellido, email=email, phone=phone, cargo='Employee', password=password, publickey=key)
-        db.session.add(nuevo_usuario)
-        db.session.commit()
+        if id == 'admin':
+            usuario = obtener_usuario_por_id(id)
+            editar_usuario(usuario, nombre, apellido, email, phone, password, key)
+        else:
+            nuevo_usuario = Usuario(id=id, nombre=nombre, apellido=apellido, email=email, phone=phone, cargo='Employee', password=password, publickey=key)
+            db.session.add(nuevo_usuario)
+            db.session.commit()
         return True
     except IntegrityError:
         db.session.rollback() #Deshace algún cambion no confirmado en la base de datos
@@ -34,3 +38,29 @@ def obtener_usuarios():
 
 def obtener_usuario_por_id(id):
     return Usuario.query.get(id)
+
+def editar_usuario(usuario, nombre, apellido, email, phone, password, key): #edita el usuario habiendo hecho la consulta antes
+    if usuario:
+        usuario.nombre = nombre
+        usuario.apellido = apellido
+        usuario.email = email
+        usuario.phone = phone
+        if password != None:
+            usuario.password = password
+        if key != None:
+            usuario.publickey = key
+        db.session.commit()
+        return True
+    else:
+        return False
+    
+def confirma_existencia_admin():
+    usuario = obtener_usuario_por_id('admin')
+    if usuario:
+        if usuario.password != 'admin':
+            return True 
+        else:
+            return False #si existe el usuario admin pero aún no ha iniciado sesión para cambiar de contraseña
+    else:
+        return False
+

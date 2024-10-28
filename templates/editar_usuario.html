@@ -60,13 +60,11 @@
                             <small id="password-match-message"></small>
                         </div>
                     </div>
-                    {% if status != 'admin' %}
                         <div class="checkbox-container">
                             <label for="editpassword">Edit password?</label>
                             <input id="editpassword" type="checkbox" onclick="edit_password()">
                             <div class="custom-checkbox" onclick="togglecheckBox('editpassword'), edit_password()"></div>
                         </div>
-                    {% endif %}
                 </div>
                 <!-- Recuperar y mostrar el mensaje flash -->
                 {% set mensaje = get_flashed_messages(with_categories=true) %}
