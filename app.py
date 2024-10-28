@@ -2,7 +2,7 @@ from flask import Flask, render_template, session, request, redirect, send_file,
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from models.Producto import modificar_salidas_producto, modificar_stock_variante, obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes, obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
-from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin
+from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin, obtener_empleados
 from models.Cliente import crear_cliente_con_tarjeta
 from models.Transaccion import crear_transaccion_con_detalles
 from models.Tarjeta import obtener_tarjeta_por_numero
@@ -167,10 +167,10 @@ def consulta_empleado():
         #manejar la lógica
         return redirect('/')
     else:
-        if ('username' in session) and (session['cargo'] == 'admin'): #si ya hay una sesión iniciada y es el admin
-            cargo = session['cargo']
+        if ('username' in session) and (session['username'] == 'admin'): #si ya hay una sesión iniciada y es el admin
+            empleados = obtener_empleados()
             username=session['username']
-            return render_template('consulta_empleado.html', status=username, cargo=cargo)
+            return render_template('consulta_empleado.html', status=username, empleados=empleados)
         else:
             return redirect('/')
         
@@ -180,8 +180,11 @@ def edit_user(id):
     if 'username' in session:
         usuario = obtener_usuario_por_id(id)
         username = session['username']
-        cargo = session['cargo']
-        return render_template('editar_usuario.html', usuario=usuario, status=username, cargo=cargo) #se mantienen los datos de status y cargo pq puede editar el dueño
+        if usuario.id == username:
+            solicitud = 'personal'
+        else:
+            solicitud = 'ext'
+        return render_template('editar_usuario.html', usuario=usuario, status=username, solicitud=solicitud) #se mantienen los datos de status y cargo pq puede editar el dueño
     return redirect('/consulta_productos')
 
 #Ruta para editar los datos de un empleado 
@@ -195,9 +198,10 @@ def editar_empleado():
         email = request.form['email']
         password = request.form['password']
         newpassword = None
+        userid = session['username']
         if 'newpassword' in request.form:
             newpassword = request.form['newpassword']
-        if mainfunc.autoriza_edit(id,password,nombre,apellido,email,number,newpassword):
+        if mainfunc.autoriza_edit(id,password,nombre,apellido,email,number,newpassword,userid):
             return redirect('/')
         else:
             flash("Usuario o contraseña incorrectos", "error")

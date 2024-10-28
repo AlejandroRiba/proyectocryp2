@@ -17,7 +17,7 @@
     <div class="login-container">
         <div class="login-box login-box3">
             <h1>Edit User</h1><br>
-            <form method="post" action="{{ url_for('editar_empleado') }}" onsubmit="validateForm(event)">
+            <form method="post" action="{{ url_for('editar_empleado') }}" onsubmit="return validateForm()">
                 <div id="columnas" class="container_cols">
                     <div class="columna">
                         <div class="input-box">
@@ -25,46 +25,48 @@
                             <label for="id">Employee ID</label>
                         </div>
                         <div class="input-box">
-                            <input type="text" name="name" value="{{usuario.nombre}}" oninput="validarLetras(this)">
+                            <input type="text" name="name" value="{{usuario.nombre}}" required oninput="validarLetras(this), this.setCustomValidity('')" title="Enter your name" oninvalid="this.setCustomValidity('Please enter your name')">
                             <label for="name">Name</label>
                         </div>
                         <div class="input-box">
-                            <input type="text" name="lstname" value="{{usuario.apellido}}" oninput="validarLetras(this)">
+                            <input type="text" name="lstname" value="{{usuario.apellido}}" required oninput="validarLetras(this), this.setCustomValidity('')" title="Enter your last name" oninvalid="this.setCustomValidity('Please enter your last name')">
                             <label for="lstname">Last name</label>
                         </div>
                     </div>
                     <div class="columna">
                         <div class="input-box">
-                            <input id="number" type="text" name="number" value="{{usuario.phone}}" maxlength="10" minlength="8" oninput="validarNumeros(this), validarTelefono(this)">
+                            <input id="number" type="text" name="number" value="{{usuario.phone}}" required maxlength="10" minlength="8" oninput="validarNumeros(this), validarTelefono(this)" title="Enter your phone number" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Please enter your phone number')">
                             <label for="number">Phone Number</label>
                             <small id="message1"></small>
                         </div>
                         <div class="input-box">
-                            <input type="text" id='email' name="email" value="{{usuario.email}}" oninput="validarCorreo(this)">
+                            <input type="text" id='email' name="email" value="{{usuario.email}}" required oninput="validarCorreo(this)" title="Enter your email" oninvalid="this.setCustomValidity('Please enter your email')">
                             <label for="email">Email</label>
                             <small id="message"></small>
                         </div>
                         <div class="input-box" id="div_password">
-                            <input id="password" type="password" name="password" onclick="ocultaError()" autocomplete="off">
+                            <input id="password" type="password" name="password" onclick="ocultaError()" require autocomplete="off" title="Enter your password" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Please enter your password')">
                             <label for="password">Confirm Changes (Password)</label>
                         </div>
                     </div>
                     <div class="columna" id="columna-edit" style="display: none;">
                         <div class="input-box">
-                            <input id="newpassword" type="password" name="newpassword" disabled required oninput="validatePasswords()" autocomplete="off">
+                            <input id="newpassword" type="password" name="newpassword" disabled required oninput="validatePasswords(), this.setCustomValidity('')" autocomplete="off" oninvalid="this.setCustomValidity('Please enter your new password')">
                             <label for="newpassword">New Password</label>
                         </div>
                         <div class="input-box">
-                            <input id="newpassword2" type="password" name="newpassword2" disabled required oninput="validatePasswords()" autocomplete="off">
-                            <label for="newpassword2">New Password</label>
+                            <input id="newpassword2" type="password" name="newpassword2" disabled required oninput="validatePasswords(), this.setCustomValidity('')" autocomplete="off" oninvalid="this.setCustomValidity('Please confirm your new password')">
+                            <label for="newpassword2">Confirm New Password</label>
                             <small id="password-match-message"></small>
                         </div>
                     </div>
-                        <div class="checkbox-container">
-                            <label for="editpassword">Edit password?</label>
-                            <input id="editpassword" type="checkbox" onclick="edit_password()">
-                            <div class="custom-checkbox" onclick="togglecheckBox('editpassword'), edit_password()"></div>
-                        </div>
+                        {% if solicitud == 'personal' %}
+                            <div class="checkbox-container">
+                                <label for="editpassword">Edit password?</label>
+                                <input id="editpassword" type="checkbox" onclick="edit_password()">
+                                <div class="custom-checkbox" onclick="togglecheckBox('editpassword'), edit_password()"></div>
+                            </div>
+                        {% endif %}
                 </div>
                 <!-- Recuperar y mostrar el mensaje flash -->
                 {% set mensaje = get_flashed_messages(with_categories=true) %}

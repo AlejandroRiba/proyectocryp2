@@ -1,4 +1,4 @@
-from models.Usuario import crear_usuario, obtener_usuario_por_id, editar_usuario
+from models.Usuario import crear_usuario, obtener_usuario_por_id, editar_usuario, obtener_password
 from pyFunctions.cryptoUtils import hasheo, generate_key_pair
 import os
 import tempfile
@@ -30,12 +30,17 @@ def auth(id, password):
     else:
         return False, None
     
-def autoriza_edit(id, password, nombre, apellido,email,phone,newpassword):
-    usuario = obtener_usuario_por_id(id)
+def autoriza_edit(id, password, nombre, apellido,email,phone,newpassword,userid):
+    if userid == 'admin':
+        autentica = obtener_password(userid) #si el cambio lo solicita el admin, se usa la contraseña del admin
+        usuario = obtener_usuario_por_id(id)
+    else:
+        usuario = obtener_usuario_por_id(id) #sino se declara como autentica (valor para verificar) la del usuario que lo solicita
+        autentica = usuario.password
     if usuario:
-        real_password = hasheo(password)
-        if real_password == usuario.password:
-            if newpassword != None:
+        real_password = hasheo(password) #la contraseña esta hasheada en la db, por lo que se aplica a la contraseña recibida del form
+        if real_password == autentica: #si la confirmación es correcta
+            if newpassword != None: #si se detecta un cambio de contraseña
                 newpassword = hasheo(newpassword)
                 return editar_usuario(usuario,nombre,apellido,email,phone,newpassword, None)
             else:

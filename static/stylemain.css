@@ -143,8 +143,8 @@ footer {
 .menuContent {
     display: none;
     position: absolute;
-    width: 80vw; /* Ocupa todo el ancho de la pantalla */
-    height: calc(90vh - 50px);
+    width: 50vw; /* Ocupa todo el ancho de la pantalla */
+    height: 90vh;
     top: 100%; /* Coloca el contenido debajo del menú */
     background-color: white;
     z-index: 3; /* Asegura que el menú esté sobre otros elementos */

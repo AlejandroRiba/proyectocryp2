@@ -13,7 +13,31 @@
     {% include "shared/navbar.html" %}
     <!-- Footer -->
      <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-      <h1>CONSULTA EMPLEADOS</h1>
+    <h1>CONSULTA EMPLEADOS</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Cargo</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for empleado in empleados %}
+                <tr>
+                    <td>{{ empleado.id }}</td>
+                    <td>{{ empleado.nombre }}</td>
+                    <td>{{empleado.apellido }}</td>
+                    <td>{{ empleado.cargo }}</td>
+                    <td><a href="{{ url_for('edit_user', id=empleado.id)}}"><img src="static/images/edit.svg" style="height: 30px;"></a></td>
+                    <td><a href="#"><img src="static/images/delete.svg" style="height: 30px;"></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
      <!-- TERMINA CONTENIDO DE PÁGINA -->
     <!-- Footer -->
     {% include "shared/footer.html" %}

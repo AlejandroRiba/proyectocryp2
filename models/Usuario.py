@@ -33,8 +33,12 @@ def crear_usuario(id, nombre, apellido, email, phone, password, key):
         print(f'Error {e}')
         return False
 
-def obtener_usuarios():
-    return Usuario.query.all()
+def obtener_empleados():
+    return Usuario.query.filter_by(cargo='Employee').all()
+
+def obtener_password(id):
+    usuario = obtener_usuario_por_id(id)
+    return usuario.password
 
 def obtener_usuario_por_id(id):
     return Usuario.query.get(id)

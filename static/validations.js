@@ -25,26 +25,35 @@ function validatePasswords() {
 function validarCorreo(input) {
     var valCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     const error = document.getElementById('message');
-    if (!valCorreo.test(input.value)) {
-        error.textContent = 'Invalid Email.';
-        error.style.display = 'block';
-        return false;
-    } else {
-        error.style.display = 'none';
-        return true;
+    input.setCustomValidity('')
+    error.style.display = 'none';
+    if (input.value != ''){
+        if (!valCorreo.test(input.value)) {
+            error.textContent = 'Invalid Email.';
+            error.style.display = 'block';
+            return false;
+        } else {
+            error.style.display = 'none';
+            return true;
+        }
     }
+    
 }
 
 function validarTelefono(input) {
     const regex = /^\d{8,10}$/; // Solo permite 10 dígitos numéricos
     const error = document.getElementById('message1');
-    if (!regex.test(input.value)) {
-        error.textContent = 'Invalid Phone.';
-        error.style.display = 'block';
-        return false;
-    } else {
-        error.style.display = 'none';
-        return true;
+    input.setCustomValidity('');
+    error.style.display = 'none';
+    if (input.value != ''){
+        if (!regex.test(input.value)) {
+            error.textContent = 'Invalid Phone.';
+            error.style.display = 'block';
+            return false;
+        } else {
+            error.style.display = 'none';
+            return true;
+        }
     }
 }
 
