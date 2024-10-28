@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="static/images/logosmall.ico">
+    <link rel="icon" href="{{ url_for('static', filename='images/logosmall.ico') }}">
     <title>R&R EDIT USER</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
@@ -15,53 +15,66 @@
     <!-- NAVBAR -->
 
     <div class="login-container">
-        <div class="login-box login-box2">
-            <h1>Sign up</h1><br>
-            <form method="post" action="{{ url_for('editar_empleado') }}">
-                <div class="container_cols">
+        <div class="login-box login-box3">
+            <h1>Edit User</h1><br>
+            <form method="post" action="{{ url_for('editar_empleado') }}" onsubmit="validateForm(event)">
+                <div id="columnas" class="container_cols">
                     <div class="columna">
                         <div class="input-box">
-                            <input type="text" name="name" value="{{usuario.nombre}}">
-                            <label for="name">Name</label>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" name="lstname" value="{{usuario.apellido}}">
-                            <label for="lstname">Last name</label>
-                        </div>
-                        <div class="input-box">
-                            <input type="text" name="email" value="{{usuario.email}}">
-                            <label for="email">Email</label>
-                        </div>
-                    </div>
-                    <div class="columna">
-                        <div class="input-box">
-                            <input type="tel" name="number" value="{{usuario.phone}}">
-                            <label for="number">Phone Number</label>
-                        </div>
-                        <div class="input-box">
-                            {% if cargo == 'admin' %}
-                                <input type="text" name="id" value="{{usuario.id}}">
-                            {% else %}
-                                <input type="text" name="id" value="{{usuario.id}}" disabled>
-                            {% endif %}
+                            <input id="id" type="text" name="id" value="{{usuario.id}}" disabled>
                             <label for="id">Employee ID</label>
                         </div>
                         <div class="input-box">
-                            <input type="password" name="lasrpassword">
-                            <label for="lastpassword">Last Password</label>
+                            <input type="text" name="name" value="{{usuario.nombre}}" oninput="validarLetras(this)">
+                            <label for="name">Name</label>
                         </div>
                         <div class="input-box">
-                            <input type="password" name="password">
-                            <label for="password">New Password</label>
+                            <input type="text" name="lstname" value="{{usuario.apellido}}" oninput="validarLetras(this)">
+                            <label for="lstname">Last name</label>
                         </div>
                     </div>
+                    <div class="columna">
+                        <div class="input-box">
+                            <input id="number" type="text" name="number" value="{{usuario.phone}}" maxlength="10" minlength="8" oninput="validarNumeros(this), validarTelefono(this)">
+                            <label for="number">Phone Number</label>
+                            <small id="message1"></small>
+                        </div>
+                        <div class="input-box">
+                            <input type="text" id='email' name="email" value="{{usuario.email}}" oninput="validarCorreo(this)">
+                            <label for="email">Email</label>
+                            <small id="message"></small>
+                        </div>
+                        <div class="input-box" id="div_password">
+                            <input id="password" type="password" name="password" onclick="ocultaError()" autocomplete="off">
+                            <label for="password">Confirm Changes (Password)</label>
+                        </div>
+                    </div>
+                    <div class="columna" id="columna-edit" style="display: none;">
+                        <div class="input-box">
+                            <input id="newpassword" type="password" name="newpassword" disabled required oninput="validatePasswords()" autocomplete="off">
+                            <label for="newpassword">New Password</label>
+                        </div>
+                        <div class="input-box">
+                            <input id="newpassword2" type="password" name="newpassword2" disabled required oninput="validatePasswords()" autocomplete="off">
+                            <label for="newpassword2">New Password</label>
+                            <small id="password-match-message"></small>
+                        </div>
+                    </div>
+                    {% if status != 'admin' %}
+                        <div class="checkbox-container">
+                            <label for="editpassword">Edit password?</label>
+                            <input id="editpassword" type="checkbox" onclick="edit_password()">
+                            <div class="custom-checkbox" onclick="togglecheckBox('editpassword'), edit_password()"></div>
+                        </div>
+                    {% endif %}
                 </div>
-                
+                <!-- Recuperar y mostrar el mensaje flash -->
+                {% set mensaje = get_flashed_messages(with_categories=true) %}
+                {% if mensaje %}
+                    <p id="{{ mensaje[0][0] }}">{{ mensaje[0][1] }}</p>
+                {% endif %}
                 <div class="button-box">
-                    <button type="submit">Sign up</button>
-                </div>
-                <div class="links">
-                    <a href="{{ url_for('login_route') }}">Already have an account? Sign in</a>
+                    <button type="submit">Upload Changes</button>
                 </div>
             </form>
         </div>
@@ -70,7 +83,8 @@
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
-    <script src="static/app.js" ></script>
+    <script src="{{ url_for('static', filename='app.js') }}" ></script>
+    <script src="{{ url_for('static', filename='validations.js') }}" ></script>
 </body>
 </html>
 

@@ -26,17 +26,25 @@
             <span>&nbsp;</span>
         </div>
     </div>
-
+    <script>
+        window.onbeforeunload = function() {
+            // Limpiar los campos del formulario
+            const form = document.getElementById('form-login');
+            if (form) {
+                form.reset(); // Restablece todos los campos del formulario
+            }
+        };
+    </script>
     <div class="login-container">
         <div class="login-box">
             <h1>Sign in to R&R</h1>
-            <form method="post" action="{{ url_for('login_route') }}">
+            <form id="form-login" method="post" action="{{ url_for('login_route') }}">
                 <div class="input-box">
-                    <input type="text" name="id" required>
+                    <input type="text" name="id" required onclick="ocultaError()">
                     <label>Employee ID</label>
                 </div>
                 <div class="input-box">
-                    <input type="password" name="password" required>
+                    <input type="password" name="password" required onclick="ocultaError()">
                     <label>Password</label>
                 </div>
 
@@ -45,7 +53,11 @@
                     <button type="button" id="customButton">Select Key File</button>
                     <span id="customText">No file selected</span>
                 </div>
-
+                <!-- Recuperar y mostrar el mensaje flash -->
+                {% set mensaje = get_flashed_messages(with_categories=true) %}
+                {% if mensaje %}
+                    <p id="{{ mensaje[0][0] }}">{{ mensaje[0][1] }}</p>
+                {% endif %}
                 <div class="button-box">
                     <button type="submit">Sign in</button>
                 </div>
@@ -60,7 +72,10 @@
      {% include "shared/footer.html" %}
     <!-- Footer -->
     
-    <script src="static/archivo_login.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}" ></script>
+    <script src="{{ url_for('static', filename='validations.js') }}" ></script>
+    <script src="{{ url_for('static', filename='app.js') }}" ></script>
+    <script src="{{ url_for('static', filename='archivo_login.js') }}" ></script>
 </body>
 </html>
 

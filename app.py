@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response
+from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response, flash
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from models.Producto import obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes
@@ -57,7 +57,10 @@ def login_route():
         if access:
             session['username'] = data['id']
             session['cargo'] = cargo
-        return redirect('/')  # Redirigir a la página principal después de crear el usuario
+            return redirect('/')  # Redirigir a la página principal después de iniciar sesión
+        else:
+            flash("Incorrect username or password", "error")
+            return redirect('/login_route')
     else:
         if 'username' in session: #si ya hay una sesión iniciada, entonces manda a al pantalla de inicio
             return redirect('/')
@@ -140,8 +143,20 @@ def edit_user(id):
 @app.route('/editar_empleado', methods=['POST'])
 def editar_empleado():
     if 'username' in session:
-        #llamar a la funcion
-        print('hola')
+        id = request.form['id']
+        name = request.form['name']
+        lastname = request.form['lstname']
+        number = request.form['number']
+        email = request.form['email']
+        password = request.form['password']
+        if 'newpassword' in request.form:
+            newpassword = request.form['newpassword']
+            newpassword2 = request.form['newpassword2']
+            print(newpassword, newpassword2)
+            print('hola, detecto el cambio de contraseña')
+        print(id,name,lastname,number,email,password)
+        flash("Usuario o contraseña incorrectos", "error")
+        return redirect(f'/edit_user/{id}')
     return redirect('/')
 
 # Ruta para consultar informes

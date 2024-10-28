@@ -21,8 +21,11 @@ def store_privkey(username, priv_key):
 
 def auth(id, password):
     usuario = obtener_usuario_por_id(id)
-    real_password = hasheo(password)
-    if real_password == usuario.password:
-        return True, usuario.cargo
+    if usuario:
+        real_password = hasheo(password)
+        if real_password == usuario.password:
+            return True, usuario.cargo
+        else:
+            return False, None
     else:
-        return False
+        return False, None
