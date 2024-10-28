@@ -6,6 +6,7 @@ from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin
 from models.Cliente import crear_cliente_con_tarjeta
 from models.Transaccion import crear_transaccion_con_detalles
 from models.Tarjeta import obtener_tarjeta_por_numero
+from pyFunctions.reportes import generar_informe_ventas_mensual
 from datetime import datetime
 import pyFunctions.mainfunc as mainfunc
 import os
@@ -375,7 +376,6 @@ def procesar_venta():
         data = request.form
 
         productos = json.loads(data.get('seleccionados'))
-        print(productos)
         nombre = data['nombre']
         apellido = data['apellido']
         numero = data['numero']
@@ -429,7 +429,9 @@ def consulta_venta():
 @app.route('/generar_informe', methods=['GET', 'POST'])
 def generar_informe():
     if request.method == 'POST':
-        #manejar la lógica
+        year = int(request.form['year'])
+        month = int(request.form['month'])
+        generar_informe_ventas_mensual(session['username'], year, month)
         return redirect('/')
     else:
         if ('username' in session): #si ya hay una sesión iniciada

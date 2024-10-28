@@ -10,15 +10,44 @@
 <body>
 
     <!-- Navbar -->
-     {% include "shared/navbar.html" %}
+    {% include "shared/navbar.html" %}
     <!-- Navbar -->
 
-     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-      <h1>GENERAR INFORME</h1>
-     <!-- TERMINA CONTENIDO DE PÁGINA -->
-      
+    <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+    <h1>GENERAR INFORME</h1>
+    
+    <!-- Formulario para seleccionar el mes y el año -->
+    <form action="{{ url_for('generar_informe') }}" method="POST">
+        <label for="year">Seleccione el Año:</label>
+        <select id="year" name="year" required>
+            {% for y in range(2020, 2025) %}
+            <option value="{{ y }}">{{ y }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="month">Seleccione el Mes:</label>
+        <select id="month" name="month" required>
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+        </select>
+
+        <button type="submit">Generar Reporte</button>
+    </form>
+    <!-- TERMINA CONTENIDO DE PÁGINA -->
+
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
+
 </body>
 </html>
