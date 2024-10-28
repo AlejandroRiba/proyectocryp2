@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response, flash
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
-from models.Producto import obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes
+from models.Producto import modificar_salidas_producto, modificar_stock_variante, obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes, obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
 from models.Usuario import obtener_usuario_por_id
 from models.Cliente import crear_cliente_con_tarjeta
 from models.Transaccion import crear_transaccion_con_detalles
@@ -331,6 +331,7 @@ def procesar_venta():
         data = request.form
 
         productos = json.loads(data.get('seleccionados'))
+        print(productos)
         nombre = data['nombre']
         apellido = data['apellido']
         numero = data['numero']
@@ -339,11 +340,23 @@ def procesar_venta():
         monto = 0
         
         tarjeta = obtener_tarjeta_por_numero(card)
-        print(tarjeta.id)
 
         for producto in productos:
             item = obtener_producto_por_id(producto["id"])
             monto += item.precio * int(producto['cantidad'])
+
+            # Disminuir stock de la variante seleccionada según la cantidad vendida
+            try:
+                variante = obtener_variante_por_id_y_talla(producto["id"], producto['talla'])
+                stock = obtener_stock_variante(variante.id)
+                modificar_stock_variante(variante.id, stock - producto['cantidad'])
+            except Exception as e:
+                variante = obtener_variantes_por_producto_id(producto["id"])
+                stock = obtener_stock_variante(variante.id)
+                modificar_stock_variante(variante.id, stock - producto['cantidad'])
+            
+            salidas = obtener_salidas_producto(producto["id"])
+            modificar_salidas_producto(producto["id"], salidas + producto['cantidad'])
 
         crear_cliente_con_tarjeta(nombre=nombre, apellido=apellido, telefono=numero, numero_tarjeta=card)
         crear_transaccion_con_detalles(empleado_id=username, fecha=datetime.now(), monto=monto, productos=productos, tarjeta_id=tarjeta.id)

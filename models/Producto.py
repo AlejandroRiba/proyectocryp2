@@ -100,3 +100,54 @@ def obtener_productos():
 
 def obtener_producto_por_id(id):
     return Producto.query.get(id)
+
+# Consultar stock de una variante específica
+def obtener_stock_variante(variante_id):
+    variante = ProductoVariante.query.get(variante_id)
+    if variante:
+        return variante.stock
+    else:
+        return None  # Variante no encontrada
+
+# Modificar stock de una variante específica
+def modificar_stock_variante(variante_id, nuevo_stock):
+    variante = ProductoVariante.query.get(variante_id)
+    if variante:
+        variante.stock = nuevo_stock
+        db.session.commit()
+        return variante
+    else:
+        return None  # Variante no encontrada
+
+# Consultar salidas de un producto específico
+def obtener_salidas_producto(producto_id):
+    producto = Producto.query.get(producto_id)
+    if producto:
+        return producto.salidas
+    else:
+        return None  # Producto no encontrado
+
+# Modificar salidas de un producto específico
+def modificar_salidas_producto(producto_id, nuevas_salidas):
+    producto = Producto.query.get(producto_id)
+    if producto:
+        producto.salidas = nuevas_salidas
+        db.session.commit()
+        return producto
+    else:
+        return None  # Producto no encontrado
+
+# Consultar variante por producto_id y talla
+def obtener_variante_por_id_y_talla(producto_id, talla):
+    variante = ProductoVariante.query.filter_by(producto_id=producto_id, talla=talla).first()
+    return variante if variante else None  # Devuelve la variante si existe, o None si no se encuentra
+
+# Consultar todas las variantes por producto_id
+def obtener_variantes_por_producto_id(producto_id):
+    variantes = ProductoVariante.query.filter_by(producto_id=producto_id).all()
+    if len(variantes) == 0:
+        return []
+    elif len(variantes) == 1:
+        return variantes[0]
+    else:
+        return variantes 
