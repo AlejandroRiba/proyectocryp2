@@ -375,6 +375,8 @@ def procesar_venta():
         username = session['username']
         monto = 0
         
+        crear_cliente_con_tarjeta(nombre=nombre, apellido=apellido, telefono=numero, numero_tarjeta=card)
+
         tarjeta = obtener_tarjeta_por_numero(card)
         cliente = obtener_cliente_por_tel(numero) #asumiendo que el número de teléfono es único
         for producto in productos:
@@ -393,7 +395,6 @@ def procesar_venta():
             
             salidas = obtener_salidas_producto(producto["id"])
             modificar_salidas_producto(producto["id"], salidas + producto['cantidad'])
-        crear_cliente_con_tarjeta(nombre=nombre, apellido=apellido, telefono=numero, numero_tarjeta=card)
         crear_transaccion_con_detalles(empleado_id=username, fecha=datetime.now(), monto=monto, productos=productos, tarjeta_id=tarjeta.id, cliente_id=cliente.id)
 
         return redirect('/')
