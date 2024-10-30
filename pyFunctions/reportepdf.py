@@ -49,7 +49,7 @@ def procesar_información(empleado_id, year, month):
         empleado = Usuario.query.filter_by(id=empleado_id).first()
         if not empleado:
             print("Empleado no encontrado")
-            return None
+            return None, "Error finding the user"
 
         # Filtrar transacciones del empleado para el mes y año dados
         transacciones = Transaccion.query.filter(
@@ -60,7 +60,7 @@ def procesar_información(empleado_id, year, month):
 
         if not transacciones:
             print("No hay transacciones para este periodo.")
-            return None
+            return None, "No transactions for this period."
 
         # Crear lista para almacenar detalles del reporte
         monto_total = 0
@@ -86,10 +86,11 @@ def procesar_información(empleado_id, year, month):
                 detalles.append(
                     [producto.id, Image(imagen, width=1.5*cm, height=1.5*cm), Paragraph(producto.nombre), detalle.talla, detalle.cantidad, f'${producto.precio}', f'${monto}']
                 )
-                monto_total += transaccion.monto
+
+            monto_total += transaccion.monto
             venta = {
                 'Fecha de Venta': str(transaccion.fecha),
-                'data_cliente': [['Client', cliente.nombre + cliente.apellido]],
+                'data_cliente': [['Client', f'{cliente.nombre} {cliente.apellido}']],
                 'data' : detalles,
                 'data_price': [['Total', f'${transaccion.monto}']],
             }
@@ -98,11 +99,10 @@ def procesar_información(empleado_id, year, month):
             
         # Actualiza el monto total en el encabezado después del bucle
         ventas['headers']['total'] = f'${monto_total}'
-        return ventas
+        return ventas, None
 
     except Exception as e:
-        print(f"Error al generar el informe: {e}")
-        return None
+        return None, "Error generating the report."
     
 
 def generar_pdf_ventas(report_data, pdf_filename):
@@ -171,7 +171,7 @@ def generar_pdf_ventas(report_data, pdf_filename):
     Paragraph(f"<font color='#d05704'><b>Employee:</b></font> {report_data['headers']['empleado']}", styles['BodyText']),
     Paragraph(f"<font color='#d05704'><b>Report Generation Date:</b></font> {report_data['headers']['fechareporte']}", styles['BodyText']),
     Paragraph(f"<font color='#d05704'><b>Month:</b></font> {report_data['headers']['mes']}", styles['BodyText']),
-    Paragraph(f"<font color='#d05704'><b>Total for the Month:</b></font> {report_data['headers']['total']}", styles['BodyText']),
+    Paragraph(f"<font color='#d05704'><b>Total for the Month:</b></font> <b><font color='#0c0553'>{report_data['headers']['total']}</font></b>", styles['BodyText']),
     ]
 
     for item in encabezados:
@@ -206,7 +206,10 @@ def generar_pdf_ventas(report_data, pdf_filename):
 
 
 def generar_informe_ventas_mensual(empleado_id, year, month):
-    ventas = procesar_información(empleado_id, year, month)
+    ventas, flash_message = procesar_información(empleado_id, year, month)
     if ventas != None:
         pdf_filename = f"monthlyreport_{empleado_id}_{year}-{month}.pdf"
         generar_pdf_ventas(ventas, pdf_filename)
+        return True, None
+    else: 
+        return False, flash_message

@@ -43,11 +43,9 @@ def home():
     # Verificar si el usuario está logueado
     if 'username' in session:
         username = session['username']
-        cargo = session['cargo']
     else:
         username = None
-        cargo = None
-    return render_template("index.html", status=username, cargo=cargo)
+    return render_template("index.html", status=username)
 
 # Ruta para crear iniciar sesión (renderiza un formulario)
 @app.route('/login_route', methods=['GET', 'POST'])
@@ -55,10 +53,9 @@ def login_route():
     if request.method == 'POST':
         data = request.form
         if confirma_existencia_admin(): ##si el admin ya se registro
-            access, cargo = mainfunc.auth(data['id'], data['password'])
+            access = mainfunc.auth(data['id'], data['password'])
             if access:
                 session['username'] = data['id']
-                session['cargo'] = cargo
                 return redirect('/')  # Redirigir a la página principal después de iniciar sesión
             elif 'file' not in request.files:
                 flash("Try again. Admin already exists.", "error")
@@ -90,7 +87,6 @@ def datos_admin():
             if private_key_path != None:
                 session['username'] = data['id']
                 session['private_key_path'] = private_key_path
-                session['cargo'] = 'admin'
                 session.pop('temporal', None)
                 return redirect(url_for('mostrar_descarga'))  # Redirigir a la página principal después de crear el usuario
             else:
@@ -117,7 +113,6 @@ def new_user():
             private_key_path = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
             if private_key_path != None:
                 session['username'] = data['id']
-                session['cargo'] = 'employee'
                 session['private_key_path'] = private_key_path
                 return redirect(url_for('mostrar_descarga'))  # Redirigir a la página principal después de crear el usuario
             else:
@@ -217,8 +212,7 @@ def consulta_informes():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
-            return render_template('consulta_informes.html', status=username, cargo=cargo)
+            return render_template('consulta_informes.html', status=username)
         else:
             return redirect('/')
         
@@ -231,9 +225,8 @@ def consulta_productos():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
             productos = obtener_productos()
-            return render_template('consulta_productos.html', status=username, cargo=cargo, productos=productos)
+            return render_template('consulta_productos.html', status=username, productos=productos)
         else:
             return redirect('/login_route')
         
@@ -261,8 +254,7 @@ def crear_producto():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
-            return render_template('crear_producto.html', status=username, cargo=cargo)
+            return render_template('crear_producto.html', status=username)
         else:
             return redirect('/login_route')
         
@@ -272,8 +264,7 @@ def editar_producto(id):
     if 'username' in session:
         producto = obtener_producto_por_id(id)
         username = session['username']
-        cargo = session['cargo']
-        return render_template('editar_producto.html', producto=producto, status=username, cargo=cargo)
+        return render_template('editar_producto.html', producto=producto, status=username)
     return redirect('/consulta_productos')
 
 #Ruta para editar un producto 
@@ -340,8 +331,7 @@ def registra_cliente():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
-            return render_template('registra_cliente.html', status=username, cargo=cargo)
+            return render_template('registra_cliente.html', status=username)
         else:
             return redirect('/')
         
@@ -354,8 +344,7 @@ def consulta_clientes():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
-            return render_template('consulta_clientes.html', status=username, cargo=cargo)
+            return render_template('consulta_clientes.html', status=username)
         else:
             return redirect('/')
         
@@ -368,9 +357,8 @@ def registra_venta():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
             productos = obtener_productos()
-            return render_template('registra_venta.html', status=username, cargo=cargo, productos=productos)
+            return render_template('registra_venta.html', status=username, productos=productos)
         else:
             return redirect('/')
         
@@ -422,8 +410,7 @@ def consulta_venta():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
-            return render_template('consulta_venta.html', status=username, cargo=cargo)
+            return render_template('consulta_venta.html', status=username)
         else:
             return redirect('/')
         
@@ -432,15 +419,23 @@ def consulta_venta():
 @app.route('/generar_informe', methods=['GET', 'POST'])
 def generar_informe():
     if request.method == 'POST' and ('username' in session):
-        year = int(request.form['year'])
-        month = int(request.form['month'])
-        generar_informe_ventas_mensual(session['username'], year, month)
-        return redirect('/')
+        access = mainfunc.auth(session['username'], request.form['password'])
+        if access:
+            year = int(request.form['year'])
+            month = int(request.form['month'])
+            report, flash_message = generar_informe_ventas_mensual(session['username'], year, month)
+            if report:
+                return redirect('/consulta_informes')
+            else:
+                flash(flash_message, "error")
+                return redirect('/generar_informe')
+        else:
+            flash("Incorrect password. Try again.", "error")
+            return redirect('/generar_informe')
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
-            return render_template('generar_informe.html', status=username, cargo=cargo)
+            return render_template('generar_informe.html', status=username)
         else:
             return redirect('/')
         
@@ -453,8 +448,7 @@ def clients():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
-            return render_template('opciones_clientes.html', status=username, cargo=cargo)
+            return render_template('opciones_clientes.html', status=username)
         else:
             return redirect('/login_route')
         
@@ -467,15 +461,13 @@ def sales():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            cargo = session['cargo']
-            return render_template('opciones_ventas.html', status=username, cargo=cargo)
+            return render_template('opciones_ventas.html', status=username)
         else:
             return redirect('/login_route')
 
 @app.route('/logout')
 def logout():
     session.pop('username', None)
-    session.pop('cargo', None)
     return redirect('/')
 
 if __name__ == "__main__":

@@ -24,11 +24,11 @@ def auth(id, password):
     if usuario:
         real_password = hasheo(password)
         if real_password == usuario.password:
-            return True, usuario.cargo
+            return True
         else:
-            return False, None
+            return False
     else:
-        return False, None
+        return False
     
 def autoriza_edit(id, password, nombre, apellido,email,phone,newpassword,userid):
     if userid == 'admin':

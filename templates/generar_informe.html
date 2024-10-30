@@ -39,8 +39,15 @@
             <option value="10">Octubre</option>
             <option value="11">Noviembre</option>
             <option value="12">Diciembre</option>
-        </select>
+        </select><br><br>
 
+        <input type="password" name="password" required onclick="ocultaError()" title="Enter your password" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Please enter your password')">
+        <label>Password</label><br><br>
+        <!-- Recuperar y mostrar el mensaje flash -->
+        {% set mensaje = get_flashed_messages(with_categories=true) %}
+        {% if mensaje %}
+            <p id="{{ mensaje[0][0] }}">{{ mensaje[0][1] }}</p>
+        {% endif %}
         <button type="submit">Generar Reporte</button>
     </form>
     <!-- TERMINA CONTENIDO DE PÁGINA -->
