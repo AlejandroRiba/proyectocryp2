@@ -51,13 +51,13 @@
                         <td>{{ producto.categoria }}</td>
                         <td>
                             {% if producto.variantes and producto.variantes|length > 1 %}
-                                <select id="talla_{{producto.id}}" name="talla_{{producto.id}}">
+                                <select id="sel_talla_{{producto.id}}" name="talla_{{producto.id}}">
                                     {% for variante in producto.variantes %}
                                         <option value="{{ variante.talla }}" data-stock="{{ variante.stock }}">{{ variante.talla }}</option>
                                     {% endfor %}
                                 </select>
                             {% else %}
-                                <span id="talla_{{producto.id}}" data-stock="{{ producto.variantes[0].stock if producto.variantes else 0 }}">{{ producto.variantes[0].talla }}</span>
+                                <span id="span_talla_{{producto.id}}" data-stock="{{ producto.variantes[0].stock if producto.variantes else 0 }}">{{ producto.variantes[0].talla }}</span>
                             {% endif %}
                         </td>
                         <td>{{ producto.color }}</td>
@@ -94,11 +94,12 @@
 
                     // Obtener la talla según el número de variantes
                     let talla;
-                    const tallaSelect = document.getElementById(`talla_${productoId}`);
+                    let tallaSelect = document.getElementById(`sel_talla_${productoId}`);
                     if (tallaSelect) {  // Si existe el select (múltiples variantes)
                         talla = tallaSelect.value;
                     } else {  // Si no, obtener el texto de la talla fija
-                        talla = document.getElementById(`talla_${productoId}`).innerText;
+                        tallaSelect = document.getElementById(`span_talla_${productoId}`);
+                        talla = tallaSelect.textContent;
                     }
 
                     // Validar que la cantidad sea mayor a 0

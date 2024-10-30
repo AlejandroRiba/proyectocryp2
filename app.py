@@ -3,13 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from models.Producto import modificar_salidas_producto, modificar_stock_variante, obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes, obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
 from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin, obtener_empleados
-from models.Cliente import crear_cliente_con_tarjeta
+from models.Cliente import crear_cliente_con_tarjeta, obtener_cliente_por_tel
 from models.Transaccion import crear_transaccion_con_detalles
 from models.Tarjeta import obtener_tarjeta_por_numero
 from pyFunctions.reportes import generar_informe_ventas_mensual
 from datetime import datetime
 import pyFunctions.mainfunc as mainfunc
 import os
+from pyFunctions.reportepdf import generar_informe_ventas_mensual
 import secrets
 import tempfile
 import json
@@ -240,7 +241,7 @@ def consulta_productos():
 # Ruta para crear producto
 @app.route('/crear_producto', methods=['GET', 'POST'])
 def crear_producto():
-    if request.method == 'POST':
+    if request.method == 'POST' and ('username' in session):
         id = request.form['id_product']
         nombre = request.form['nombre']
         color = request.form['color']
@@ -329,7 +330,7 @@ def eliminar_producto(id):
 # Ruta para crear/registrar un cliente
 @app.route('/registra_cliente', methods=['GET', 'POST'])
 def registra_cliente():
-    if request.method == 'POST':
+    if request.method == 'POST' and ('username' in session):
         data = request.form
         status, detalle = crear_cliente_con_tarjeta(data['nombre'], data['apellido'], data['numero'], data['card'])
         if status:
@@ -348,7 +349,7 @@ def registra_cliente():
 # Ruta para consultar clientes
 @app.route('/consulta_clientes', methods=['GET', 'POST'])
 def consulta_clientes():
-    if request.method == 'POST':
+    if request.method == 'POST' and ('username' in session):
         #manejar la lógica
         return redirect('/')
     else:
@@ -362,7 +363,7 @@ def consulta_clientes():
 # Ruta para crear/registrar un ventas
 @app.route('/registra_venta', methods=['GET', 'POST'])
 def registra_venta():
-    if request.method == 'POST':
+    if request.method == 'POST' and ('username' in session):
         #manejar la lógica
         return redirect('/')
     else:
@@ -376,7 +377,7 @@ def registra_venta():
         
 @app.route('/procesar_venta', methods=['GET', 'POST'])
 def procesar_venta():
-    if request.method == 'POST':
+    if request.method == 'POST' and ('username' in session):
         data = request.form
 
         productos = json.loads(data.get('seleccionados'))
@@ -388,7 +389,7 @@ def procesar_venta():
         monto = 0
         
         tarjeta = obtener_tarjeta_por_numero(card)
-
+        cliente = obtener_cliente_por_tel(numero) #asumiendo que el número de teléfono es único
         for producto in productos:
             item = obtener_producto_por_id(producto["id"])
             monto += item.precio * int(producto['cantidad'])
@@ -405,9 +406,8 @@ def procesar_venta():
             
             salidas = obtener_salidas_producto(producto["id"])
             modificar_salidas_producto(producto["id"], salidas + producto['cantidad'])
-
         crear_cliente_con_tarjeta(nombre=nombre, apellido=apellido, telefono=numero, numero_tarjeta=card)
-        crear_transaccion_con_detalles(empleado_id=username, fecha=datetime.now(), monto=monto, productos=productos, tarjeta_id=tarjeta.id)
+        crear_transaccion_con_detalles(empleado_id=username, fecha=datetime.now(), monto=monto, productos=productos, tarjeta_id=tarjeta.id, cliente_id=cliente.id)
 
         return redirect('/')
     else:
@@ -417,7 +417,7 @@ def procesar_venta():
 # Ruta para consultar ventas
 @app.route('/consulta_venta', methods=['GET', 'POST'])
 def consulta_venta():
-    if request.method == 'POST':
+    if request.method == 'POST' and ('username' in session):
         #manejar la lógica
         return redirect('/')
     else:
@@ -432,7 +432,7 @@ def consulta_venta():
 # Ruta para generar un informe
 @app.route('/generar_informe', methods=['GET', 'POST'])
 def generar_informe():
-    if request.method == 'POST':
+    if request.method == 'POST' and ('username' in session):
         year = int(request.form['year'])
         month = int(request.form['month'])
         generar_informe_ventas_mensual(session['username'], year, month)
@@ -448,7 +448,7 @@ def generar_informe():
 # Ruta para desplegar opciones sobre clientes
 @app.route('/clients', methods=['GET', 'POST'])
 def clients():
-    if request.method == 'POST':
+    if request.method == 'POST' and ('username' in session):
         #manejar la lógica
         return redirect('/')
     else:

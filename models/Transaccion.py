@@ -11,21 +11,22 @@ class Transaccion(db.Model):
     tarjeta_id = db.Column(db.Integer, db.ForeignKey('tarjeta.id'), nullable=False)
     fecha = db.Column(db.Date, nullable=False)
     monto = db.Column(db.Numeric(10, 2), nullable=False)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)
 
-def crear_transaccion(empleado_id, fecha, monto, tarjeta_id):
-    nueva_transaccion = Transaccion(empleado_id=empleado_id, fecha=fecha, monto=monto, tarjeta_id=tarjeta_id)
+def crear_transaccion(empleado_id, fecha, monto, tarjeta_id, cliente_id):
+    nueva_transaccion = Transaccion(empleado_id=empleado_id, fecha=fecha, monto=monto, tarjeta_id=tarjeta_id, cliente_id=cliente_id)
     db.session.add(nueva_transaccion)
     db.session.commit()
     return nueva_transaccion
 
-def crear_transaccion_con_detalles(empleado_id, fecha, monto, productos, tarjeta_id):
+def crear_transaccion_con_detalles(empleado_id, fecha, monto, productos, tarjeta_id, cliente_id):
     """
     productos: lista de diccionarios con 'producto_id' y 'cantidad' para cada producto.
     Ejemplo: [{"producto_id": 1, "cantidad": 2}, {"producto_id": 2, "cantidad": 1}]
     """
     try:
         # Crear la transacción principal
-        nueva_transaccion = Transaccion(empleado_id=empleado_id, fecha=fecha, monto=monto, tarjeta_id=tarjeta_id)
+        nueva_transaccion = Transaccion(empleado_id=empleado_id, fecha=fecha, monto=monto, tarjeta_id=tarjeta_id, cliente_id=cliente_id)
         db.session.add(nueva_transaccion)
         db.session.flush()  # Obtiene el ID de la transacción antes de agregar los detalles
         
@@ -34,7 +35,8 @@ def crear_transaccion_con_detalles(empleado_id, fecha, monto, productos, tarjeta
             nuevo_detalle = DetalleTransaccion(
                 transaccion_id=nueva_transaccion.id,
                 producto_id=producto['id'],
-                cantidad=producto['cantidad']
+                cantidad=producto['cantidad'],
+                talla = producto['talla']
             )
             db.session.add(nuevo_detalle)
         
