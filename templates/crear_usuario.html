@@ -72,6 +72,8 @@
                         </div>
                     </div>
                 </div>
+                <!-- Mensaje de error -->
+                <p id="error_message"></p>
                 <div class="button-box">
                     <button type="submit">Sign up</button>
                 </div>
@@ -79,27 +81,17 @@
                     <a href="{{ url_for('login_route') }}">Already have an account? Sign in</a>
                 </div>
             </form>
-            <!-- Recuperar y mostrar el mensaje flash -->
-            {% with mensajes = get_flashed_messages(with_categories=true) %}
-            {% if mensajes %}
-                {% for category, message in mensajes %}
-                    <p id="{{ category }}">{{ message }}</p>
-                {% endfor %}
-                <script>
-                   document.addEventListener('DOMContentLoaded', function() {
-                        if (document.getElementById('adminerror')){
-                            bloquearFormulario(); // Llama a la función cuando se carga el DOM
-                        }
-                    });
-                </script>
-            {% endif %}
-            {% endwith %}
         </div>
     </div>
 
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            manejarEnvioFormulario('form-signup', '/new_user'); // Llama a la función con el ID del formulario
+        });
+    </script>
     <script src="static/app.js" ></script>
     <script src="{{ url_for('static', filename='validations.js') }}" ></script>
 </body>
