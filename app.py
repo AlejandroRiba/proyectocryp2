@@ -6,7 +6,6 @@ from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin, ob
 from models.Cliente import crear_cliente_con_tarjeta, obtener_cliente_por_tel
 from models.Transaccion import crear_transaccion_con_detalles
 from models.Tarjeta import obtener_tarjeta_por_numero
-from pyFunctions.reportes import generar_informe_ventas_mensual
 from datetime import datetime
 import pyFunctions.mainfunc as mainfunc
 import os
