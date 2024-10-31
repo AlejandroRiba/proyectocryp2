@@ -40,11 +40,11 @@
             <h1>Sign in to R&R</h1>
             <form id="form-login" method="post" action="{{ url_for('login_route') }}" enctype="multipart/form-data">
                 <div class="input-box">
-                    <input type="text" name="id" id="id" required onclick="ocultaError()" title="Enter your ID" oninvalid="this.setCustomValidity('Please enter your ID')" oninput="this.setCustomValidity('')">
+                    <input type="text" name="id" id="id" autocomplete="username" required onclick="ocultaError()" title="Enter your ID" oninvalid="this.setCustomValidity('Please enter your ID')" oninput="this.setCustomValidity('')">
                     <label for="id">Employee ID</label>
                 </div>
                 <div class="input-box">
-                    <input type="password" name="password" required onclick="ocultaError()" title="Enter your password" oninput="verificarAdmin(this)" oninvalid="this.setCustomValidity('Please enter your password')">
+                    <input type="password" name="password" autocomplete="current-password" required onclick="ocultaError()" title="Enter your password" oninput="verificarAdmin(this)" oninvalid="this.setCustomValidity('Please enter your password')">
                     <label>Password</label>
                 </div>
 
@@ -53,11 +53,8 @@
                     <button type="button" id="customButton" class="customButton">Select Key File</button>
                     <span id="customText">No file selected</span>
                 </div>
-                <!-- Recuperar y mostrar el mensaje flash -->
-                {% set mensaje = get_flashed_messages(with_categories=true) %}
-                {% if mensaje %}
-                    <p id="{{ mensaje[0][0] }}">{{ mensaje[0][1] }}</p>
-                {% endif %}
+                <!-- Mensaje de error -->
+                <p id="error_message"></p>
                 <div class="button-box">
                     <button type="submit">Sign in</button>
                 </div>
@@ -71,10 +68,13 @@
     <!-- Footer -->
      {% include "shared/footer.html" %}
     <!-- Footer -->
-    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            manejarEnvioFormulario('form-login', '/login_route'); // Llama a la función con el ID del formulario
+        });
+    </script>
     <script src="{{ url_for('static', filename='app.js') }}" ></script>
     <script src="{{ url_for('static', filename='validations.js') }}" ></script>
-    <script src="{{ url_for('static', filename='app.js') }}" ></script>
     <script src="{{ url_for('static', filename='archivo_login.js') }}" ></script>
 </body>
 </html>

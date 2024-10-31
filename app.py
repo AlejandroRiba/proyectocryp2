@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response, flash
+from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from models.Producto import modificar_salidas_producto, modificar_stock_variante, obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes, obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
@@ -56,21 +56,18 @@ def login_route():
             access = mainfunc.auth(data['id'], data['password'])
             if access:
                 session['username'] = data['id']
-                return redirect('/')  # Redirigir a la página principal después de iniciar sesión
+                return jsonify({"success": True, "message": "Welcome.", "destino": "/"}), 200  # Redirigir a la página principal después de iniciar sesión
             elif 'file' not in request.files:
-                flash("Try again. Admin already exists.", "error")
-                return redirect('/login_route')
+                return jsonify({"success": False, "message": "Try again. Admin already exists.", "destino": "/"}), 400
             else:
-                flash("Usuario o contraseña incorrectos.", "error")
-                return redirect('/login_route')
+                return jsonify({"success": False, "message": "Incorrect username or password.", "destino": "/"}), 400
         elif (data['id'] == 'admin' and data['password'] == 'admin'): ##el admin no se ha registrado
             ### AVISOOOOOOOOOO 
             ### AVISOOOOOOOOOO la validación del password = admin sería mejor cambiarla a una contraseña de un solo uso no tan obvia
             session['temporal'] = 'admin'
-            return redirect('/datos_admin')
+            return jsonify({"success": True, "message": "Welcome.", "destino": "/datos_admin"}), 200
         else:
-            flash("El admin aún no se registra, intenta de nuevo más tarde.", "error")
-            return redirect('/login_route')
+            return jsonify({"success": False, "message": "Incorrect username or password.", "destino": "/login_route"}), 400
     else:
         if 'username' in session: #si ya hay una sesión iniciada, entonces manda a al pantalla de inicio
             return redirect('/')
@@ -88,13 +85,12 @@ def datos_admin():
                 session['username'] = data['id']
                 session['private_key_path'] = private_key_path
                 session.pop('temporal', None)
-                return redirect(url_for('mostrar_descarga'))  # Redirigir a la página principal después de crear el usuario
+                return jsonify({"success": True, "message": "Welcome.", "destino": '/mostrar_descarga'}), 200
             else:
                 #no se pudo crear el usuario
                 return redirect('/')
         else:
-            flash("La contraseña no puede ser admin.", "error")
-            return redirect('/datos_admin')
+            return jsonify({"success": False, "message": "La contraseña no puede ser admin.", "destino": None}), 400
     else:
         if 'temporal' in session:
             tmp = session['temporal']
@@ -114,13 +110,11 @@ def new_user():
             if private_key_path != None:
                 session['username'] = data['id']
                 session['private_key_path'] = private_key_path
-                return redirect(url_for('mostrar_descarga'))  # Redirigir a la página principal después de crear el usuario
+                return jsonify({"success": True, "message": "Welcome.", "destino": '/mostrar_descarga'}), 200
             else:
-                flash("Error. The user may already exists; please check that your information is correct.", "error")
-                return redirect('/new_user')
+                return jsonify({"success": False, "message": "Error. The user may already exists; please check that your information is correct.", "destino": None}), 400
         else:
-            flash("The admin has not registered yet. Please try again later.", "adminerror")
-            return redirect('/new_user')
+            return jsonify({"success": False, "message": "The admin has not registered yet. Please try again later.", "destino": None}), 400
     else:
         if 'username' in session: #si ya hay una sesión iniciada, entonces manda a al pantalla de inicio
             return redirect('/')

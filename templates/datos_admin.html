@@ -22,7 +22,7 @@
     
         <!-- Enlaces del lado derecho -->
         <div class="nav-right">
-            <a href="#form-signup">FILL OUT THE FORM</a>
+            <p>FILL OUT THE FORM</p>
             <span>&nbsp;</span>
         </div>
     </div>
@@ -30,7 +30,7 @@
     <script>
         window.onbeforeunload = function() {
             // Limpiar los campos del formulario
-            const form = document.getElementById('form-signup');
+            const form = document.getElementById('form-admin');
             if (form) {
                 form.reset(); // Restablece todos los campos del formulario
             }
@@ -40,7 +40,7 @@
         <div class="login-container">
             <div class="login-box login-box3">
                 <h1>Edit User</h1><br>
-                <form id="form-signup" method="post" action="/datos_admin" onsubmit="return validateForm()">
+                <form id="form-admin" method="post" action="/datos_admin" onsubmit="return validateForm()">
                     <div id="columnas" class="container_cols">
                         <div class="columna">
                             <div class="input-box">
@@ -73,10 +73,8 @@
                             </div>
                         </div>
                     </div>
-                    {% set mensaje = get_flashed_messages(with_categories=true) %}
-                    {% if mensaje %}
-                        <p id="{{ mensaje[0][0] }}">{{ mensaje[0][1] }}</p>
-                    {% endif %}
+                    <!-- Mensaje de error -->
+                    <p id="error_message"></p>
                     <div class="button-box">
                         <button type="submit">Save Changes</button>
                     </div>
@@ -89,6 +87,11 @@
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            manejarEnvioFormulario('form-admin', '/datos_admin'); // Llama a la función con el ID del formulario
+        });
+    </script>
     <script src="{{ url_for('static', filename='app.js') }}" ></script>
     <script src="{{ url_for('static', filename='validations.js') }}" ></script>
 </body>

@@ -1,13 +1,8 @@
-function redireccion(paginaDest){
-    location.href=paginaDest
-}
-
-function bloquearFormulario(){
-    const form = document.getElementById('form-signup');
-    form.style.display = 'none';
-}
-
 let varianteCount = 1; // Contador para asignar IDs únicos a cada variante
+
+function redireccion(paginaDest){
+    location.href=paginaDest;
+}
 
 function cambiarTipoProducto() {
     const tipoProducto = document.querySelector('input[name="tipo_producto"]:checked').value;
@@ -129,9 +124,9 @@ function activarIdinput(id){
 }
 
 function ocultaError(){
-    const error = document.getElementById('error');
+    const error = document.getElementById('error_message');
     if (error){
-        error.style.display = 'none';
+        error.innerText = '';
     }
 }
 
@@ -167,4 +162,26 @@ function togglecheckBox(id){ //FUNCIÓN PARA ACTIVAR/DESACTIVAR UN CHECKBOX DESD
     }else{
         checkbox.checked = true;
     }
+}
+
+function manejarEnvioFormulario(formId, ruta) {
+    document.getElementById(formId).addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch(ruta, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.destino;
+            } else {
+                // Muestra el mensaje de error en el frontend
+                document.getElementById('error_message').innerText = data.message;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
 }
