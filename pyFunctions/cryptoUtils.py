@@ -37,3 +37,42 @@ def hasheo(mensaje):
     # Codifica el hash en base64
     hash_base64 = base64.b64encode(hash_bytes)
     return hash_base64.decode('utf-8')  # Devuelve como cadena de texto
+
+def sign_message(private_key, message):
+    # Leer la clave privada desde el archivo
+    private_key_bytes = base64.b64decode(private_key) #decodificamos de base 64
+    
+    # Cargar la clave privada
+    private_key = serialization.load_pem_private_key(
+        private_key_bytes,
+        password=None
+    )
+    
+    # Crear la firma
+    signature = private_key.sign(
+        message, #ya se recibe en bytes
+        ec.ECDSA(hashes.SHA256())
+    )
+
+    # Retorna la firma
+    return signature
+
+def verify_signature(public_key, contenido, signature):
+    # Decoficar la clave pública
+    public_key_bytes = base64.b64decode(public_key)
+    
+    # Cargar la clave pública
+    public_key = serialization.load_pem_public_key(
+        public_key_bytes
+    )
+
+    # Verificar la firma
+    try:
+        public_key.verify(
+            signature,
+            contenido,
+            ec.ECDSA(hashes.SHA256())
+        )
+        return True
+    except:
+        return False

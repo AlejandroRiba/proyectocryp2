@@ -1,6 +1,6 @@
 from datetime import datetime
 from models.Database import getDatabase
-from models.Usuario import Usuario
+from models.Usuario import Usuario, obtener_usuario_por_id
 from models.Transaccion import Transaccion
 from models.DetalleTransaccion import DetalleTransaccion
 from models.Producto import Producto
@@ -16,6 +16,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.graphics.shapes import Drawing, Line
 import datetime
+from pyFunctions.cryptoUtils import sign_message, verify_signature
 
 # Define la ruta base para el directorio de imágenes
 BASE_IMAGE_PATH = os.path.join("static", "images", "products")
@@ -204,12 +205,47 @@ def generar_pdf_ventas(report_data, pdf_filename):
     document.build(elements)
     print(f"PDF '{pdf_file}' generado con éxito.")
 
+def agregar_firma(pdf_file, private_key):
+    # Leer el contenido del PDF
+    with open(pdf_file, "rb") as f:
+        contenido = f.read()
 
-def generar_informe_ventas_mensual(empleado_id, year, month):
+    firma = sign_message(private_key, contenido)
+
+    # Si no hay firma, agregarla
+    with open(pdf_file, "wb") as f: 
+        f.write(contenido)
+        f.write(b'\n')  # Indicador de que hay una firma
+        f.write(firma)
+
+    print("Firma añadida con éxito.")
+
+def verificar_firma(pdf_filename, empleado_id):
+    # Leer la clave pública desde el archivo
+    pdf_file = os.path.join(PDF_PATH, pdf_filename)
+    # Leer el contenido del PDF
+    with open(pdf_file, "rb") as f:
+        contenido = f.read().split(b'\n')
+        pdf_content = b'\n'.join(contenido[:-1])  # Combinar todo menos la última línea (la firma)
+        firma = contenido[-1] #firma por separado
+
+    usuario = obtener_usuario_por_id(empleado_id)
+    public_key = usuario.publickey
+
+    verificado = verify_signature(public_key, pdf_content, firma)
+    if verificado:
+        print('firma verificada con éxito')
+    else:
+        print('firma desconocida')
+    
+
+def generar_informe_ventas_mensual(empleado_id, year, month, private_key):
     ventas, flash_message = procesar_información(empleado_id, year, month)
     if ventas != None:
         pdf_filename = f"monthlyreport_{empleado_id}_{year}-{month}.pdf"
         generar_pdf_ventas(ventas, pdf_filename)
+        pdf_file = os.path.join(PDF_PATH, pdf_filename)
+        agregar_firma(pdf_file, private_key)
         return True, None
     else: 
         return False, flash_message

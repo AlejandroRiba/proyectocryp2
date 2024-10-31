@@ -9,7 +9,7 @@ from models.Tarjeta import obtener_tarjeta_por_numero
 from datetime import datetime
 import pyFunctions.mainfunc as mainfunc
 import os
-from pyFunctions.reportepdf import generar_informe_ventas_mensual
+from pyFunctions.reportepdf import generar_informe_ventas_mensual, verificar_firma
 import secrets
 import tempfile
 import json
@@ -55,6 +55,8 @@ def login_route():
         if confirma_existencia_admin(): ##si el admin ya se registro
             access = mainfunc.auth(data['id'], data['password'])
             if access:
+                file = request.files['file']
+                session['private_key'] = file.read() #Se lee en bytes y no se guarda
                 session['username'] = data['id']
                 return jsonify({"success": True, "message": "Welcome.", "destino": "/"}), 200  # Redirigir a la página principal después de iniciar sesión
             elif 'file' not in request.files:
@@ -417,7 +419,9 @@ def generar_informe():
         if access:
             year = int(request.form['year'])
             month = int(request.form['month'])
-            report, flash_message = generar_informe_ventas_mensual(session['username'], year, month)
+            private_key = session['private_key']
+            report, flash_message = generar_informe_ventas_mensual(session['username'], year, month, private_key)
+            #verificar_firma("monthlyreport_2019332323_2024-10.pdf",session['username'])
             if report:
                 return redirect('/consulta_informes')
             else:
