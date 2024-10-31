@@ -13,11 +13,19 @@
     <!-- NAVBAR -->
     {% include "shared/navbar.html" %}
     <!-- NAVBAR -->
-
+    <script>
+        window.onbeforeunload = function() {
+            // Limpiar los campos del formulario
+            const form = document.getElementById('editform');
+            if (form) {
+                form.reset(); // Restablece todos los campos del formulario
+            }
+        };
+    </script>
     <div class="login-container">
         <div class="login-box login-box3">
             <h1>Edit User</h1><br>
-            <form method="post" action="{{ url_for('editar_empleado') }}" onsubmit="return validateForm()">
+            <form id="editform" method="post" action="{{ url_for('editar_empleado') }}" onsubmit="return validateForm()">
                 <div id="columnas" class="container_cols">
                     <div class="columna">
                         <div class="input-box">
@@ -51,11 +59,11 @@
                     </div>
                     <div class="columna" id="columna-edit" style="display: none;">
                         <div class="input-box">
-                            <input id="newpassword" type="password" name="newpassword" disabled required oninput="validatePasswords(), this.setCustomValidity('')" autocomplete="off" oninvalid="this.setCustomValidity('Please enter your new password')">
+                            <input id="newpassword" type="password" name="newpassword" disabled required oninput="validatePasswords(), this.setCustomValidity('')" autocomplete="off" oninvalid="this.setCustomValidity('Please enter your new password')" onclick="ocultaError()">
                             <label for="newpassword">New Password</label>
                         </div>
                         <div class="input-box">
-                            <input id="newpassword2" type="password" name="newpassword2" disabled required oninput="validatePasswords(), this.setCustomValidity('')" autocomplete="off" oninvalid="this.setCustomValidity('Please confirm your new password')">
+                            <input id="newpassword2" type="password" name="newpassword2" disabled required oninput="validatePasswords(), this.setCustomValidity('')" autocomplete="off" oninvalid="this.setCustomValidity('Please confirm your new password')" onclick="ocultaError()">
                             <label for="newpassword2">Confirm New Password</label>
                             <small id="password-match-message"></small>
                         </div>
@@ -64,17 +72,15 @@
                             <div class="checkbox-container">
                                 <label for="editpassword">Edit password?</label>
                                 <input id="editpassword" type="checkbox" onclick="edit_password()">
-                                <div class="custom-checkbox" onclick="togglecheckBox('editpassword'), edit_password()"></div>
+                                <div class="custom-checkbox" onclick="togglecheckBox('editpassword'), edit_password(), ocultaError()"></div>
                             </div>
                         {% endif %}
                 </div>
-                <!-- Recuperar y mostrar el mensaje flash -->
-                {% set mensaje = get_flashed_messages(with_categories=true) %}
-                {% if mensaje %}
-                    <p id="{{ mensaje[0][0] }}">{{ mensaje[0][1] }}</p>
-                {% endif %}
-                <div class="button-box">
+                <!-- Mensaje de error -->
+                <p id="error_message"></p>
+                <div class="button-box" style="display: flex; gap: 20px;">
                     <button type="submit">Upload Changes</button>
+                    <button onclick="redireccion('/')">Cancel</button>
                 </div>
             </form>
         </div>
@@ -83,6 +89,11 @@
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            manejarEnvioFormulario('editform', '/editar_empleado'); // Llama a la función con el ID del formulario
+        });
+    </script>
     <script src="{{ url_for('static', filename='app.js') }}" ></script>
     <script src="{{ url_for('static', filename='validations.js') }}" ></script>
 </body>

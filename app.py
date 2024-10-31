@@ -52,24 +52,25 @@ def home():
 def login_route():
     if request.method == 'POST':
         data = request.form
+        file = request.files['file']
+        data_file = file.read()
         if confirma_existencia_admin(): ##si el admin ya se registro
-            access = mainfunc.auth(data['id'], data['password'])
+            access = mainfunc.auth(data['id'], data['password'],data_file)
             if access:
-                file = request.files['file']
-                session['private_key'] = file.read() #Se lee en bytes y no se guarda
+                session['private_key'] = data_file #Se lee en bytes y no se guarda
                 session['username'] = data['id']
                 return jsonify({"success": True, "message": "Welcome.", "destino": "/"}), 200  # Redirigir a la página principal después de iniciar sesión
             elif 'file' not in request.files:
                 return jsonify({"success": False, "message": "Try again. Admin already exists.", "destino": "/"}), 400
             else:
-                return jsonify({"success": False, "message": "Incorrect username or password.", "destino": "/"}), 400
+                return jsonify({"success": False, "message": "Incorrect username, password or key file.", "destino": "/"}), 400
         elif (data['id'] == 'admin' and data['password'] == 'admin'): ##el admin no se ha registrado
             ### AVISOOOOOOOOOO 
             ### AVISOOOOOOOOOO la validación del password = admin sería mejor cambiarla a una contraseña de un solo uso no tan obvia
             session['temporal'] = 'admin'
             return jsonify({"success": True, "message": "Welcome.", "destino": "/datos_admin"}), 200
         else:
-            return jsonify({"success": False, "message": "Incorrect username or password.", "destino": "/login_route"}), 400
+            return jsonify({"success": False, "message": "Try again later. Admin does not exists.", "destino": None}), 400
     else:
         if 'username' in session: #si ya hay una sesión iniciada, entonces manda a al pantalla de inicio
             return redirect('/')
@@ -82,17 +83,18 @@ def datos_admin():
     if request.method == 'POST':
         data = request.form
         if data['password'] != 'admin':
-            private_key_path = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
+            private_key_path, private_key = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
             if private_key_path != None:
                 session['username'] = data['id']
                 session['private_key_path'] = private_key_path
+                session['private_key'] = private_key
                 session.pop('temporal', None)
                 return jsonify({"success": True, "message": "Welcome.", "destino": '/mostrar_descarga'}), 200
             else:
                 #no se pudo crear el usuario
                 return redirect('/')
         else:
-            return jsonify({"success": False, "message": "La contraseña no puede ser admin.", "destino": None}), 400
+            return jsonify({"success": False, "message": "The password cannot be <<admin>>.", "destino": None}), 400
     else:
         if 'temporal' in session:
             tmp = session['temporal']
@@ -108,10 +110,11 @@ def new_user():
     if request.method == 'POST':
         if confirma_existencia_admin(): ##si el admin ya se registro
             data = request.form
-            private_key_path = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
+            private_key_path, private_key = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
             if private_key_path != None:
                 session['username'] = data['id']
                 session['private_key_path'] = private_key_path
+                session['private_key'] = private_key
                 return jsonify({"success": True, "message": "Welcome.", "destino": '/mostrar_descarga'}), 200
             else:
                 return jsonify({"success": False, "message": "Error. The user may already exists; please check that your information is correct.", "destino": None}), 400
@@ -192,11 +195,12 @@ def editar_empleado():
         userid = session['username']
         if 'newpassword' in request.form:
             newpassword = request.form['newpassword']
+            if newpassword == 'admin':
+                return jsonify({"success": False, "message": "The password cannot be <<admin>>.", "destino": None}), 400
         if mainfunc.autoriza_edit(id,password,nombre,apellido,email,number,newpassword,userid):
-            return redirect('/')
+            return jsonify({"success": True, "message": None, "destino": '/'}), 400
         else:
-            flash("Usuario o contraseña incorrectos", "error")
-            return redirect(f'/edit_user/{id}')
+            return jsonify({"success": False, "message": "Incorrect password.", "destino": None}), 400
     return redirect('/')
 
 # Ruta para consultar informes
@@ -295,8 +299,6 @@ def editar_producto_query():
 
             # Guarda el nuevo archivo (se reemplazará si tiene el mismo nombre)
             file.save(nuevo_path)
-            print(f'Vieja ruta = {last_path}')
-            print(f'Nueva ruta = {nuevo_path}')
             editar_producto_con_variantes(id,nombre,color,precio,variantes,variantes_a_eliminar, file.filename)
         else:
             editar_producto_con_variantes(id,nombre,color,precio,variantes,variantes_a_eliminar, None)
@@ -416,7 +418,7 @@ def consulta_venta():
 @app.route('/generar_informe', methods=['GET', 'POST'])
 def generar_informe():
     if request.method == 'POST' and ('username' in session):
-        access = mainfunc.auth(session['username'], request.form['password'])
+        access = mainfunc.auth(session['username'], request.form['password'], None)
         if access:
             year = int(request.form['year'])
             month = int(request.form['month'])
@@ -424,13 +426,11 @@ def generar_informe():
             report, flash_message = generar_informe_ventas_mensual(session['username'], year, month, private_key)
             #verificar_firma("monthlyreport_2019332323_2024-10.pdf",session['username'])
             if report:
-                return redirect('/consulta_informes')
+                return jsonify({"success": True, "message": "Welcome.", "destino": '/consulta_informes'}), 200
             else:
-                flash(flash_message, "error")
-                return redirect('/generar_informe')
+                return jsonify({"success": False, "message": flash_message, "destino":None}), 400
         else:
-            flash("Incorrect password. Try again.", "error")
-            return redirect('/generar_informe')
+            return jsonify({"success": False, "message": "Incorrect password. Try again.", "destino":None}), 400
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
@@ -467,6 +467,7 @@ def sales():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.pop('private_key', None)
     return redirect('/')
 
 if __name__ == "__main__":

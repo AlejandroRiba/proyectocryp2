@@ -165,8 +165,16 @@ function togglecheckBox(id){ //FUNCIÓN PARA ACTIVAR/DESACTIVAR UN CHECKBOX DESD
 }
 
 function manejarEnvioFormulario(formId, ruta) {
-    document.getElementById(formId).addEventListener('submit', function(e) {
+    const form = document.getElementById(formId);
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerText; // Guarda el texto original del botón
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
+
+        // Cambia el texto del botón y lo desactiva
+        submitButton.innerText = 'Loading...';
+        submitButton.disabled = true;
+
         const formData = new FormData(this);
 
         fetch(ruta, {
@@ -175,6 +183,11 @@ function manejarEnvioFormulario(formId, ruta) {
         })
         .then(response => response.json())
         .then(data => {
+
+            // Restaura el botón al estado original
+            submitButton.innerText = originalText;
+            submitButton.disabled = false;
+
             if (data.success) {
                 window.location.href = data.destino;
             } else {
@@ -182,6 +195,10 @@ function manejarEnvioFormulario(formId, ruta) {
                 document.getElementById('error_message').innerText = data.message;
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            submitButton.innerText = originalText;
+            submitButton.disabled = false;
+            console.error('Error:', error)
+        });
     });
 }

@@ -5,6 +5,13 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import utils
 import base64
 
+def verifvalidbs64(x):
+    try:
+        base64.b64decode(x, validate=True)
+        return True
+    except Exception:
+        return False
+
 def generate_key_pair():
     # Generar clave privada
     private_key = ec.generate_private_key(ec.SECP256R1()) #curva P-256 D 2.3 en el standard
@@ -73,6 +80,6 @@ def verify_signature(public_key, contenido, signature):
             contenido,
             ec.ECDSA(hashes.SHA256())
         )
-        return True
+        return True #firma verificada
     except:
         return False
