@@ -52,18 +52,20 @@ def home():
 def login_route():
     if request.method == 'POST':
         data = request.form
-        file = request.files['file']
-        data_file = file.read()
+        
         if confirma_existencia_admin(): ##si el admin ya se registro
-            access = mainfunc.auth(data['id'], data['password'],data_file)
-            if access:
-                session['private_key'] = data_file #Se lee en bytes y no se guarda
-                session['username'] = data['id']
-                return jsonify({"success": True, "message": "Welcome.", "destino": "/"}), 200  # Redirigir a la página principal después de iniciar sesión
-            elif 'file' not in request.files:
+            if 'file' not in request.files:
                 return jsonify({"success": False, "message": "Try again. Admin already exists.", "destino": "/"}), 400
             else:
-                return jsonify({"success": False, "message": "Incorrect username, password or key file.", "destino": "/"}), 400
+                file = request.files['file']
+                data_file = file.read()
+                access = mainfunc.auth(data['id'], data['password'],data_file)
+                if access:
+                    session['private_key'] = data_file #Se lee en bytes y no se guarda
+                    session['username'] = data['id']
+                    return jsonify({"success": True, "message": "Welcome.", "destino": "/"}), 200  # Redirigir a la página principal después de iniciar sesión
+                else:
+                    return jsonify({"success": False, "message": "Incorrect username, password or key file.", "destino": "/"}), 400
         elif (data['id'] == 'admin' and data['password'] == 'admin'): ##el admin no se ha registrado
             ### AVISOOOOOOOOOO 
             ### AVISOOOOOOOOOO la validación del password = admin sería mejor cambiarla a una contraseña de un solo uso no tan obvia

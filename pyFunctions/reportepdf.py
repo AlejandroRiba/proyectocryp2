@@ -16,7 +16,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.graphics.shapes import Drawing, Line
 import datetime
-from pyFunctions.cryptoUtils import sign_message, verify_signature
+from pyFunctions.cryptoUtils import sign_message_ECDSA, verify_signature_ECDSA
 
 # Define la ruta base para el directorio de imágenes
 BASE_IMAGE_PATH = os.path.join("static", "images", "products")
@@ -210,7 +210,7 @@ def agregar_firma(pdf_file, private_key):
     with open(pdf_file, "rb") as f:
         contenido = f.read()
 
-    firma = sign_message(private_key, contenido)
+    firma = sign_message_ECDSA(private_key, contenido)
 
     # Si no hay firma, agregarla
     with open(pdf_file, "wb") as f: 
@@ -232,7 +232,7 @@ def verificar_firma(pdf_filename, empleado_id):
     usuario = obtener_usuario_por_id(empleado_id)
     public_key = usuario.publickey
 
-    verificado = verify_signature(public_key, pdf_content, firma)
+    verificado = verify_signature_ECDSA(public_key, pdf_content, firma)
     if verificado:
         print('firma verificada con éxito')
     else:

@@ -12,7 +12,7 @@ class Usuario(db.Model):
     phone = db.Column(db.String(10), nullable=False)
     cargo = db.Column(db.String(10), nullable=False)
     password = db.Column(db.String(50), nullable=False)
-    publickey = db.Column(db.String(250), nullable=False)
+    publickey = db.Column(db.String(620), nullable=False)
 
 def crear_usuario(id, nombre, apellido, email, phone, password, key):
     try:

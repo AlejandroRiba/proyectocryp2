@@ -1,11 +1,14 @@
 from models.Usuario import crear_usuario, obtener_usuario_por_id, editar_usuario, obtener_password
-from pyFunctions.cryptoUtils import hasheo, generate_key_pair, sign_message, verify_signature, verifvalidbs64
+from pyFunctions.cryptoUtils import hasheo, generate_key_pair,  verifvalidbs64, generate_rsa_pair, verify_private_key
 import os
 import tempfile
 
 def nuevo_empleado(name, lstname, email, number, id, password):
     real_password = hasheo(password)
-    priv_key, pub_key = generate_key_pair()
+    if id != 'admin':
+        priv_key, pub_key = generate_key_pair() #ECDSA
+    else:
+        priv_key, pub_key = generate_rsa_pair() #PARA EL ADMIN GENERA CLAVES DE RSA
     if(crear_usuario(id, name, lstname, email, number, real_password, pub_key)):
         #Guardamos la priv_key
         private_key_path = store_privkey(id,priv_key)
@@ -21,14 +24,11 @@ def store_privkey(username, priv_key):
 
 
 def verif_clave(priv_key, pub_key):
-    prueba = "hNSUbsx92d3asx" #para comprobar que es su llave, firmamos un valor de prueba y verificamos con la pub key asociada a su user
-    message = prueba.encode('utf-8')
-    if verifvalidbs64(priv_key): #si no está en codifbase64
-        firma = sign_message(priv_key, message)
-        if verify_signature(pub_key, message, firma):
-            return True #valida la firma
+    if verifvalidbs64(priv_key): #si está en codifbase64
+        if verify_private_key(pub_key, priv_key):
+            return True 
         else:
-            return False #no valida la firma
+            return False
     else:
         return False
 
