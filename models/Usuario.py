@@ -40,6 +40,10 @@ def obtener_password(id):
     usuario = obtener_usuario_por_id(id)
     return usuario.password
 
+def obtener_pub_key(id):
+    usuario = obtener_usuario_por_id(id)
+    return usuario.publickey
+
 def obtener_usuario_por_id(id):
     return Usuario.query.get(id)
 

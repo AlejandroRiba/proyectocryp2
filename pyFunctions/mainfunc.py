@@ -1,5 +1,5 @@
-from models.Usuario import crear_usuario, obtener_usuario_por_id, editar_usuario, obtener_password
-from pyFunctions.cryptoUtils import hasheo, generate_key_pair,  verifvalidbs64, generate_rsa_pair, verify_private_key
+from models.Usuario import crear_usuario, obtener_usuario_por_id, editar_usuario, obtener_password, obtener_pub_key
+from pyFunctions.cryptoUtils import hasheo, generate_key_pair,  verifvalidbs64, generate_rsa_pair, verify_private_key, decrypt_ff3, encrypt_ff3, encrypt_with_publickey, decrypyt_with_privatekey, gen_AESkey
 import os
 import tempfile
 
@@ -51,11 +51,11 @@ def auth(id, password, data_file):
         return False
     
 def autoriza_edit(id, password, nombre, apellido,email,phone,newpassword,userid):
+    usuario = obtener_usuario_por_id(id)
     if userid == 'admin':
-        autentica = obtener_password(userid) #si el cambio lo solicita el admin, se usa la contraseña del admin
-        usuario = obtener_usuario_por_id(id)
+        autentica = obtener_password(userid) #si el cambio lo solicita el admin, se usa la contraseña del 
     else:
-        usuario = obtener_usuario_por_id(id) #sino se declara como autentica (valor para verificar) la del usuario que lo solicita
+        #sino se declara como autentica (valor para verificar) la del usuario que lo solicita
         autentica = usuario.password
     if usuario:
         real_password = hasheo(password) #la contraseña esta hasheada en la db, por lo que se aplica a la contraseña recibida del form
@@ -70,3 +70,15 @@ def autoriza_edit(id, password, nombre, apellido,email,phone,newpassword,userid)
     else:
         return False
     
+def cifrar_tarjeta(tarjeta):
+    key = gen_AESkey()
+    public_key = obtener_pub_key('admin')
+    ciph_tarjeta = encrypt_ff3(tarjeta, key)
+    ciph_key = encrypt_with_publickey(public_key, key)
+    return ciph_tarjeta, ciph_key
+    
+
+def descifrar_tarjeta(ciph_tarjeta, private_key, ciph_key):
+    plain_key = decrypyt_with_privatekey(private_key, ciph_key)
+    plain_tarjeta = decrypt_ff3(ciph_tarjeta, plain_key)
+    return plain_tarjeta

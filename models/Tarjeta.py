@@ -8,6 +8,7 @@ class Tarjeta(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     numero_tarjeta = db.Column(db.String(16), unique=True, nullable=False)
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)  # Cambiado a Integer
+    clave = db.Column(db.String(350), unique=True, nullable=False) #clave de la tarjeta
 
 def crear_tarjeta(numero_tarjeta, cliente_id):
     nueva_tarjeta = Tarjeta(numero_tarjeta=numero_tarjeta, cliente_id=cliente_id)

@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from sqlalchemy.orm import relationship
 from models.Tarjeta import Tarjeta
+from pyFunctions.mainfunc import cifrar_tarjeta
 
 db = getDatabase()
 
@@ -21,14 +22,17 @@ def crear_cliente_con_tarjeta(nombre, apellido, telefono, numero_tarjeta):
         cliente_existente = Cliente.query.filter_by(nombre=nombre, apellido=apellido, telefono=telefono).first()
         mensaje = ""
         if cliente_existente:
+            print('Cliente existente')
             # Verificar si la tarjeta ya está asociada a este cliente
             tarjeta_existente = Tarjeta.query.filter_by(numero_tarjeta=numero_tarjeta, cliente_id=cliente_existente.id).first()
             if tarjeta_existente:
+                print('tarjeta ya existente')
                 mensaje ="La tarjeta ya está asociada a este cliente."
                 return False, mensaje  # O cualquier valor que desees para indicar que la tarjeta ya está asociada
             
             # Crear y asociar la nueva tarjeta al cliente existente
-            nueva_tarjeta = Tarjeta(numero_tarjeta=numero_tarjeta, cliente_id=cliente_existente.id)
+            tarjeta, clave = cifrar_tarjeta(numero_tarjeta)
+            nueva_tarjeta = Tarjeta(numero_tarjeta=tarjeta, cliente_id=cliente_existente.id, clave=clave)
             db.session.add(nueva_tarjeta)
         else:
             # Crear un nuevo cliente y asociar la tarjeta
@@ -36,7 +40,8 @@ def crear_cliente_con_tarjeta(nombre, apellido, telefono, numero_tarjeta):
             db.session.add(nuevo_cliente)
             db.session.flush()  # Asegura que el cliente tenga un ID antes de añadir la tarjeta
             
-            nueva_tarjeta = Tarjeta(numero_tarjeta=numero_tarjeta, cliente_id=nuevo_cliente.id)
+            tarjeta, clave = cifrar_tarjeta(numero_tarjeta)
+            nueva_tarjeta = Tarjeta(numero_tarjeta=tarjeta, cliente_id=nuevo_cliente.id, clave=clave)
             db.session.add(nueva_tarjeta)
         
         # Confirmar todos los cambios en la base de datos

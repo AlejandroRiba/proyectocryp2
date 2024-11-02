@@ -5,6 +5,10 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import utils
 import base64
 import secrets
+from ff3 import FF3Cipher
+
+##TWEAK Global generado previamente 
+tweak = "43f082792c414c"
 
 def verifvalidbs64(x):
     try:
@@ -43,8 +47,20 @@ def verify_private_key(public_key, private_key):
 
 
 def gen_AESkey():
-    key = secrets.token_bytes(16) #llave de 128 bits
+    key = secrets.token_hex(16) #llave de 128 bits
     return key
+
+def encrypt_ff3(plaintext, key):
+    global tweak
+    cipher = FF3Cipher(key, tweak, 10)
+    cipher_text = cipher.encrypt(plaintext)
+    return cipher_text
+
+def decrypt_ff3(ciphertext, key):
+    global tweak
+    cipher = FF3Cipher(key, tweak, 10)
+    plain_text = cipher.decrypt(ciphertext)
+    return plain_text
     
 def generate_rsa_pair():
     # Generar clave privada
@@ -82,8 +98,9 @@ def encrypt_with_publickey(public_key, message): #FUNCIÓN PARA PROTEGER LLAVE D
     )
 
     #Cifrar el mensaje
+    message_bytes = message.encode('utf-8')
     ciphertext = public_key.encrypt(
-        message, #Se agrega el padding ya que necesitamos bloques del mismo tamaño. 
+        message_bytes, #Se agrega el padding ya que necesitamos bloques del mismo tamaño. 
         padding.OAEP(  #NIST SP 800-56B Rev. 2
             mgf=padding.MGF1(algorithm=hashes.SHA256()),
             algorithm=hashes.SHA256(),
