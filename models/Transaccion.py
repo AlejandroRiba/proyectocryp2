@@ -13,6 +13,11 @@ class Transaccion(db.Model):
     monto = db.Column(db.Numeric(10, 2), nullable=False)
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)
 
+    # Definición de relaciones
+    cliente = db.relationship('Cliente', backref='transacciones')
+    tarjeta = db.relationship('Tarjeta', backref='transacciones')
+    empleado = db.relationship('Usuario', backref='transacciones')
+
 def crear_transaccion(empleado_id, fecha, monto, tarjeta_id, cliente_id):
     nueva_transaccion = Transaccion(empleado_id=empleado_id, fecha=fecha, monto=monto, tarjeta_id=tarjeta_id, cliente_id=cliente_id)
     db.session.add(nueva_transaccion)
@@ -47,3 +52,10 @@ def crear_transaccion_con_detalles(empleado_id, fecha, monto, productos, tarjeta
         db.session.rollback()
         print(f"Error al crear la transacción con detalles: {e}")
         return None
+    
+
+def consulta_transacciones():
+    return Transaccion.query.all()
+
+def transacciones_por_empleado(id):
+    return Transaccion.query.filter_by(empleado_id = id)

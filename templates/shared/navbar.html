@@ -7,29 +7,27 @@
                 <a>MENU</a>
                 <div class="menuContent">
                     <ul>
-                        <li><a href="{{ url_for('registra_cliente')}}">Registrar Cliente</a></li>
-                        <li><a href="{{ url_for('consulta_clientes')}}">Consultar Clientes</a></li>
                         <li><a href="{{ url_for('registra_venta')}}">Registrar Venta</a></li>
                         <li><a href="{{ url_for('consulta_venta')}}">Consultar Ventas</a></li>
-                        <li><a href="{{ url_for('consulta_informes')}}">Consultar Informes de Ventas</a></li>
-                        <li><a href="{{ url_for('consulta_productos')}}">Consultar Productos</a></li>
+                        <li><a href="{{ url_for('consulta_informes')}}">Sales Reports</a></li>
+                        <li><a href="{{ url_for('consulta_productos')}}">Products</a></li>
                         <li><a href="{{ url_for('generar_informe')}}">Generar Informe de ventas mensuales</a></li>
                         <li><a href="{{ url_for('edit_user', id=status)}}">Editar datos</a></li>
-                        {% if cargo == 'admin' %} 
-                            <li><a href="{{ url_for('consulta_empleado')}}">Consultar Empleados</a></li>
+                        {% if status == 'admin' %} 
+                            <li><a href="{{ url_for('consulta_empleado')}}">Employees</a></li>
                         {% endif %}
-                        <li><a href="{{ url_for('logout')}}">Cerrar sesión</a></li>
+                        <li><a href="{{ url_for('logout')}}">Sign Out</a></li>
                     </ul>
                 </div>
             </div>            
         {% else %}
-            <img src="{{ url_for('static', filename='images/logo.png') }}" style="height: 50px;">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" style="height: 40px;">
         {% endif %}            
     </div>
     
     <div class="nav-logo">
         {% if status %} 
-            <a href="{{ url_for('home') }}" id="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" style="height: 50px;"></a>
+            <a href="{{ url_for('home') }}" id="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" style="height: 40px;"></a>
         {% else %}
             <span></span>
         {% endif %}

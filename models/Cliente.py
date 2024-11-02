@@ -23,15 +23,9 @@ def crear_cliente_con_tarjeta(nombre, apellido, telefono, numero_tarjeta):
         mensaje = ""
         if cliente_existente:
             print('Cliente existente')
-            # Verificar si la tarjeta ya está asociada a este cliente
-            tarjeta_existente = Tarjeta.query.filter_by(numero_tarjeta=numero_tarjeta, cliente_id=cliente_existente.id).first()
-            if tarjeta_existente:
-                print('tarjeta ya existente')
-                mensaje ="La tarjeta ya está asociada a este cliente."
-                return False, mensaje  # O cualquier valor que desees para indicar que la tarjeta ya está asociada
-            
-            # Crear y asociar la nueva tarjeta al cliente existente
+            # Crear y asociar la tarjeta al cliente existente 
             tarjeta, clave = cifrar_tarjeta(numero_tarjeta)
+            nuevo_cliente = cliente_existente
             nueva_tarjeta = Tarjeta(numero_tarjeta=tarjeta, cliente_id=cliente_existente.id, clave=clave)
             db.session.add(nueva_tarjeta)
         else:
@@ -46,7 +40,7 @@ def crear_cliente_con_tarjeta(nombre, apellido, telefono, numero_tarjeta):
         
         # Confirmar todos los cambios en la base de datos
         db.session.commit()
-        return True, mensaje
+        return nueva_tarjeta, nuevo_cliente
     except Exception as e:
         db.session.rollback()  # Revierte la transacción en caso de error
         print(f"Error al crear el cliente y la tarjeta: {e}")

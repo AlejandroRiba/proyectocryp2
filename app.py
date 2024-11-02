@@ -1,11 +1,10 @@
-from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response, flash, jsonify
+from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response, flash, jsonify, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from models.Producto import modificar_salidas_producto, modificar_stock_variante, obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes, obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
 from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin, obtener_empleados
 from models.Cliente import crear_cliente_con_tarjeta, obtener_cliente_por_tel
-from models.Transaccion import crear_transaccion_con_detalles
-from models.Tarjeta import obtener_tarjeta_por_numero
+from models.Transaccion import crear_transaccion_con_detalles, consulta_transacciones, transacciones_por_empleado
 from datetime import datetime
 import pyFunctions.mainfunc as mainfunc
 import os
@@ -22,6 +21,7 @@ app.secret_key = secrets.token_hex(16)  # Genera una clave de 32 caracteres hexa
 
 # Configura el directorio donde se guardarán las imágenes de los productos
 UPLOAD_FOLDER = 'static/images/products'
+REPORTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reports')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Configuración de la base de datos MySQL
@@ -206,17 +206,26 @@ def editar_empleado():
     return redirect('/')
 
 # Ruta para consultar informes
-@app.route('/consulta_informes', methods=['GET', 'POST'])
+@app.route('/consulta_informes', methods=['GET'])
 def consulta_informes():
-    if request.method == 'POST':
-        #manejar la lógica
-        return redirect('/')
+    if ('username' in session): #si ya hay una sesión iniciada
+        username = session['username']
+        try:
+            files = [f for f in os.listdir(REPORTS_DIR) if os.path.isfile(os.path.join(REPORTS_DIR, f))]
+        except FileNotFoundError:
+            files = []  # Si no existe la carpeta, devuelve una lista vacía
+
+        return render_template('consulta_informes.html', status=username, files=files)
     else:
-        if ('username' in session): #si ya hay una sesión iniciada
-            username = session['username']
-            return render_template('consulta_informes.html', status=username)
-        else:
-            return redirect('/')
+        return redirect('/')
+    
+@app.route('/download_report/<filename>')
+def download_report(filename):
+    # Verifica que el archivo exista en la carpeta `reports` antes de enviarlo
+    if filename in os.listdir(REPORTS_DIR):
+        return send_from_directory(REPORTS_DIR, filename, as_attachment=True)
+    else:
+        abort(404)  # Devuelve un error 404 si el archivo no existe
         
 # Ruta para consultar productos
 @app.route('/consulta_productos', methods=['GET', 'POST'])
@@ -317,23 +326,6 @@ def eliminar_producto(id):
                 os.remove(file_path) #elimina la imagen si la consulta de delete se ejecuta con éxito
     return redirect('/consulta_productos')
 
-# Ruta para crear/registrar un cliente
-@app.route('/registra_cliente', methods=['GET', 'POST'])
-def registra_cliente():
-    if request.method == 'POST' and ('username' in session):
-        data = request.form
-        status, detalle = crear_cliente_con_tarjeta(data['nombre'], data['apellido'], data['numero'], data['card'])
-        if status:
-            return redirect('/')
-        else:
-            print(f"Error: {detalle}")
-            #Manejar el error
-    else:
-        if ('username' in session): #si ya hay una sesión iniciada
-            username = session['username']
-            return render_template('registra_cliente.html', status=username)
-        else:
-            return redirect('/')
         
 # Ruta para consultar clientes
 @app.route('/consulta_clientes', methods=['GET', 'POST'])
@@ -375,29 +367,29 @@ def procesar_venta():
         username = session['username']
         monto = 0
         
-        crear_cliente_con_tarjeta(nombre=nombre, apellido=apellido, telefono=numero, numero_tarjeta=card)
+        tarjeta, cliente = crear_cliente_con_tarjeta(nombre=nombre, apellido=apellido, telefono=numero, numero_tarjeta=card)
 
-        tarjeta = obtener_tarjeta_por_numero(card)
-        cliente = obtener_cliente_por_tel(numero) #asumiendo que el número de teléfono es único
-        for producto in productos:
-            item = obtener_producto_por_id(producto["id"])
-            monto += item.precio * int(producto['cantidad'])
+        if tarjeta and cliente: 
+            for producto in productos:
+                item = obtener_producto_por_id(producto["id"])
+                monto += item.precio * int(producto['cantidad'])
 
-            # Disminuir stock de la variante seleccionada según la cantidad vendida
-            try:
-                variante = obtener_variante_por_id_y_talla(producto["id"], producto['talla'])
-                stock = obtener_stock_variante(variante.id)
-                modificar_stock_variante(variante.id, stock - producto['cantidad'])
-            except Exception as e:
-                variante = obtener_variantes_por_producto_id(producto["id"])
-                stock = obtener_stock_variante(variante.id)
-                modificar_stock_variante(variante.id, stock - producto['cantidad'])
-            
-            salidas = obtener_salidas_producto(producto["id"])
-            modificar_salidas_producto(producto["id"], salidas + producto['cantidad'])
-        crear_transaccion_con_detalles(empleado_id=username, fecha=datetime.now(), monto=monto, productos=productos, tarjeta_id=tarjeta.id, cliente_id=cliente.id)
-
-        return redirect('/')
+                # Disminuir stock de la variante seleccionada según la cantidad vendida
+                try:
+                    variante = obtener_variante_por_id_y_talla(producto["id"], producto['talla'])
+                    stock = obtener_stock_variante(variante.id)
+                    modificar_stock_variante(variante.id, stock - producto['cantidad'])
+                except Exception as e:
+                    variante = obtener_variantes_por_producto_id(producto["id"])
+                    stock = obtener_stock_variante(variante.id)
+                    modificar_stock_variante(variante.id, stock - producto['cantidad'])
+                
+                salidas = obtener_salidas_producto(producto["id"])
+                modificar_salidas_producto(producto["id"], salidas + producto['cantidad'])
+            crear_transaccion_con_detalles(empleado_id=username, fecha=datetime.now(), monto=monto, productos=productos, tarjeta_id=tarjeta.id, cliente_id=cliente.id)
+            return redirect('/')
+        else:
+            return redirect('/')
     else:
         return redirect('/')
 
@@ -411,7 +403,14 @@ def consulta_venta():
     else:
         if ('username' in session): #si ya hay una sesión iniciada
             username = session['username']
-            return render_template('consulta_venta.html', status=username)
+            if username == 'admin':
+                transacciones = consulta_transacciones()
+            else:
+                transacciones = transacciones_por_empleado(username).all()
+                
+            if not transacciones:
+                transacciones = None
+            return render_template('consulta_venta.html', status=username, transacciones=transacciones)
         else:
             return redirect('/')
         
@@ -440,31 +439,6 @@ def generar_informe():
         else:
             return redirect('/')
         
-# Ruta para desplegar opciones sobre clientes
-@app.route('/clients', methods=['GET', 'POST'])
-def clients():
-    if request.method == 'POST' and ('username' in session):
-        #manejar la lógica
-        return redirect('/')
-    else:
-        if ('username' in session): #si ya hay una sesión iniciada
-            username = session['username']
-            return render_template('opciones_clientes.html', status=username)
-        else:
-            return redirect('/login_route')
-        
-# Ruta para desplegar opciones sobre ventas
-@app.route('/sales', methods=['GET', 'POST'])
-def sales():
-    if request.method == 'POST':
-        #manejar la lógica
-        return redirect('/')
-    else:
-        if ('username' in session): #si ya hay una sesión iniciada
-            username = session['username']
-            return render_template('opciones_ventas.html', status=username)
-        else:
-            return redirect('/login_route')
 
 @app.route('/logout')
 def logout():

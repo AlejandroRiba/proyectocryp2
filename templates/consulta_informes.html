@@ -14,9 +14,22 @@
     <!-- Footer -->
      <!-- EMPIEZA CONTENIDO DE PÁGINA -->
       <h1>CONSULTA INFORMES</h1>
+      <ul>
+        {% if files %}
+            {% for file in files %}
+                <li>
+                    <a href="{{ url_for('download_report', filename=file) }}" download>{{ file }}</a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <p>No hay reportes disponibles.</p>
+        {% endif %}
+        <button onclick="redireccion('/generar_informe')">New Report</button>
+    </ul>
      <!-- TERMINA CONTENIDO DE PÁGINA -->
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
+    <script src="static/app.js" ></script>
 </body>
 </html>

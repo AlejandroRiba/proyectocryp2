@@ -15,13 +15,17 @@ from reportlab.lib.units import inch, cm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.graphics.shapes import Drawing, Line
-import datetime
+from reportlab.pdfgen import canvas
+from datetime import datetime
 from pyFunctions.cryptoUtils import sign_message_ECDSA, verify_signature_ECDSA
 
 # Define la ruta base para el directorio de imágenes
 BASE_IMAGE_PATH = os.path.join("static", "images", "products")
 LOGO_PATH = os.path.join("static", "images")
-PDF_PATH = os.path.join("static","docs","reports")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Define la ruta completa a la carpeta `reports`
+PDF_PATH = os.path.join(BASE_DIR, 'reports')
 
 db = getDatabase()
 
@@ -65,10 +69,11 @@ def procesar_información(empleado_id, year, month):
 
         # Crear lista para almacenar detalles del reporte
         monto_total = 0
+        fecha_y_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         ventas = {
             'headers': {
                 'empleado': f"{empleado.id} - {empleado.nombre} {empleado.apellido}",
-                'fechareporte': str(datetime.date.today()),
+                'fechareporte': str(fecha_y_hora),
                 'mes': f'{obtener_nombre_mes(month)} - {str(year)}',
                 'total': '$0',
             }
@@ -103,6 +108,7 @@ def procesar_información(empleado_id, year, month):
         return ventas, None
 
     except Exception as e:
+        print(e)
         return None, "Error generating the report."
     
 
@@ -118,6 +124,7 @@ def generar_pdf_ventas(report_data, pdf_filename):
 
     document = SimpleDocTemplate(pdf_file, pagesize=letter, **margins)
     document.title = f"Monthly Sales Report - {report_data['headers']['mes']}" 
+    document.author = report_data['headers']['empleado']
 
     elements = []
     styles = getSampleStyleSheet()  # Obtener estilos de muestra
@@ -204,6 +211,7 @@ def generar_pdf_ventas(report_data, pdf_filename):
     # Construir el documento
     document.build(elements)
     print(f"PDF '{pdf_file}' generado con éxito.")
+
 
 def agregar_firma(pdf_file, private_key):
     # Leer el contenido del PDF

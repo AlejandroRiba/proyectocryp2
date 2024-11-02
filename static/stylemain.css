@@ -12,7 +12,7 @@ body {
     justify-content: space-around;
     align-items: center;
     background-color: #fff;
-    padding: 1em;
+    padding: 13px;
     border-bottom: 2px solid #000;
 }
 
@@ -88,8 +88,8 @@ footer {
 
 .container {
     display: flex;
-    height: 80vh;
-    gap: 10px;
+    height: 85vh;
+    gap: 6px;
     justify-content: center;
     margin-top: 20px;
 }

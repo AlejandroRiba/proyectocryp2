@@ -14,14 +14,38 @@
     <!-- Navbar -->
 
      <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-      <h1>OPCIONES VENTAS</h1>
-      {% if status == '2022630201' %}
-        <p>Si funciono jeje {{status}}</p>
+      <h1>Sales per employee</h1>
+      {% if transacciones %}
+        <table>
+          <thead>
+              <tr>
+                  <th>Fecha</th>
+                  <th>Monto</th>
+                  <th>Cliente ID</th>
+                  <th>Client Name</th>
+              </tr>
+          </thead>
+          <tbody>
+            {% for transaccion in transacciones %}
+              <tr>
+                <td>{{ transaccion.fecha }}</td>
+                <td>{{ transaccion.monto }}</td>
+                <td>{{transaccion.cliente_id}}</td>
+                <td>{{ transaccion.cliente.nombre + ' ' + transaccion.cliente.apellido}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No has realizado ventas aún.</p>
       {% endif %}
+      <button onclick="redireccion('/registra_venta')">New Sale</button>
+      <button onclick="redireccion('/consulta_venta')">Sales</button>
      <!-- TERMINA CONTENIDO DE PÁGINA -->
     
      <!-- Footer -->
      {% include'shared/footer.html' %}
     <!-- Footer -->
+    <script src="static/app.js" ></script>
 </body>
 </html>
