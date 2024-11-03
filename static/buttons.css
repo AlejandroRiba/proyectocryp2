@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -58,6 +60,7 @@ input[type="number"]::-webkit-outer-spin-button {
     height: 35px;
     background-color: transparent;
     text-align: center;
+    font-family: 'Squada One', sans-serif;
 }
   
 .number-left:hover::before,
@@ -87,6 +90,7 @@ input[type="number"]::-webkit-outer-spin-button {
   
 .button_item, .button_item__icon, .button_item__text {
     transition: all 0.3s;
+    font-family: 'Squada One', sans-serif;
 }
   
 .button_item .button_item__text {
@@ -128,3 +132,39 @@ input[type="number"]::-webkit-outer-spin-button {
     transform: translate(3px, 3px);
     box-shadow: 0px 0px var(--main-color);
 }
+
+/* TOOTTIP */
+.tooltip-container {
+    background: transparent;
+    position: relative;
+    cursor: pointer;
+    font-size: 17px;
+    overflow: visible;
+}
+  
+.tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10%); /* Adjusted the initial position */
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    background: var(--background);
+    color: black;
+    border-radius: 0.3em;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 14px;
+    width: 120%; /* Adjusted the width */
+    padding: 0.5em 1em; /* Adjusted padding */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+  
+.tooltip-container:hover .tooltip {
+    top: -100%; /* Adjusted the tooltip position */
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+  

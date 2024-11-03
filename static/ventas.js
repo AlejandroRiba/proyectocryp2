@@ -1,6 +1,8 @@
 function aumentarvalor(inputId){
     const input = document.getElementById(inputId);
-    const maxValue = input.getAttribute('max');
+    const maxValue = parseInt(input.getAttribute('max'));
+    console.log(`Input id: ${inputId}`);
+    console.log(`Val max: ${maxValue}`);
     if (input.value == '' || input.value < 1){
         input.value = 1;
     }else if(input.value < maxValue){
@@ -24,7 +26,11 @@ function actualizarStock(productoId){
     if (selectTalla) {
         const selectedOption = selectTalla.options[selectTalla.selectedIndex];
         const stock = selectedOption.getAttribute('data-stock');
-        spanStock.innerText = stock;
+        spanStock.innerText = stock; //Se actualiza el stock
+        const input_cantidad = document.getElementById(`cantidad_${productoId}`);
+        input_cantidad.setAttribute('max', stock); //se actualiza el max stock
+        document.getElementById(`tooltip_${productoId}`). innerText = "Maximum value: " + stock; //mensaje de alerta
+        input_cantidad.value = '1';
     }
 }
 
@@ -35,6 +41,7 @@ function actualizarCompra(productoId, talla, inputId, tipo){
     const index = carritolist.findIndex(item => item.id === productoId && item.talla === talla);
     const cantidadActual = carritolist[index].cantidad;
     const maxValue = parseInt(input_cantidad.getAttribute('max'));
+    console.log(maxValue);
     let nueva_cantidad;
     const productoPrecio = document.getElementById(`precio_${productoId}`).innerText;
     const precio_real = parseFloat(productoPrecio.replace('$', ''));
@@ -45,7 +52,11 @@ function actualizarCompra(productoId, talla, inputId, tipo){
     }else if (tipo === "mas"){
         nueva_cantidad = parseInt(cantidadActual) + parseInt(input_cantidad.value);
     }else{
-        nueva_cantidad = parseInt(input_cantidad.value);
+        if (!input_cantidad.value || input_cantidad.value == 0){
+            nueva_cantidad = 1;
+        }else{
+            nueva_cantidad = parseInt(input_cantidad.value);
+        }
     }
 
     if (nueva_cantidad <= maxValue && nueva_cantidad >= 1) {
@@ -53,19 +64,19 @@ function actualizarCompra(productoId, talla, inputId, tipo){
         ...carritolist[index], // Mantiene las propiedades existentes
         cantidad: nueva_cantidad, // Actualiza el valor de cantidad
         };
-        document.getElementById(`unidades_${productoId}`).value = nueva_cantidad; //Se actualiza el input del carrito, no de la lista, el de la lista de actualiza si mandas el producto desde ahí
-        document.getElementById(`total_${productoId}`).innerText = "$" + (precio_real * nueva_cantidad);
+        document.getElementById(`unidades_${productoId}_${talla}`).value = nueva_cantidad; //Se actualiza el input del carrito, no de la lista, el de la lista de actualiza si mandas el producto desde ahí
+        document.getElementById(`total_${productoId}_${talla}`).innerText = "$" + (precio_real * nueva_cantidad);
         console.log(carritolist)
     } else if(nueva_cantidad > maxValue){ //en caso de que las unidades colocadas superen a la actual
         carritolist[index] = {
             ...carritolist[index], // Mantiene las propiedades existentes
             cantidad: maxValue, // Actualiza el valor de cantidad
         };
-        document.getElementById(`unidades_${productoId}`).value = maxValue;
-        document.getElementById(`total_${productoId}`).innerText = "$" + (precio_real * maxValue);
+        document.getElementById(`unidades_${productoId}_${talla}`).value = maxValue;
+        document.getElementById(`total_${productoId}_${talla}`).innerText = "$" + (precio_real * maxValue);
         console.log(carritolist)
     }
-    actualiazartotal()
+    actualiazartotal();
 }
 
 function actualiazartotal(){
@@ -90,6 +101,7 @@ function agregarAlCarrito(productoId) {
     const talla = document.getElementById(`sel_talla_${productoId}`)?.value || document.getElementById(`span_talla_${productoId}`).innerText;
     const input_cantidad = document.getElementById(`cantidad_${productoId}`);
     const maxValue = parseInt(input_cantidad.getAttribute('max'));
+    console.log(`El maximo actual es ${maxValue}`);
     let cantidad = parseInt(input_cantidad.value);
     const index = carritolist.findIndex(item => item.id === productoId && item.talla === talla);
     if (index != -1){
@@ -103,20 +115,23 @@ function agregarAlCarrito(productoId) {
         const precio_total = parseFloat(productoPrecio.replace('$', '')) * cantidad;
 
         const filaCarrito = document.createElement("tr");
-        filaCarrito.id = `carrito_${productoId}`;
+        filaCarrito.id = `carrito_${productoId}_${talla}`; //para que cada producto sea único
         filaCarrito.innerHTML = `
             <td><div class="contenedor-square" ><img id="img_${productoId}" src="${producto_archivo}" class="cuadrada"></div></td>
             <td>${productoNombre}</td>
             <td>${talla}</td>
             <td>
-                <div class="number-control">
-                    <div class="number-left" onclick='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}", "menos")'></div>
-                    <input type="number" name="number" min="1" max="${maxValue}" class="number-quantity" id="unidades_${productoId}" autocomplete="off" value="${cantidad}" oninput="actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}", "otro")">
-                    <div class="number-right" onclick='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}", "mas1")'></div>
+                <div class="tooltip-container">
+                    <span class="tooltip">Maximum value: ${maxValue}</span>
+                    <div class="number-control">
+                        <div class="number-left" onclick='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}_${talla}", "menos")'></div>
+                        <input type="number" name="number" min="1" max="${maxValue}" class="number-quantity" id="unidades_${productoId}_${talla}" autocomplete="off" value="${cantidad}" oninput='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}_${talla}", "otro")'>
+                        <div class="number-right" onclick='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}_${talla}", "mas1")'></div>
+                    </div>
                 </div>
             </td>
-            <td class="precio" id='total_${productoId}'>$${precio_total}</td>
-            <td><button type="button" onclick="eliminarDelCarrito('${productoId}')">Eliminar</button></td>
+            <td class="precio" id='total_${productoId}_${talla}'>$${precio_total}</td>
+            <td><button type="button" onclick="eliminarDelCarrito('${productoId}','${talla}')">Eliminar</button></td>
         `;
         carritolist.push({ id: productoId, cantidad: cantidad, talla: talla });
         console.log(carritolist);
@@ -126,17 +141,27 @@ function agregarAlCarrito(productoId) {
     }
 }
 
-function eliminarDelCarrito(productoId) {
-    const filaCarrito = document.getElementById(`carrito_${productoId}`);
+function eliminarDelCarrito(productoId, talla) {
+    const filaCarrito = document.getElementById(`carrito_${productoId}_${talla}`);
     if (filaCarrito) {
         filaCarrito.remove();
     }
-    const indexToRemove = carritolist.findIndex(item => item.id === productoId);
+    const indexToRemove = carritolist.findIndex(item => item.id === productoId && item.talla === talla);
     if (indexToRemove !== -1) {
         carritolist.splice(indexToRemove, 1);
     }
-    actualiazartotal()
-    console.log(carritolist)
+    actualiazartotal();
+    console.log(carritolist);
+}
+
+function vaciarCarrito(){
+    if (confirm("¿Estás seguro de que deseas vaciar el carrito?")) {
+        const carrito = document.querySelector("#tablaCarrito tbody");
+        carrito.innerHTML = ''; 
+        carritolist.length = 0;
+        actualiazartotal();
+        console.log(carritolist);
+    }
 }
 
 function aplicarFiltros() {
@@ -178,11 +203,14 @@ function aplicarFiltros() {
                         <td>${producto.color}</td>
                         <td><span id="stock_${producto.id}">${producto.variantes[0].stock}</span></td>
                         <td>
-                        <div class="number-control">
-                            <div class="number-left" onclick='disminuirvalor("cantidad_${producto.id}")'></div>
-                            <input type="number" name="number" min="1" max="${producto.variantes[0].stock}" class="number-quantity" id="cantidad_${producto.id}" autocomplete="off" value="1">
-                            <div class="number-right" onclick='aumentarvalor("cantidad_${producto.id}")'></div>
-                        </div>
+                            <div class="tooltip-container">
+                                <span class="tooltip" id="tooltip_${producto.id}">Maximum value: ${producto.variantes[0].stock}</span>
+                                <div class="number-control">
+                                    <div class="number-left" onclick='disminuirvalor("cantidad_${producto.id}")'></div>
+                                    <input type="number" name="number" min="1" max="${producto.variantes[0].stock}" class="number-quantity" id="cantidad_${producto.id}" autocomplete="off" value="1">
+                                    <div class="number-right" onclick='aumentarvalor("cantidad_${producto.id}")'></div>
+                                </div>
+                            </div>
                         </td>
                         <td>
                         <div>
@@ -199,4 +227,16 @@ function aplicarFiltros() {
 
         })
         .catch(error => console.error("Error:", error));
+}
+
+function prepareSelectedProducts() {  
+    // Crear un campo oculto para enviar el arreglo de seleccionados
+    hiddenField = document.createElement("input");
+    hiddenField.type = "hidden";
+    hiddenField.name = "seleccionados";
+    hiddenField.id = "hiddenSeleccionados";
+    hiddenField.value = JSON.stringify(carritolist); // Convertir el arreglo a JSON
+    document.getElementById("ventaForm").appendChild(hiddenField);
+
+    return true; // Permitir el envío del formulario
 }

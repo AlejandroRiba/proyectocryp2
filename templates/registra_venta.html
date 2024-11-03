@@ -16,11 +16,6 @@
 
     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
     <h1>REGISTRAR VENTA</h1>
-    <div class="number-control">
-        <div class="number-left"></div>
-        <input type="number" name="number" min="1" class="number-quantity" autocomplete="off" value="1">
-        <div class="number-right"></div>
-    </div><br><br>
     <!-- Campos de Búsqueda y Filtro -->
     <input type="text" id="buscador" placeholder="Buscar producto" onkeyup="aplicarFiltros()">
     <select id="filtroCategoria" onchange="aplicarFiltros()">
@@ -70,10 +65,13 @@
                         <span id="stock_{{producto.id}}">{{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
                     </td>
                     <td>
-                        <div class="number-control">
-                            <div class="number-left" onclick='disminuirvalor("cantidad_{{producto.id}}")'></div>
-                            <input type="number" name="number" min="1" max="{{ producto.variantes[0].stock if producto.variantes else 0 }}" class="number-quantity" id="cantidad_{{producto.id}}" autocomplete="off" value="1">
-                            <div class="number-right" onclick='aumentarvalor("cantidad_{{producto.id}}")'></div>
+                        <div class="tooltip-container">
+                            <span class="tooltip" id="tooltip_{{producto.id}}">Maximum value: {{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
+                            <div class="number-control">
+                                <div class="number-left" onclick='disminuirvalor("cantidad_{{producto.id}}")'></div>
+                                <input type="number" name="number" min="1" max="{{ producto.variantes[0].stock if producto.variantes else 0 }}" class="number-quantity" id="cantidad_{{producto.id}}" autocomplete="off" value="1">
+                                <div class="number-right" onclick='aumentarvalor("cantidad_{{producto.id}}")'></div>
+                            </div>
                         </div>
                     </td>
                     <td>
@@ -118,85 +116,22 @@
                     <!-- Aquí se añadirán los productos seleccionados -->
                 </tbody>
             </table>
-            <p id="total_carrito">Total de la compra:</p>
+            <p id="total_carrito">Total: $0</p>
+            <button type="button" onclick="vaciarCarrito()">Delete All Items</button><br><br>
         </div>
         <div class="button-box">
             <button type="submit">Ok</button>
         </div>
     </form>
     <!-- TERMINA CONTENIDO DE PÁGINA -->
-
+    <div class="number-control">
+        <span class="tooltip">Uiverse.io</span>
+        <span class="text">Tooltip</span>
+    </div>
+      
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
-
-    <script>
-
-        function prepareSelectedProducts() {
-            const checkboxes = document.querySelectorAll(".producto-checkbox");
-            const seleccionados = []; // Arreglo para productos seleccionados
-
-            // Recorrer cada checkbox para construir el arreglo seleccionados
-            for (const checkbox of checkboxes) {
-                if (checkbox.checked) {
-                    const productoId = checkbox.value;
-                    const cantidadInput = document.getElementById(checkbox.getAttribute("data-cantidad"));
-                    const cantidad = parseInt(cantidadInput.value, 10);
-
-                    // Obtener la talla según el número de variantes
-                    let talla;
-                    let tallaSelect = document.getElementById(`sel_talla_${productoId}`);
-                    const spanStock = document.getElementById(`stock_${productoId}`);
-                    if (tallaSelect) {  // Si existe el select (múltiples variantes)
-                        talla = tallaSelect.value;
-                    } else {  // Si no, obtener el texto de la talla fija
-                        tallaSelect = document.getElementById(`span_talla_${productoId}`);
-                        talla = tallaSelect.textContent;
-                    }
-
-                    // Validar que la cantidad sea mayor a 0
-                    if (cantidad && cantidad > 0) {
-                        seleccionados.push({ id: productoId, cantidad: cantidad, talla: talla });
-                    } else {
-                        alert("Por favor, ingresa una cantidad mayor a 0 para cada producto seleccionado.");
-                        return false;
-                    }
-                }
-            }
-
-            if (seleccionados.length === 0) {
-                alert("Debes seleccionar al menos un producto con una cantidad mayor a 0.");
-                return false;
-            }
-
-            // Eliminar nombres de los checkboxes y campos de cantidad seleccionados para evitar su envío
-            for (const checkbox of checkboxes) {
-                if (checkbox.checked) {
-                    checkbox.removeAttribute("name");
-                    const cantidadInput = document.getElementById(checkbox.getAttribute("data-cantidad"));
-                    cantidadInput.removeAttribute("name");
-                }
-            }
-
-            // Remover campo oculto previo si existe para evitar duplicados
-            let hiddenField = document.getElementById("hiddenSeleccionados");
-            if (hiddenField) {
-                hiddenField.remove();
-            }
-
-            // Crear un campo oculto para enviar el arreglo de seleccionados
-            hiddenField = document.createElement("input");
-            hiddenField.type = "hidden";
-            hiddenField.name = "seleccionados";
-            hiddenField.id = "hiddenSeleccionados";
-            hiddenField.value = JSON.stringify(seleccionados); // Convertir el arreglo a JSON
-            document.getElementById("ventaForm").appendChild(hiddenField);
-
-            return true; // Permitir el envío del formulario
-        }
-
-        
-    </script>
     <script src="static/ventas.js" ></script>
 </body>
 </html>
