@@ -5,10 +5,11 @@ from models.Producto import Producto, modificar_salidas_producto, modificar_stoc
 from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin, obtener_empleados
 from models.Cliente import crear_cliente_con_tarjeta, obtener_cliente_por_tel
 from models.Transaccion import crear_transaccion_con_detalles, consulta_transacciones, transacciones_por_empleado
+from models.Reporte import obtener_reportes_por_empleado
 from datetime import datetime
 import pyFunctions.mainfunc as mainfunc
 import os
-from pyFunctions.reportepdf import generar_informe_ventas_mensual, verificar_firma
+from pyFunctions.reportepdf import generar_informe_ventas_mensual, verificar_firma, obtener_archivo_por_id_y_fecha, obtener_empleado_id_de_nombre_archivo
 import secrets
 import re
 import json
@@ -208,16 +209,48 @@ def editar_empleado():
 # Ruta para consultar informes
 @app.route('/consulta_informes', methods=['GET'])
 def consulta_informes():
-    if ('username' in session): #si ya hay una sesión iniciada
-        username = session['username']
-        try:
-            files = [f for f in os.listdir(REPORTS_DIR) if os.path.isfile(os.path.join(REPORTS_DIR, f))]
-        except FileNotFoundError:
-            files = []  # Si no existe la carpeta, devuelve una lista vacía
-
-        return render_template('consulta_informes.html', status=username, files=files)
-    else:
+    if not 'username' in session:
         return redirect('/')
+    
+    username = session['username']
+    employee = obtener_usuario_por_id(username)
+
+    if employee.cargo == 'Employee':
+        reportes = obtener_reportes_por_empleado(employee.id)
+        files = []
+        for reporte in reportes:
+            file = obtener_archivo_por_id_y_fecha(REPORTS_DIR, employee.id, reporte.fecha.year, reporte.fecha.month)
+            if file:
+                files.append(file)
+        return render_template('consulta_informes.html', status=username, files=files)
+
+    else:
+        employees = obtener_empleados()
+        all_files = {}
+
+        for employee in employees:
+            reportes = obtener_reportes_por_empleado(employee.id)
+            employee_files = []
+            for reporte in reportes:
+                file = obtener_archivo_por_id_y_fecha(REPORTS_DIR, employee.id, reporte.fecha.year, reporte.fecha.month)
+                if file:
+                    employee_files.append(file)
+            if employee_files:
+                all_files[employee.nombre] = employee_files
+        return render_template('consulta_informes_admin.html', status=username, all_files=all_files)
+    
+@app.route('/verificar_firma_de_archivo/<filename>', methods=['POST'])
+def verificar_firma_de_archivo(filename):
+    empleado_id = request.form.get('empleado_id')
+
+    es_valida = verificar_firma(filename, obtener_empleado_id_de_nombre_archivo(filename))
+
+    if es_valida:
+        flash('La firma es válida.', 'success')
+    else:
+        flash('La firma no es válida.', 'danger')
+
+    return redirect(url_for('consulta_informes'))
     
 @app.route('/download_report/<filename>')
 def download_report(filename):

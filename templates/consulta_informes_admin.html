@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="static/images/logosmall.ico">
+    <title>R&R REPORTS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+</head>
+<body>
+
+    <!-- Footer -->
+    {% include "shared/navbar.html" %}
+    <!-- Footer -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+
+    <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+    <h1>CONSULTA INFORMES</h1>
+    <ul>
+        {% if all_files %}
+            {% for employee_name, files in all_files.items() %}
+                <h3>Reportes de {{ employee_name }}</h3>
+                <ul>
+                    {% for file in files %}
+                        <li>
+                            <a href="{{ url_for('download_report', filename=file) }}" download>{{ file }}</a>
+                            <form action="{{ url_for('verificar_firma_de_archivo', filename=file) }}" method="POST" style="display: inline;">
+                                <button type="submit">Verificar Firma</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        {% else %}
+            <p>No hay reportes disponibles.</p>
+        {% endif %}
+        <button onclick="redireccion('/generar_informe')">New Report</button>
+    </ul>
+    <!-- TERMINA CONTENIDO DE PÁGINA -->
+    <!-- Footer -->
+    {% include "shared/footer.html" %}
+    <!-- Footer -->
+    <script src="static/app.js" ></script>
+</body>
+</html>
