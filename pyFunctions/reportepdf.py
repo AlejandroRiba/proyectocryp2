@@ -1,11 +1,11 @@
 from datetime import datetime
+import re
 from models.Database import getDatabase
 from models.Usuario import Usuario, obtener_usuario_por_id
 from models.Transaccion import Transaccion
 from models.DetalleTransaccion import DetalleTransaccion
 from models.Producto import Producto
 from models.Cliente import Cliente
-import datetime
 from reportlab.platypus import Paragraph, Image
 from reportlab.lib.units import cm
 import os
@@ -16,8 +16,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.graphics.shapes import Drawing, Line
 from reportlab.pdfgen import canvas
-from datetime import datetime
 from pyFunctions.cryptoUtils import sign_message_ECDSA, verify_signature_ECDSA
+from models.Reporte import crear_reporte
 
 # Define la ruta base para el directorio de imágenes
 BASE_IMAGE_PATH = os.path.join("static", "images", "products")
@@ -241,10 +241,7 @@ def verificar_firma(pdf_filename, empleado_id):
     public_key = usuario.publickey
 
     verificado = verify_signature_ECDSA(public_key, pdf_content, firma)
-    if verificado:
-        print('firma verificada con éxito')
-    else:
-        print('firma desconocida')
+    return verificado
     
 
 def generar_informe_ventas_mensual(empleado_id, year, month, private_key):
@@ -254,6 +251,25 @@ def generar_informe_ventas_mensual(empleado_id, year, month, private_key):
         generar_pdf_ventas(ventas, pdf_filename)
         pdf_file = os.path.join(PDF_PATH, pdf_filename)
         agregar_firma(pdf_file, private_key)
+        crear_reporte(empleado_id, datetime.now().date())
         return True, None
     else: 
         return False, flash_message
+
+def obtener_archivo_por_id_y_fecha(directorio, id_empleado, año, mes):
+    patron_fecha = f"{año}-{mes:02d}"  # Formatear el mes con dos dígitos
+    for archivo in os.listdir(directorio):
+        if (
+            archivo.startswith(f"monthlyreport_{id_empleado}_") and
+            patron_fecha in archivo and
+            archivo.endswith(".pdf")
+        ):
+            return archivo  # Devuelve el archivo en cuanto se encuentra
+    return None  # Si no se encuentra ningún archivo, devuelve None
+
+def obtener_empleado_id_de_nombre_archivo(filename):
+    # Suponiendo que el formato del nombre del archivo es 'monthlyreport_<ID>_<año>-<mes>'
+    match = re.match(r'monthlyreport_(\d+)_(\d{4})-(\d{2})', filename)
+    if match:
+        return match.group(1)  # Devuelve el ID del empleado
+    return None
