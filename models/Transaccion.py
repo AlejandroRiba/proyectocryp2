@@ -55,7 +55,15 @@ def crear_transaccion_con_detalles(empleado_id, fecha, monto, productos, tarjeta
     
 
 def consulta_transacciones():
-    return Transaccion.query.all()
+    transacciones = Transaccion.query.all()
+    if not transacciones:
+        return None
+    return transacciones
+
 
 def transacciones_por_empleado(id):
-    return Transaccion.query.filter_by(empleado_id = id)
+    transacciones = Transaccion.query.filter_by(empleado_id = id).all()
+    if transacciones:
+        return transacciones
+    else:
+        return None

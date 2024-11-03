@@ -32,3 +32,11 @@ def obtener_tarjeta_por_numero(numero_tarjeta):
     else:
         print(f'Tarjeta con número {numero_tarjeta} no encontrada.')
         return None
+
+def obtener_clave_tarjeta(numero_tarjeta):
+    tarjeta = Tarjeta.query.filter_by(numero_tarjeta=numero_tarjeta).first()
+    if tarjeta:
+        return tarjeta.clave
+    else:
+        print(f'Clave no encontrada para la tarjeta con número {numero_tarjeta}.')
+        return None

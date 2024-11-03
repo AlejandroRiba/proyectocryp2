@@ -6,6 +6,7 @@ from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin, ob
 from models.Cliente import crear_cliente_con_tarjeta, obtener_cliente_por_tel
 from models.Transaccion import crear_transaccion_con_detalles, consulta_transacciones, transacciones_por_empleado
 from models.Reporte import obtener_reportes_por_empleado
+from models.Tarjeta import obtener_clave_tarjeta
 from datetime import datetime
 import pyFunctions.mainfunc as mainfunc
 import os
@@ -241,7 +242,6 @@ def consulta_informes():
     
 @app.route('/verificar_firma_de_archivo/<filename>', methods=['POST'])
 def verificar_firma_de_archivo(filename):
-    empleado_id = request.form.get('empleado_id')
 
     es_valida = verificar_firma(filename, obtener_empleado_id_de_nombre_archivo(filename))
 
@@ -434,18 +434,24 @@ def consulta_venta():
         #manejar la lógica
         return redirect('/')
     else:
-        if ('username' in session): #si ya hay una sesión iniciada
-            username = session['username']
-            if username == 'admin':
-                transacciones = consulta_transacciones()
-            else:
-                transacciones = transacciones_por_empleado(username).all()
-                
-            if not transacciones:
-                transacciones = None
-            return render_template('consulta_venta.html', status=username, transacciones=transacciones)
-        else:
+        if not ('username' in session):
             return redirect('/')
+        
+        username = session['username']
+        employee = obtener_usuario_por_id(username)
+
+        if employee.cargo == 'Employee':
+            transacciones = transacciones_por_empleado(username).all()
+            return render_template('consulta_venta.html', status=username, transacciones=transacciones)
+
+        private_key = session['private_key']
+        transacciones = consulta_transacciones()
+        for transaccion in transacciones:
+            llave_cifrada = obtener_clave_tarjeta(transaccion.tarjeta.numero_tarjeta)
+            tarjeta = mainfunc.descifrar_tarjeta(transaccion.tarjeta.numero_tarjeta, private_key, llave_cifrada)
+            transaccion.tarjeta.numero_tarjeta = tarjeta
+                
+        return render_template('consulta_venta.html', status=username, transacciones=transacciones)
         
         
 # Ruta para generar un informe
