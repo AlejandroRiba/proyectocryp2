@@ -1,0 +1,130 @@
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-control {
+    display: flex;
+    align-items: center;
+    --main-focus: #2d8cf0;
+    --font-color: #323232;
+    --bg-color-sub: #dedede;
+    --bg-color: #eee;
+    --main-color: #323232;
+    position: relative;
+    width: 100px;
+    height: 35px;
+    cursor: pointer;
+    border: 2px solid var(--main-color);
+    box-shadow: 4px 4px var(--main-color);
+    background-color: var(--bg-color);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.number-control:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px var(--main-color);
+}
+  
+.number-left::before,
+.number-right::after {
+    content: attr(data-content);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 40px;
+    color: black;
+    cursor: pointer;
+}
+  
+.number-left::before {
+    content: "-";
+    padding: 1px;
+}
+  
+.number-right::after {
+    content: "+";
+    padding: 1px;
+}
+  
+.number-quantity {
+    padding: 1px;
+    border: 0;
+    width: 35px;
+    height: 35px;
+    background-color: transparent;
+    text-align: center;
+}
+  
+.number-left:hover::before,
+.number-right:hover::after {
+    background-color: #dedede;
+}
+
+/* BOTÓN AGREGAR ITEM */ 
+.button_item {
+    --main-focus: #2d8cf0;
+    --font-color: #323232;
+    --bg-color-sub: #dedede;
+    --bg-color: #eee;
+    --main-color: #323232;
+    position: relative;
+    width: 150px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--main-color);
+    box-shadow: 4px 4px var(--main-color);
+    background-color: var(--bg-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+  
+.button_item, .button_item__icon, .button_item__text {
+    transition: all 0.3s;
+}
+  
+.button_item .button_item__text {
+    transform: translateX(22px);
+    color: var(--font-color);
+    font-weight: 600;
+}
+  
+.button_item .button_item__icon {
+    position: absolute;
+    transform: translateX(100px);
+    height: 100%;
+    width: 39px;
+    background-color: var(--bg-color-sub);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+.button_item .svg {
+    width: 20px;
+    fill: var(--main-color);
+}
+  
+.button_item:hover {
+    background: var(--bg-color);
+}
+  
+.button_item:hover .button_item__text {
+    color: transparent;
+}
+  
+.button_item:hover .button_item__icon {
+    width: 148px;
+    transform: translateX(0);
+}
+  
+.button_item:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px var(--main-color);
+}
