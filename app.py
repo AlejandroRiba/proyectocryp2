@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, request, redirect, send_file, url_for, make_response, flash, jsonify, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
-from models.Producto import modificar_salidas_producto, modificar_stock_variante, obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes, obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
+from models.Producto import Producto, modificar_salidas_producto, modificar_stock_variante, obtener_productos, crear_producto_con_variantes, obtener_producto_por_id, delete_product, editar_producto_con_variantes, obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
 from models.Usuario import obtener_usuario_por_id, confirma_existencia_admin, obtener_empleados
 from models.Cliente import crear_cliente_con_tarjeta, obtener_cliente_por_tel
 from models.Transaccion import crear_transaccion_con_detalles, consulta_transacciones, transacciones_por_empleado
@@ -439,6 +439,33 @@ def generar_informe():
         else:
             return redirect('/')
         
+@app.route('/filtrar_productos', methods=['GET'])
+def filtrar_productos():
+    nombre = request.args.get('nombre', '')
+    categoria = request.args.get('categoria', '')
+
+    query = db.session.query(Producto)
+    
+    if nombre:
+        query = query.filter(Producto.nombre.ilike(f"%{nombre}%"))
+    if categoria:
+        query = query.filter(Producto.categoria == categoria)
+
+    productos = query.all()
+    
+    # Convertimos los productos en un formato adecuado para JSON
+    productos_data = [{
+        "id": producto.id,
+        "archivo": producto.archivo,
+        "nombre": producto.nombre,
+        "precio": producto.precio,
+        "categoria": producto.categoria,
+        "variantes": [{"talla": variante.talla, "stock": variante.stock} for variante in producto.variantes] if producto.variantes else [{"talla": "", "stock": 0}],
+        "color": producto.color
+    } for producto in productos]
+
+    return jsonify({"productos": productos_data})
+
 
 @app.route('/logout')
 def logout():

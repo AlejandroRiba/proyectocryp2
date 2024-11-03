@@ -15,6 +15,16 @@
 
     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
     <h1>REGISTRAR VENTA</h1>
+
+    <!-- Campos de Búsqueda y Filtro -->
+    <input type="text" id="buscador" placeholder="Buscar producto" onkeyup="aplicarFiltros()">
+    <select id="filtroCategoria" onchange="aplicarFiltros()">
+        <option value="">Todas las categorías</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Accessories">Accessories</option>
+        <!-- Agrega más opciones según tus categorías -->
+    </select>
+
     <form id="ventaForm" method="post" action="/procesar_venta" onsubmit="return prepareSelectedProducts()">
         <input type="text" id="nombre" name="nombre" required>
         <label for="nombre">Name</label><br>
@@ -81,6 +91,44 @@
     <!-- Footer -->
 
     <script>
+        function aplicarFiltros() {
+            const nombre = document.getElementById("buscador").value;
+            const categoria = document.getElementById("filtroCategoria").value;
+
+            fetch(`/filtrar_productos?nombre=${nombre}&categoria=${categoria}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.querySelector("tbody");
+                    tbody.innerHTML = "";  // Limpiamos las filas existentes
+
+                    data.productos.forEach(producto => {
+                        const fila = document.createElement("tr");
+                        fila.innerHTML = `
+                            <td><div class="contenedor-square"><img src="static/images/products/${producto.archivo}" class="cuadrada"></div></td>
+                            <td>${producto.nombre}</td>
+                            <td>$${producto.precio}</td>
+                            <td>${producto.categoria}</td>
+                            <td>
+                                ${producto.variantes.length > 1 ? 
+                                    `<select id="sel_talla_${producto.id}" name="talla_${producto.id}" onchange="actualizarStock('${producto.id}')">
+                                        ${producto.variantes.map(variante => 
+                                            `<option value="${variante.talla}" data-stock="${variante.stock}">${variante.talla}</option>`).join('')}
+                                     </select>` 
+                                     : `<span id="span_talla_${producto.id}" data-stock="${producto.variantes[0].stock}">${producto.variantes[0].talla}</span>`
+                                }
+                            </td>
+                            <td>${producto.color}</td>
+                            <td><span id="stock_${producto.id}">${producto.variantes[0].stock}</span></td>
+                            <td><input type="number" min="1" max="${producto.variantes[0].stock}" placeholder="Cantidad" id="cantidad_${producto.id}"></td>
+                            <td><input type="checkbox" value="${producto.id}" class="producto-checkbox" data-cantidad="cantidad_${producto.id}"></td>
+                        `;
+                        tbody.appendChild(fila);
+                    });
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+
         function prepareSelectedProducts() {
             const checkboxes = document.querySelectorAll(".producto-checkbox");
             const seleccionados = []; // Arreglo para productos seleccionados
