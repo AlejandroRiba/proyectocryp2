@@ -421,11 +421,12 @@ input[type="number"]::-webkit-outer-spin-button {
   justify-content: flex-end;
   width: 300px;
   height: 180px;
-  background-image: radial-gradient(
+  /* background-image: radial-gradient(
     circle 897px at 9% 80.3%,
     rgb(17, 153, 119) 0%,
     rgba(73, 15, 234, 0.9) 100.2%
-  );
+  ); */
+  background: linear-gradient(212deg, rgba(119,119,119,1) 0%, rgba(99,99,99,1) 35%, rgba(22,63,71,1) 100%);
   border-radius: 10px;
   padding: 20px;
   font-family: Arial, Helvetica, sans-serif;
@@ -458,7 +459,7 @@ input[type="number"]::-webkit-outer-spin-button {
   outline: none;
   color: white;
   caret-color: red;
-  font-size: 13px;
+  font-size: 16px;
   height: 25px;
   letter-spacing: 1.5px;
 }
@@ -474,10 +475,11 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .input-label {
-  font-size: 8px;
+  font-size: 13px;
   letter-spacing: 1.5px;
   color: #e2e2e2;
   width: 100%;
+  font-weight: bold;
 }
 
   

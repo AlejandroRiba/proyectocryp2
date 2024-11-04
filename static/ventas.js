@@ -208,7 +208,7 @@ function aplicarFiltros() {
                 const fila = document.createElement("tr");
                 fila.innerHTML = `
                     <td colspan="10" style="text-align: center; color: red; border-left: none; border-right: none">
-                        No results found for this search. If searching by ID, please make sure to enter the complete ID.
+                        No results found for this search.
                     </td>
                 `;
                 tbody.appendChild(fila);
@@ -291,37 +291,33 @@ function aplicarFiltros() {
         .catch(error => console.error("Error:", error));
 }
 
-function luhnCheck(cardNumber) {
-    // Elimina los espacios y convierte a una lista de números
-    const digits = cardNumber.replace(/\s+/g, '').split('').map(Number);
-    let sum = 0;
-    const isOddLength = digits.length % 2 === 1;
-
-    for (let i = 0; i < digits.length; i++) {
-        let digit = parseInt(digits[i]);
-
-        // Duplicar el dígito si su índice es impar
-        if ((i % 2 === (isOddLength ? 0 : 1))) {
-            digit *= 2;
-            // Restar 9 si el resultado es mayor que 9
-            if (digit > 9) {
-                digit -= 9;
-            }
-        }
-
-        // Sumar el dígito al total
-        sum += digit;
+function luhnCheck(cardNo) {
+    let nDigits = cardNo.length;
+ 
+    let nSum = 0;
+    let isSecond = false;
+    for (let i = nDigits - 1; i >= 0; i--){
+ 
+        let d = cardNo[i].charCodeAt() - '0'.charCodeAt();
+ 
+        if (isSecond == true)
+            d = d * 2;
+        // We add two digits to handle
+        // cases that make two digits
+        // after doubling
+        nSum += parseInt(d / 10, 10);
+        nSum += d % 10;
+ 
+        isSecond = !isSecond;
     }
-
-    // Verificar si la suma es un múltiplo de 10
-    return sum % 10 === 0; // Devuelve true si es válido, false si no lo es
+    console.log(nSum);
+    return (nSum % 10 == 0);
 }
 
 function prepareSelectedProducts() {  
     const phone = document.getElementById('numero');
     const tarjeta = document.getElementById('card');
     let tarjeta_value = tarjeta.value.replace(/\s/g, '');
-    tarjeta.value = tarjeta_value;
     if (carritolist.length === 0) {
         console.log("La lista está vacía.");
         alert('Selecciona al menos un producto.');
@@ -340,7 +336,7 @@ function prepareSelectedProducts() {
         hiddenField.id = "hiddenSeleccionados";
         hiddenField.value = JSON.stringify(carritolist); // Convertir el arreglo a JSON
         document.getElementById("ventaForm").appendChild(hiddenField);
-
+        tarjeta.value = tarjeta_value; //se manda el valor de los numeros de tarjeta sin espacios
         return false; // Permitir el envío del formulario //POR AHORA IMPIDO EL ENVIO DEL FORMULARIO PARA PROBAR LA FUNCIÓN
     }
 }
@@ -351,10 +347,12 @@ function ocultarProductos(input){
     if(tabla && tabla1){
         if(tabla.style.display === 'none' || tabla.style.display === ''){
             tabla.style.display = 'block'; //se muestran los productos
-            tabla1.style.display = 'none';
+            tabla1.style.display = 'none'; //se oculta el carrito
             document.getElementById('btn_shcart').classList.remove('active');
         }else{
-            tabla.style.display = 'none';
+            tabla.style.display = 'none'; //se ocultan los productos, se muestra el carrito
+            tabla1.style.display = 'block';
+            document.getElementById('btn_shcart').classList.add('active');
         }
     }
     input.classList.toggle('active');

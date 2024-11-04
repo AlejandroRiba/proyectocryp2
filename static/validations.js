@@ -224,6 +224,8 @@ function detectarTipoTarjeta(input) {
         }else {
             mostrarLogoTarjeta(null); // Limpia el logo si no coincide con ninguna
         }
+    }else{
+        mostrarLogoTarjeta(null); // Limpia el logo si no coincide con ninguna
     }
 }
 
