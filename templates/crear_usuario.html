@@ -39,7 +39,7 @@
     <div class="login-container">
         <div class="login-box login-box2">
             <h1>Sign up</h1><br>
-            <form id="form-signup" method="post" action="{{ url_for('new_user') }}" onsubmit="return validateForm()">
+            <form id="form-signup" method="post" action="{{ url_for('login.new_user') }}" onsubmit="return validateForm()">
                 <div class="container_cols">
                     <div class="columna">
                         <div class="input-box">
@@ -78,7 +78,7 @@
                     <button type="submit">Sign up</button>
                 </div>
                 <div class="links">
-                    <a href="{{ url_for('login_route') }}">Already have an account? Sign in</a>
+                    <a href="{{ url_for('login.login_route') }}">Already have an account? Sign in</a>
                 </div>
             </form>
         </div>
