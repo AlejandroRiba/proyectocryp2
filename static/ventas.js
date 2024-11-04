@@ -3,34 +3,57 @@ function aumentarvalor(inputId){
     const maxValue = parseInt(input.getAttribute('max'));
     console.log(`Input id: ${inputId}`);
     console.log(`Val max: ${maxValue}`);
-    if (input.value == '' || input.value < 1){
-        input.value = 1;
-    }else if(input.value < maxValue){
-        input.value = parseInt(input.value) + 1;
+    if (maxValue > 0){
+        if (input.value == '' || input.value < 1){
+            input.value = 1;
+        }else if(input.value < maxValue){
+            input.value = parseInt(input.value) + 1;
+        }
+    }
+}
+
+function maxValor(input){
+    const maxValue = parseInt(input.getAttribute('max'));
+    if (maxValue > 0){
+        if (input.value == '' || input.value < 1){
+            input.value = 1;
+        }else if(input.value >= maxValue){
+            input.value = maxValue;
+        }else{
+            input.value = 1;
+        }
+    }else{
+        input.value = 0;
     }
 }
 
 function disminuirvalor(inputId){
     const input = document.getElementById(inputId);
-    if (input.value > 1){
-        input.value = parseInt(input.value) - 1;
-    }else if(input.value < 1){
-        input.value = 1;
+    const maxValue = parseInt(input.getAttribute('max'));
+    if (maxValue > 0){
+        if (input.value > 1){
+            input.value = parseInt(input.value) - 1;
+        } else{
+            input.value = 1;
+        }
     }
 }
 
-function actualizarStock(productoId){
-    const selectTalla = document.getElementById(`sel_talla_${productoId}`);
+function actualizarStock(productoId, talla){
+    const selectTalla = document.getElementById(`option_${productoId}_${talla}`);
     const spanStock = document.getElementById(`stock_${productoId}`);
 
     if (selectTalla) {
-        const selectedOption = selectTalla.options[selectTalla.selectedIndex];
-        const stock = selectedOption.getAttribute('data-stock');
+        const stock = selectTalla.getAttribute('data-stock');
         spanStock.innerText = stock; //Se actualiza el stock
         const input_cantidad = document.getElementById(`cantidad_${productoId}`);
         input_cantidad.setAttribute('max', stock); //se actualiza el max stock
         document.getElementById(`tooltip_${productoId}`). innerText = "Maximum value: " + stock; //mensaje de alerta
-        input_cantidad.value = '1';
+        if (stock === 0 || stock === '0'){
+            input_cantidad.value = '0';
+        }else{
+            input_cantidad.value = '1';
+        }
     }
 }
 
@@ -65,7 +88,7 @@ function actualizarCompra(productoId, talla, inputId, tipo){
         cantidad: nueva_cantidad, // Actualiza el valor de cantidad
         };
         document.getElementById(`unidades_${productoId}_${talla}`).value = nueva_cantidad; //Se actualiza el input del carrito, no de la lista, el de la lista de actualiza si mandas el producto desde ahí
-        document.getElementById(`total_${productoId}_${talla}`).innerText = "$" + (precio_real * nueva_cantidad);
+        document.getElementById(`total_${productoId}_${talla}`).innerText = "$" + (precio_real * nueva_cantidad).toFixed(2);
         console.log(carritolist)
     } else if(nueva_cantidad > maxValue){ //en caso de que las unidades colocadas superen a la actual
         carritolist[index] = {
@@ -73,7 +96,7 @@ function actualizarCompra(productoId, talla, inputId, tipo){
             cantidad: maxValue, // Actualiza el valor de cantidad
         };
         document.getElementById(`unidades_${productoId}_${talla}`).value = maxValue;
-        document.getElementById(`total_${productoId}_${talla}`).innerText = "$" + (precio_real * maxValue);
+        document.getElementById(`total_${productoId}_${talla}`).innerText = "$" + (precio_real * maxValue).toFixed(2);
         console.log(carritolist)
     }
     actualiazartotal();
@@ -93,51 +116,58 @@ function actualiazartotal(){
         total += valor; // Suma al total
     });
 
-    parrafo.innerText = 'Total: $' + total;
+    parrafo.innerText = 'Total: $' + total.toFixed(2);
 }
 
 function agregarAlCarrito(productoId) {
     const carrito = document.querySelector("#tablaCarrito tbody");
-    const talla = document.getElementById(`sel_talla_${productoId}`)?.value || document.getElementById(`span_talla_${productoId}`).innerText;
+    const talla = document.querySelector(`input[name="btn_${productoId}"]:checked`).value || document.getElementById(`span_talla_${productoId}`).innerText;
     const input_cantidad = document.getElementById(`cantidad_${productoId}`);
     const maxValue = parseInt(input_cantidad.getAttribute('max'));
     console.log(`El maximo actual es ${maxValue}`);
-    let cantidad = parseInt(input_cantidad.value);
-    const index = carritolist.findIndex(item => item.id === productoId && item.talla === talla);
-    if (index != -1){
-        //EL PRODUCTO YA EXISTE
-        actualizarCompra(productoId, talla, `cantidad_${productoId}`, "mas");
-        input_cantidad.value = '1';
-    }else {
-        const productoNombre = document.getElementById(`name_${productoId}`).innerText;
-        const producto_archivo = document.getElementById(`img_${productoId}`).src;
-        const productoPrecio = document.getElementById(`precio_${productoId}`).innerText;
-        const precio_total = parseFloat(productoPrecio.replace('$', '')) * cantidad;
+    if(maxValue != 0){
+        let cantidad = parseInt(input_cantidad.value);
+        const index = carritolist.findIndex(item => item.id === productoId && item.talla === talla);
+        if (index != -1){
+            //EL PRODUCTO YA EXISTE
+            actualizarCompra(productoId, talla, `cantidad_${productoId}`, "mas");
+            input_cantidad.value = '1';
+        }else {
+            const productoNombre = document.getElementById(`name_${productoId}`).innerText;
+            const producto_archivo = document.getElementById(`img_${productoId}`).src;
+            const productoPrecio = document.getElementById(`precio_${productoId}`).innerText;
+            const precio_total = parseFloat(productoPrecio.replace('$', '')) * cantidad;
 
-        const filaCarrito = document.createElement("tr");
-        filaCarrito.id = `carrito_${productoId}_${talla}`; //para que cada producto sea único
-        filaCarrito.innerHTML = `
-            <td><div class="contenedor-square" ><img id="img_${productoId}" src="${producto_archivo}" class="cuadrada"></div></td>
-            <td>${productoNombre}</td>
-            <td>${talla}</td>
-            <td>
-                <div class="tooltip-container">
-                    <span class="tooltip">Maximum value: ${maxValue}</span>
-                    <div class="number-control">
-                        <div class="number-left" onclick='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}_${talla}", "menos")'></div>
-                        <input type="number" name="number" min="1" max="${maxValue}" class="number-quantity" id="unidades_${productoId}_${talla}" autocomplete="off" value="${cantidad}" oninput='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}_${talla}", "otro")'>
-                        <div class="number-right" onclick='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}_${talla}", "mas1")'></div>
+            const filaCarrito = document.createElement("tr");
+            filaCarrito.id = `carrito_${productoId}_${talla}`; //para que cada producto sea único
+            filaCarrito.innerHTML = `
+                <td><div class="contenedor-square"><img id="img_${productoId}" src="${producto_archivo}" class="cuadrada"></div></td>
+                <td>${productoNombre}</td>
+                <td>${talla}</td>
+                <td>
+                    <div class="tooltip-container">
+                        <span class="tooltip">Maximum value: ${maxValue}</span>
+                        <div class="number-control">
+                            <div class="number-left" onclick='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}_${talla}", "menos")'></div>
+                            <input type="number" name="number" min="1" max="${maxValue}" class="number-quantity" id="unidades_${productoId}_${talla}" autocomplete="off" value="${cantidad}" oninput='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}_${talla}", "otro")'>
+                            <div class="number-right" onclick='actualizarCompra("${productoId}", "${talla}", "unidades_${productoId}_${talla}", "mas1")'></div>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td class="precio" id='total_${productoId}_${talla}'>$${precio_total}</td>
-            <td><button type="button" onclick="eliminarDelCarrito('${productoId}','${talla}')">Eliminar</button></td>
-        `;
-        carritolist.push({ id: productoId, cantidad: cantidad, talla: talla });
-        console.log(carritolist);
-        carrito.appendChild(filaCarrito);
-        input_cantidad.value = '1';
-        actualiazartotal();
+                </td>
+                <td class="precio" id='total_${productoId}_${talla}'>$${precio_total.toFixed(2)}</td>
+                <td>
+                    <button class="button_item" type="button" onclick="eliminarDelCarrito('${productoId}','${talla}')">
+                                    <span class="button_item__text">Drop Item</span>
+                                    <span class="button_item__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg></span>
+                    </button>
+                </td>
+            `;
+            carritolist.push({ id: productoId, cantidad: cantidad, talla: talla });
+            console.log(carritolist);
+            carrito.appendChild(filaCarrito);
+            input_cantidad.value = '1';
+            actualiazartotal();
+        }
     }
 }
 
@@ -166,7 +196,7 @@ function vaciarCarrito(){
 
 function aplicarFiltros() {
     const nombre = document.getElementById("buscador").value;
-    const categoria = document.getElementById("filtroCategoria").value;
+    const categoria = document.querySelector(`input[name="filtro"]:checked`).value
 
     fetch(`/filtrar_productos?nombre=${nombre}&categoria=${categoria}`)
         .then(response => response.json())
@@ -177,7 +207,7 @@ function aplicarFiltros() {
             if (data.productos.length === 0) {
                 const fila = document.createElement("tr");
                 fila.innerHTML = `
-                    <td colspan="9" style="text-align: center; color: red;">
+                    <td colspan="10" style="text-align: center; color: red; border-left: none; border-right: none">
                         No results found for this search. If searching by ID, please make sure to enter the complete ID.
                     </td>
                 `;
@@ -185,19 +215,43 @@ function aplicarFiltros() {
             } else {
                 data.productos.forEach(producto => {
                     const fila = document.createElement("tr");
+                    let stock = producto.variantes[0].stock; // Obtiene el valor de stock
+                    let cantidadInicial = stock > 0 ? 1 : 0; // Define 1 si el stock es mayor a 0, de lo contrario 0
                     fila.innerHTML = `
-                        <td>${producto.id}</td>
+                        <td style="border-left: none;">${producto.id}</td>
                         <td><div class="contenedor-square"><img id="img_${producto.id}" src="static/images/products/${producto.archivo}" class="cuadrada"></div></td>
                         <td id="name_${producto.id}">${producto.nombre}</td>
                         <td id="precio_${producto.id}">$${producto.precio}</td>
                         <td>${producto.categoria}</td>
                         <td>
                             ${producto.variantes.length > 1 ? 
-                                `<select id="sel_talla_${producto.id}" name="talla_${producto.id}" onchange="actualizarStock('${producto.id}')">
-                                    ${producto.variantes.map(variante => 
-                                        `<option value="${variante.talla}" data-stock="${variante.stock}">${variante.talla}</option>`).join('')}
-                                </select>` 
-                                : `<span id="span_talla_${producto.id}" data-stock="${producto.variantes[0].stock}">${producto.variantes[0].talla}</span>`
+                                `<div style="display: flex; padding: 6px 0;">
+                                    ${producto.variantes.map((variante, index) => `
+                                        ${index % 4 === 0 && index !== 0 ? `</div><div style="display: flex; padding: 6px 0;">` : ""}
+                                        <div class="wrapper">
+                                            <div class="option" onclick="actualizarStock('${producto.id}', '${variante.talla}')">
+                                                <input ${index === 0 ? "checked" : ""} id="option_${producto.id}_${variante.talla}" 
+                                                    value="${variante.talla}" data-stock="${variante.stock}" 
+                                                    name="btn_${producto.id}" type="radio" class="input"/>
+                                                <div class="btn">
+                                                    <span class="span">${variante.talla}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>`
+                                : `<div style="display: flex; padding: 6px 0;">
+                                        <div class="wrapper" style="pointer-events: none; cursor: default;">
+                                            <div class="option">
+                                                <input checked id="option_${producto.id}_${producto.variantes[0].talla}" 
+                                                    value="${producto.variantes[0].talla}" data-stock="${producto.variantes[0].stock}" 
+                                                    name="btn_${producto.id}" type="radio" class="input"/>
+                                                <div class="btn">
+                                                    <span class="span">${producto.variantes[0].talla}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>`
                             }
                         </td>
                         <td>${producto.color}</td>
@@ -207,18 +261,26 @@ function aplicarFiltros() {
                                 <span class="tooltip" id="tooltip_${producto.id}">Maximum value: ${producto.variantes[0].stock}</span>
                                 <div class="number-control">
                                     <div class="number-left" onclick='disminuirvalor("cantidad_${producto.id}")'></div>
-                                    <input type="number" name="number" min="1" max="${producto.variantes[0].stock}" class="number-quantity" id="cantidad_${producto.id}" autocomplete="off" value="1">
+                                    <input type="number" name="number" max="${producto.variantes[0].stock}" class="number-quantity" 
+                                    id="cantidad_${producto.id}" autocomplete="off" value="${cantidadInicial}" oninput="maxValor(this)">
                                     <div class="number-right" onclick='aumentarvalor("cantidad_${producto.id}")'></div>
                                 </div>
                             </div>
                         </td>
-                        <td>
-                        <div>
-                            <button class="button_item" type="button" onclick="agregarAlCarrito('${producto.id}')">
-                                <span class="button_item__text">Add Item</span>
-                                <span class="button_item__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
-                            </button>
-                        </div>
+                        <td style="border-right: none;">
+                            <div>
+                                <button class="button_item" type="button" onclick="agregarAlCarrito('${producto.id}')">
+                                    <span class="button_item__text">Add Item</span>
+                                    <span class="button_item__icon">
+                                        <svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" 
+                                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" 
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <line x1="12" x2="12" y1="5" y2="19"></line>
+                                            <line x1="5" x2="19" y1="12" y2="12"></line>
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div>
                         </td>
                     `;
                     tbody.appendChild(fila);
@@ -229,14 +291,86 @@ function aplicarFiltros() {
         .catch(error => console.error("Error:", error));
 }
 
-function prepareSelectedProducts() {  
-    // Crear un campo oculto para enviar el arreglo de seleccionados
-    hiddenField = document.createElement("input");
-    hiddenField.type = "hidden";
-    hiddenField.name = "seleccionados";
-    hiddenField.id = "hiddenSeleccionados";
-    hiddenField.value = JSON.stringify(carritolist); // Convertir el arreglo a JSON
-    document.getElementById("ventaForm").appendChild(hiddenField);
+function luhnCheck(cardNumber) {
+    // Elimina los espacios y convierte a una lista de números
+    const digits = cardNumber.replace(/\s+/g, '').split('').map(Number);
+    let sum = 0;
+    const isOddLength = digits.length % 2 === 1;
 
-    return true; // Permitir el envío del formulario
+    for (let i = 0; i < digits.length; i++) {
+        let digit = parseInt(digits[i]);
+
+        // Duplicar el dígito si su índice es impar
+        if ((i % 2 === (isOddLength ? 0 : 1))) {
+            digit *= 2;
+            // Restar 9 si el resultado es mayor que 9
+            if (digit > 9) {
+                digit -= 9;
+            }
+        }
+
+        // Sumar el dígito al total
+        sum += digit;
+    }
+
+    // Verificar si la suma es un múltiplo de 10
+    return sum % 10 === 0; // Devuelve true si es válido, false si no lo es
+}
+
+function prepareSelectedProducts() {  
+    const phone = document.getElementById('numero');
+    const tarjeta = document.getElementById('card');
+    let tarjeta_value = tarjeta.value.replace(/\s/g, '');
+    tarjeta.value = tarjeta_value;
+    if (carritolist.length === 0) {
+        console.log("La lista está vacía.");
+        alert('Selecciona al menos un producto.');
+        return false;
+    } if(!validarTelefono(phone)){
+        return false;
+    } if (!luhnCheck(tarjeta_value)){ //algoritmo de luhn
+        alert('Tarjeta no valida');
+        return false;
+    }else {
+        console.log("La lista tiene elementos.");
+        // Crear un campo oculto para enviar el arreglo de seleccionados
+        hiddenField = document.createElement("input");
+        hiddenField.type = "hidden";
+        hiddenField.name = "seleccionados";
+        hiddenField.id = "hiddenSeleccionados";
+        hiddenField.value = JSON.stringify(carritolist); // Convertir el arreglo a JSON
+        document.getElementById("ventaForm").appendChild(hiddenField);
+
+        return false; // Permitir el envío del formulario //POR AHORA IMPIDO EL ENVIO DEL FORMULARIO PARA PROBAR LA FUNCIÓN
+    }
+}
+
+function ocultarProductos(input){
+    const tabla = document.getElementById('productostabla');
+    const tabla1 = document.getElementById('carrito');
+    if(tabla && tabla1){
+        if(tabla.style.display === 'none' || tabla.style.display === ''){
+            tabla.style.display = 'block'; //se muestran los productos
+            tabla1.style.display = 'none';
+            document.getElementById('btn_shcart').classList.remove('active');
+        }else{
+            tabla.style.display = 'none';
+        }
+    }
+    input.classList.toggle('active');
+}
+
+function ocultarCarrito(input){
+    const tabla = document.getElementById('carrito');
+    const tabla1 = document.getElementById('productostabla');
+    if(tabla && tabla1){
+        if(tabla.style.display === 'block' || tabla.style.display === ''){
+            tabla.style.display = 'none';
+        }else{
+            tabla.style.display = 'block'; //se muestra el carrito
+            tabla1.style.display = 'none';//se ocultan los productos si es el caso
+            document.getElementById('btn_shproductos').classList.remove('active');
+        }
+    }
+    input.classList.toggle('active');
 }

@@ -252,3 +252,60 @@ input[type="tel"]{
 .checkbox-container input[type="checkbox"]:checked + .custom-checkbox {
     border-color: #ff7d41;
 }
+
+/* CONTENEDOR DE TABLA */
+.contenedor_buscador{
+    margin: 20px auto;
+    width: 90%;
+    height: fit-content;
+    overflow: auto;
+    padding: 10px 30px;
+    background: #252525;
+    color: #b9b9b9;
+    border-radius: 10px;
+}
+
+.contenedor_buscador h1 {
+    color: #fff;
+    font-size:50px;
+    text-align: center;
+}
+
+.contenedor_tabla{
+    background-color: transparent;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.contenedor_tabla table{
+    text-align: center;
+    border-collapse: collapse;
+    border: 0;
+    width: 100%;
+    table-layout: auto;
+}
+
+.contenedor_tabla th, td{
+    padding: 20px 10px;
+    border: 1px rgb(189, 187, 187) solid;
+    font-size: 20px;
+}
+
+/* tabla carrito */
+.contenedor_tabla1{
+    background-color: transparent;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.contenedor_tabla1 table{
+    text-align: center;
+    border-collapse: collapse;
+    border: 0;
+    table-layout: fixed;
+}
+
+.contenedor_tabla1 th, td{
+    padding: 20px 10px;
+    border: 1px rgb(189, 187, 187) solid;
+}

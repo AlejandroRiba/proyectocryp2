@@ -1,0 +1,107 @@
+<div id="productostabla" class="contenedor_tabla" style="display: none;">
+    <table>
+        <thead>
+            <tr>
+                <th style="border-left: none;">ID</th>
+                <th>Img</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Color</th>
+                <th>Stock</th>
+                <th>Units</th>
+                <th style="border-right: none;">Add</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+                <tr>
+                    <td style="border-left: none;">{{ producto.id }}</td>
+                    <td><div class="contenedor-square"><img id="img_{{producto.id}}" src="static/images/products/{{producto.archivo}}" class="cuadrada"></div></td>
+                    <td id="name_{{ producto.id }}">{{ producto.nombre }}</td>
+                    <td id="precio_{{producto.id}}">${{ producto.precio }}</td>
+                    <td>{{ producto.categoria }}</td>
+                    <td>
+                        <div class="centrado">
+                        {% if producto.variantes and producto.variantes|length > 1 %}
+                                {% for variante in producto.variantes %}
+                                    {% if loop.first %}
+                                        <div style="display: flex; padding: 6px 0;"> <!-- Abre el primer contenedor si es el primer elemento -->
+                                            <div class="wrapper">
+                                                <div class="option" onclick="actualizarStock('{{ producto.id }}','{{variante.talla}}')">
+                                                    <input checked="" id="option_{{producto.id}}_{{variante.talla}}" value="{{ variante.talla }}"  data-stock="{{ variante.stock }}" name="btn_{{producto.id}}" type="radio" class="input"/>
+                                                    <div class="btn">
+                                                    <span class="span">{{ variante.talla }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    {% endif %}
+    
+                                    {% if loop.index is divisibleby 4 and not loop.first %}
+                                        <div class="wrapper">
+                                            <div class="option" onclick="actualizarStock('{{ producto.id }}','{{variante.talla}}')">
+                                                <input id="option_{{producto.id}}_{{variante.talla}}" value="{{ variante.talla }}"  data-stock="{{ variante.stock }}" name="btn_{{producto.id}}" type="radio" class="input"/>
+                                                <div class="btn">
+                                                <span class="span">{{ variante.talla }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div> <!-- Aqui cierra el div anterior contenedor -->
+                                        <div style="display: flex; padding: 6px 0;"> <!-- Abre un nuevo contenedor-->
+                                    {% elif not loop.first %}
+                                        <div class="wrapper">
+                                            <div class="option" onclick="actualizarStock('{{ producto.id }}','{{variante.talla}}')">
+                                                <input id="option_{{producto.id}}_{{variante.talla}}" value="{{ variante.talla }}"  data-stock="{{ variante.stock }}" name="btn_{{producto.id}}" type="radio" class="input"/>
+                                                <div class="btn">
+                                                <span class="span">{{ variante.talla }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+    
+                                    {% if loop.last %} <!-- Cierra el contenedor en el último elemento -->
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+    
+                        {% else %}
+                            <div style="display: flex; padding: 6px 0;"> <!-- Abre el primer contenedor si es el primer elemento -->
+                                <div class="wrapper" style="pointer-events: none; cursor: default;">
+                                    <div class="option">
+                                        <input checked="" id="option_{{producto.id}}_{{ producto.variantes[0].talla }}" value="{{ producto.variantes[0].talla }}"  data-stock="{{ producto.variantes[0].stock if producto.variantes else 0 }}" name="btn_{{producto.id}}" type="radio" class="input"/>
+                                        <div class="btn">
+                                        <span class="span">{{ producto.variantes[0].talla }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        </div>
+                    </td>
+                    <td>{{ producto.color }}</td>
+                    <td>
+                        <span id="stock_{{producto.id}}">{{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
+                    </td>
+                    <td>
+                        <div class="tooltip-container">
+                            <span class="tooltip" id="tooltip_{{producto.id}}">Maximum value: {{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
+                            <div class="number-control">
+                                <div class="number-left" onclick='disminuirvalor("cantidad_{{producto.id}}")'></div>
+                                <input type="number" name="number" max="{{ producto.variantes[0].stock if producto.variantes else 0 }}" class="number-quantity" id="cantidad_{{producto.id}}" autocomplete="off" value="{{1 if producto.variantes[0].stock > 0 else 0}}" oninput="maxValor(this)">
+                                <div class="number-right" onclick='aumentarvalor("cantidad_{{producto.id}}")'></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="border-right: none;">
+                        <div>
+                            <button class="button_item" type="button" onclick="agregarAlCarrito('{{producto.id}}')">
+                                <span class="button_item__text">Add Item</span>
+                                <span class="button_item__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

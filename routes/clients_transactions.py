@@ -69,7 +69,7 @@ def consulta_venta():
     employee = obtener_usuario_por_id(username)
 
     if employee.cargo == 'Employee':
-        transacciones = transacciones_por_empleado(username).all()
+        transacciones = transacciones_por_empleado(username)
         return render_template('consulta_venta.html', status=username, transacciones=transacciones)
 
     private_key = session['private_key']

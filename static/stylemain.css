@@ -161,8 +161,13 @@ footer {
 }
 
 .contenedor-square{
-    height: 100px;
+    height: 80px;
+    width: 80px;
+    margin: 0;
     border-radius: 4%;
+    align-items: center;
+    text-align: center;
+    display: inline-block;
 }
 
 .cuadrada{
@@ -175,5 +180,5 @@ footer {
 
 /* Efecto zoom al hacer hover */
 .contenedor-square:hover img {
-    transform: scale(3.5); /* Ajusta el valor para más o menos zoom */
+    transform: scale(3); /* Ajusta el valor para más o menos zoom */
 }

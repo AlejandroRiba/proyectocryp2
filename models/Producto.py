@@ -99,7 +99,7 @@ def obtener_productos():
     return Producto.query.all()
 
 def mas_vendidos():
-    return Producto.query.order_by(Producto.salidas.desc()).limit(5).all()
+    return Producto.query.order_by(Producto.salidas.desc()).limit(4).all()
 
 def obtener_producto_por_id(id):
     return Producto.query.get(id)

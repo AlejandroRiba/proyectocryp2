@@ -6,6 +6,7 @@
     <link rel="icon" href="static/images/logosmall.ico">
     <title>R&R SALE</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css') }}">
 </head>
 <body>
@@ -13,125 +14,83 @@
     <!-- Navbar -->
     {% include "shared/navbar.html" %}
     <!-- Navbar -->
-
     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-    <h1>REGISTRAR VENTA</h1>
-    <!-- Campos de Búsqueda y Filtro -->
-    <input type="text" id="buscador" placeholder="Buscar producto" onkeyup="aplicarFiltros()">
-    <select id="filtroCategoria" onchange="aplicarFiltros()">
-        <option value="best">Best Seller</option>
-        <option value="">All Categories</option>
-        <option value="Clothing">Clothing</option>
-        <option value="Shoes">Shoes</option>
-        <option value="Accessories">Accessories</option>
-        <!-- Agrega más opciones según tus categorías -->
-    </select>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Imagen</th>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Tipo</th>
-                <th>Talla</th>
-                <th>Color</th>
-                <th>Stock</th>
-                <th>Cantidad</th>
-                <th>Seleccionar</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for producto in productos %}
-                <tr>
-                    <td>{{ producto.id }}</td>
-                    <td><div class="contenedor-square"><img id="img_{{producto.id}}" src="static/images/products/{{producto.archivo}}" class="cuadrada"></div></td>
-                    <td id="name_{{ producto.id }}">{{ producto.nombre }}</td>
-                    <td id="precio_{{producto.id}}">${{ producto.precio }}</td>
-                    <td>{{ producto.categoria }}</td>
-                    <td> 
-                        {% if producto.variantes and producto.variantes|length > 1 %}
-                            <select id="sel_talla_{{producto.id}}" name="talla_{{producto.id}}" onchange="actualizarStock('{{ producto.id }}')">
-                                {% for variante in producto.variantes %}
-                                    <option value="{{ variante.talla }}" data-stock="{{ variante.stock }}">{{ variante.talla }}</option>
-                                {% endfor %}
-                            </select>
-                        {% else %}
-                            <span id="span_talla_{{producto.id}}" data-stock="{{ producto.variantes[0].stock if producto.variantes else 0 }}">{{ producto.variantes[0].talla }}</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ producto.color }}</td>
-                    <td>
-                        <span id="stock_{{producto.id}}">{{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
-                    </td>
-                    <td>
-                        <div class="tooltip-container">
-                            <span class="tooltip" id="tooltip_{{producto.id}}">Maximum value: {{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
-                            <div class="number-control">
-                                <div class="number-left" onclick='disminuirvalor("cantidad_{{producto.id}}")'></div>
-                                <input type="number" name="number" min="1" max="{{ producto.variantes[0].stock if producto.variantes else 0 }}" class="number-quantity" id="cantidad_{{producto.id}}" autocomplete="off" value="1">
-                                <div class="number-right" onclick='aumentarvalor("cantidad_{{producto.id}}")'></div>
-                            </div>
+    <div class="contenedor_buscador">
+        <h1>REGISTER SALE</h1>
+        <!-- BUSCADOR Y FILTROS -->
+        {% include "shared/buscador.html" %}
+        <!-- BUSCADOR Y FILTROS -->
+        <!-- TABLA DE PRODUCTOS -->
+        {% include "shared/tablaproductos.html" %}
+        <!-- FIN TABLA DE PRODUCTOS -->
+        <!-- TABLA DE Carrito -->
+        {% include "shared/carrito.html" %}
+        <!-- FIN TABLA carrito -->
+        <form id="ventaForm" method="post" action="/procesar_venta" onsubmit="return prepareSelectedProducts()">
+            <div class="container_cols" style="padding: 30px 0;">
+                <div class="columna">
+                    <div class="input-box">
+                        <input type="text" id="nombre" name="nombre" required oninput="validarLetras(this), this.setCustomValidity('')" title="Customer name" oninvalid="this.setCustomValidity('Customer name')">
+                        <label for="nombre">Customer Name</label><br>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" id="apellido" name="apellido" required oninput="validarLetras(this), this.setCustomValidity('')" title="Customer last name" oninvalid="this.setCustomValidity('Customer last name')">
+                        <label for="apellido">Customer Last Name</label><br>
+                    </div>
+                    <div class="input-box">
+                        <input type="tel" id="numero" name="numero" maxlength="10" oninput="validarNumeros(this), validarTelefono(this)" title="Phone number" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Enter a phone number')" required>
+                        <label for="numero">Customer Phone Number</label><br>
+                        <small id="message1"></small>
+                    </div>
+                </div>
+                <div class="columna" style="text-align: center; align-items: center; justify-items: center;">
+                    <div class="visa-card">
+                        <div class="logoContainer">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            x="0px"
+                            y="0px"
+                            width="30"
+                            height="30"
+                            viewBox="0 0 48 48"
+                            class="svgLogo"
+                          >
+                            <path
+                              fill="#ff9800"
+                              d="M32 10A14 14 0 1 0 32 38A14 14 0 1 0 32 10Z"
+                            ></path>
+                            <path
+                              fill="#d50000"
+                              d="M16 10A14 14 0 1 0 16 38A14 14 0 1 0 16 10Z"
+                            ></path>
+                            <path
+                              fill="#ff3d00"
+                              d="M18,24c0,4.755,2.376,8.95,6,11.48c3.624-2.53,6-6.725,6-11.48s-2.376-8.95-6-11.48 C20.376,15.05,18,19.245,18,24z"
+                            ></path>
+                          </svg>
                         </div>
-                    </td>
-                    <td>
-                        <div>
-                            <button class="button_item" type="button" onclick="agregarAlCarrito('{{producto.id}}')">
-                                <span class="button_item__text">Add Item</span>
-                                <span class="button_item__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
-                            </button>
+                        <div class="number-container" style="text-align: start;">
+                          <label class="input-label" for="cardNumber">CARD NUMBER</label>
+                          <input type="text" id="card" name="card" maxlength="19" required oninput="espacios(this), this.setCustomValidity(''), detectarTipoTarjeta(this)" title="Card number" oninvalid="this.setCustomValidity('Card numer')" placeholder="0000 0000 0000 0000" class="inputstyle" autocomplete="off">
                         </div>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <form id="ventaForm" method="post" action="/procesar_venta" onsubmit="return prepareSelectedProducts()">
-        <input type="text" id="nombre" name="nombre" required>
-        <label for="nombre">Name</label><br>
-        
-        <input type="text" id="apellido" name="apellido" required>
-        <label for="apellido">Last Name</label><br>
-        
-        <input type="tel" id="numero" name="numero" required>
-        <label for="numero">Phone Number</label><br>
-        
-        <input type="text" id="card" name="card" required>
-        <label for="card">Card Number</label><br>
-        <div id="carrito">
-            <h2>Carrito de Productos Seleccionados</h2>
-            <table id="tablaCarrito">
-                <thead>
-                    <tr>
-                        <th>-</th>
-                        <th>Producto</th>
-                        <th>Talla</th>
-                        <th>Cantidad</th>
-                        <th>Precio</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Aquí se añadirán los productos seleccionados -->
-                </tbody>
-            </table>
-            <p id="total_carrito">Total: $0</p>
-            <button type="button" onclick="vaciarCarrito()">Delete All Items</button><br><br>
-        </div>
-        <div class="button-box">
-            <button type="submit">Ok</button>
-        </div>
-    </form>
-    <!-- TERMINA CONTENIDO DE PÁGINA -->
-    <div class="number-control">
-        <span class="tooltip">Uiverse.io</span>
-        <span class="text">Tooltip</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-box">
+                <button class="loading" type="submit"><svg style="display: none;" aria-hidden="true" role="status" class="inline w-4 h-4 mr-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"></path>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentColor"></path>
+                    </svg>Ok</button>
+            </div>
+        </form>
     </div>
-      
+    <!-- TERMINA CONTENIDO DE PÁGINA -->
+    
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
     <script src="static/ventas.js" ></script>
+    <script src="{{ url_for('static', filename='validations.js') }}" ></script>
 </body>
 </html>

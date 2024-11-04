@@ -1,7 +1,7 @@
 import os
 import re
 from flask import Blueprint, jsonify, redirect, render_template, request, session
-
+from sqlalchemy import or_, desc
 from init import getApp
 from models.Database import getDatabase
 from models.Producto import Producto, crear_producto_con_variantes, delete_product, editar_producto_con_variantes, obtener_producto_por_id, obtener_productos
@@ -114,10 +114,16 @@ def filtrar_productos():
             query = query.filter(Producto.id == nombre)
         else:
             # Si no, filtra por `nombre`
-            query = query.filter(Producto.nombre.ilike(f"%{nombre}%"))
+            query = query.filter(
+                            or_(
+                                Producto.nombre.ilike(f"%{nombre}%"),
+                                Producto.color.ilike(f"%{nombre}%"),
+                                Producto.id.ilike(f"%{nombre}%") # Ejemplo de otra columna
+                            )
+                        )
     if categoria:
         if categoria == "best":
-            query = query.order_by(Producto.salidas.desc()).limit(5)
+            query = query.order_by(desc(Producto.salidas)).limit(4)
         else:
             query = query.filter(Producto.categoria == categoria)
 
