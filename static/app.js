@@ -170,7 +170,10 @@ function manejarEnvioFormulario(formId, ruta) {
     const originalText = submitButton.innerText; // Guarda el texto original del botón
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-
+        if (!validateForm(formId)){
+            submitButton.disabled = false; // Habilitar el botón nuevamente
+            return; // Sale de la función
+        }
         // Cambia el texto del botón y lo desactiva
         submitButton.innerText = 'Loading...';
         submitButton.disabled = true;

@@ -322,42 +322,6 @@ function luhnCheck(cardNo) {
     return (nSum % 10 == 0);
 }
 
-function prepareSelectedProducts() {  
-    const phone = document.getElementById('numero');
-    const tarjeta = document.getElementById('card');
-    let tarjeta_value = tarjeta.value.replace(/\s/g, '');
-    if (carritolist.length === 0) {
-        console.log("La lista está vacía.");
-        alert('Selecciona al menos un producto.');
-        return false;
-    } if(!validarTelefono(phone)){
-        return false;
-    } if (!luhnCheck(tarjeta_value)){ //algoritmo de luhn
-        alert('Tarjeta no valida');
-        return false;
-    }else {
-        console.log("La lista tiene elementos.");
-        // Crear un campo oculto para enviar el arreglo de seleccionados
-        hiddenField = document.createElement("input");
-        hiddenField.type = "hidden";
-        hiddenField.name = "seleccionados";
-        hiddenField.id = "hiddenSeleccionados";
-        hiddenField.value = JSON.stringify(carritolist); // Convertir el arreglo a JSON
-        document.getElementById("ventaForm").appendChild(hiddenField);
-        document.getElementById('svg_loading').style.display = 'inline-block'; //muestra el loading
-        document.getElementById('btn_cancel').disabled=true;
-        document.getElementById('btn_subir').disabled = true;
-        setTimeout(() => {
-            document.getElementById('svg_loading').style.display = 'none'; // oculta el loading
-            tarjeta.value = tarjeta_value; // se manda el valor de los números de tarjeta sin espacios
-            alert('Formulario enviado'); // O puedes eliminar esta línea
-            document.getElementById("ventaForm").submit(); // Enviar el formulario
-        }, 2000);
-        
-        return false; // Para prevenir el envío inmediato del formulario
-    }
-}
-
 function ocultarProductos(input){
     const tabla = document.getElementById('productostabla');
     const tabla1 = document.getElementById('carrito');
@@ -401,5 +365,86 @@ function scrollToBottom() {
     window.scrollTo({
         top: document.body.scrollHeight,
         behavior: 'smooth' // Esto proporciona un desplazamiento suave
+    });
+}
+
+function prepareSelectedProducts() {  
+    const phone = document.getElementById('numero');
+    const tarjeta = document.getElementById('card');
+    let tarjeta_value = tarjeta.value.replace(/\s/g, '');
+    if (carritolist.length === 0) {
+        console.log("La lista está vacía.");
+        alert('Selecciona al menos un producto.');
+        return false;
+    } if(!validarTelefono(phone)){
+        return false;}
+    // if (!luhnCheck(tarjeta_value)){ //algoritmo de luhn
+    //     alert('Tarjeta no valida');
+    //     return false;
+    // }
+    else {
+        console.log("La lista tiene elementos.");
+        // Crear un campo oculto para enviar el arreglo de seleccionados
+        hiddenField = document.createElement("input");
+        hiddenField.type = "hidden";
+        hiddenField.name = "seleccionados";
+        hiddenField.id = "hiddenSeleccionados";
+        hiddenField.value = JSON.stringify(carritolist); // Convertir el arreglo a JSON
+        document.getElementById("ventaForm").appendChild(hiddenField);
+        document.getElementById('btn_cancel').disabled = true;
+        document.getElementById('btn_subir').disabled = true;
+        document.getElementById('btn_cancel').classList.remove('send_btn');
+        document.getElementById('btn_subir').classList.remove('send_btn');
+        document.getElementById('btn_cancel').classList.add('loading-disabled');
+        document.getElementById('btn_subir').classList.add('loading-disabled');
+        tarjeta.value = tarjeta_value;
+        return true;
+    }
+}
+
+
+function envioFormVentas(formId, ruta) {
+    const form = document.getElementById(formId);
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerText; // Guarda el texto original del botón
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Realiza las validaciones
+        if (!prepareSelectedProducts()) {
+            // Si `prepareSelectedProducts` retorna false, no se envía el formulario
+            submitButton.disabled = false; // Habilitar el botón nuevamente
+            return; // Sale de la función
+        }
+
+        // Cambia el texto del botón y lo desactiva
+        submitButton.innerText = 'Loading...';
+        submitButton.disabled = true;
+
+        const formData = new FormData(this);
+
+        fetch(ruta, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            // Restaura el botón al estado original
+            submitButton.innerText = originalText;
+            submitButton.disabled = false;
+
+            if (data.success) {
+                window.location.href = data.destino;
+            } else {
+                // Muestra el mensaje de error en el frontend
+                document.getElementById('error_message').innerText = data.message;
+            }
+        })
+        .catch(error => {
+            submitButton.innerText = originalText;
+            submitButton.disabled = false;
+            console.error('Error:', error)
+        });
     });
 }

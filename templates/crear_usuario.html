@@ -39,7 +39,7 @@
     <div class="login-container">
         <div class="login-box login-box2">
             <h1>Sign up</h1><br>
-            <form id="form-signup" method="post" action="{{ url_for('login.new_user') }}" onsubmit="return validateForm()">
+            <form id="form-signup" method="post" action="{{ url_for('login.new_user') }}">
                 <div class="container_cols">
                     <div class="columna">
                         <div class="input-box">
@@ -51,7 +51,7 @@
                             <label for="lstname">Last name</label>
                         </div>
                         <div class="input-box">
-                            <input type="text" name="email" required oninput="validarCorreo(this)" title="Enter your email" oninvalid="this.setCustomValidity('Please enter your email')" onclick="ocultaError()">
+                            <input id="email" type="text" name="email" required oninput="validarCorreo(this)" title="Enter your email" oninvalid="this.setCustomValidity('Please enter your email')" onclick="ocultaError()">
                             <label for="email">Email</label>
                             <small id="message"></small>
                         </div>
