@@ -1,6 +1,6 @@
 from datetime import datetime
 import json
-from flask import Blueprint, redirect, render_template, request, session
+from flask import Blueprint, redirect, render_template, request, session, jsonify
 
 from models.Cliente import crear_cliente_con_tarjeta
 from models.Producto import productos_paginados, modificar_salidas_producto, modificar_stock_variante, obtener_producto_por_id
@@ -41,7 +41,7 @@ def procesar_venta():
     tarjeta, cliente = crear_cliente_con_tarjeta(nombre=nombre, apellido=apellido, telefono=numero, numero_tarjeta=card)
 
     if not (tarjeta and cliente): # Si no se creo correctamnete el cliente
-        return redirect('/')
+        return jsonify({"success": False, "message": "Error.", "destino": '/'}), 400
 
     for producto in productos:
         item = obtener_producto_por_id(producto["id"])
@@ -60,7 +60,7 @@ def procesar_venta():
         salidas = obtener_salidas_producto(producto["id"])
         modificar_salidas_producto(producto["id"], salidas + producto['cantidad'])
     crear_transaccion_con_detalles(empleado_id=username, fecha=datetime.now(), monto=monto, productos=productos, tarjeta_id=tarjeta.id, cliente_id=cliente.id)
-    return redirect('/')
+    return jsonify({"success": True, "message": "Sale registered.", "destino": '/consulta_venta'}), 200
 
 # Ruta para consultar ventas
 @clients_transactions_blueprint.route('/consulta_venta', methods=['GET'])

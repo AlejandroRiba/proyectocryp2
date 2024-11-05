@@ -37,7 +37,7 @@ def before_request():
     
     # Verificar si el usuario está logueado
     if (request.path not in EXCLUDE_ROUTES) and (not 'username' in session):
-        return redirect('/')
+        return redirect('/login_route')
 
 @app.errorhandler(404)
 def page_not_found(e):

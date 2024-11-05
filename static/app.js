@@ -170,7 +170,18 @@ function manejarEnvioFormulario(formId, ruta) {
     const originalText = submitButton.innerText; // Guarda el texto original del botón
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-
+        // Realiza las validaciones telefono e email, si no son el form correspondiente devuelve true
+        if (!validateForm(formId)) {
+            // Si `prepareSelectedProducts` retorna false, no se envía el formulario
+            submitButton.disabled = false; // Habilitar el botón nuevamente
+            return; // Sale de la función
+        }
+        // Realiza las validaciones para los productos, si no es el form de venta, devuelve true
+        if (!prepareSelectedProducts(formId)) {
+            // Si `prepareSelectedProducts` retorna false, no se envía el formulario
+            submitButton.disabled = false; // Habilitar el botón nuevamente
+            return; // Sale de la función
+        }
         // Cambia el texto del botón y lo desactiva
         submitButton.innerText = 'Loading...';
         submitButton.disabled = true;

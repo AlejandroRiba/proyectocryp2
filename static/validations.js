@@ -25,7 +25,7 @@ function validatePasswords() {
 function validarCorreo(input) {
     var valCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     const error = document.getElementById('message');
-    input.setCustomValidity('')
+    input.setCustomValidity('');
     error.style.display = 'none';
     if (input.value != ''){
         if (!valCorreo.test(input.value)) {
@@ -66,18 +66,20 @@ function validarNumeros(input){
     input.value = input.value.replace(/\D/g, '');
 }
 
-function validateForm() {
+function validateForm(formId) {
     // Realiza las validaciones de los campos
-    const correo = document.getElementById('email');
-    const phone = document.getElementById('number');
-    if (!validatePasswords()) {
-        return false; // No permite el envío del formulario
-    }else if(!validarTelefono(phone)){
-        return false;
-    }else if(!validarCorreo(correo)){
-        return false;
+    if(formId === 'form-signup' || formId === 'editform'){
+        const correo = document.getElementById('email');
+        const phone = document.getElementById('number');
+        if (!validatePasswords()) {
+            return false; // No permite el envío del formulario
+        }else if(!validarTelefono(phone)){
+            return false;
+        }else if(!validarCorreo(correo)){
+            return false;
+        }
+        activarIdinput('id') //si todo sale bien se activa el campo id 
     }
-    activarIdinput('id') //si todo sale bien se activa el campo id 
     return true;
 }
 
