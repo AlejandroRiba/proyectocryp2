@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, redirect, render_template, request, session
 
 from models.Cliente import crear_cliente_con_tarjeta
-from models.Producto import mas_vendidos, modificar_salidas_producto, modificar_stock_variante, obtener_producto_por_id
+from models.Producto import productos_paginados, modificar_salidas_producto, modificar_stock_variante, obtener_producto_por_id
 from models.Producto import obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
 from models.Tarjeta import obtener_clave_tarjeta
 from models.Transaccion import consulta_transacciones, crear_transaccion_con_detalles, transacciones_por_empleado
@@ -22,8 +22,8 @@ def consulta_clientes():
 @clients_transactions_blueprint.route('/registra_venta', methods=['GET'])
 def registra_venta():
     username = session['username']
-    productos = mas_vendidos() #aplica un filtro de productos más vendidos para que no se tenga una tabla muy extensa 
-    return render_template('registra_venta.html', status=username, productos=productos)
+    productos = productos_paginados() #aplica un filtro de productos más vendidos para que no se tenga una tabla muy extensa 
+    return render_template('registra_venta.html', status=username, productos=productos, page=1, per_page=4)
         
         
 @clients_transactions_blueprint.route('/procesar_venta', methods=['POST'])

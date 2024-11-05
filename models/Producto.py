@@ -98,8 +98,8 @@ def editar_producto_con_variantes(producto_id, nombre, color, precio, variantes,
 def obtener_productos():
     return Producto.query.all()
 
-def mas_vendidos():
-    return Producto.query.order_by(Producto.salidas.desc()).limit(4).all()
+def productos_paginados():
+    return Producto.query.paginate(page=1, per_page=4)
 
 def obtener_producto_por_id(id):
     return Producto.query.get(id)

@@ -194,11 +194,11 @@ function vaciarCarrito(){
     }
 }
 
-function aplicarFiltros() {
+function aplicarFiltros(page = 1) {
     const nombre = document.getElementById("buscador").value;
     const categoria = document.querySelector(`input[name="filtro"]:checked`).value
 
-    fetch(`/filtrar_productos?nombre=${nombre}&categoria=${categoria}`)
+    fetch(`/filtrar_productos?nombre=${nombre}&categoria=${categoria}&page=${page}`)
         .then(response => response.json())
         .then(data => {
             const tbody = document.querySelector("tbody");
@@ -287,6 +287,14 @@ function aplicarFiltros() {
                 });
             }
 
+            // Actualizar la paginación
+            const pagination = document.querySelector(".pagination");
+            pagination.innerHTML = `
+                ${data.has_prev ? `<button class="next" onclick="aplicarFiltros(${data.prev_num})">Previous</button>` : ""}
+                <span>/ Page ${data.page} of ${data.pages} /</span>
+                ${data.has_next ? `<button class="next" onclick="aplicarFiltros(${data.next_num})">Next</button>` : ""}
+            `;
+
         })
         .catch(error => console.error("Error:", error));
 }
@@ -336,8 +344,17 @@ function prepareSelectedProducts() {
         hiddenField.id = "hiddenSeleccionados";
         hiddenField.value = JSON.stringify(carritolist); // Convertir el arreglo a JSON
         document.getElementById("ventaForm").appendChild(hiddenField);
-        tarjeta.value = tarjeta_value; //se manda el valor de los numeros de tarjeta sin espacios
-        return false; // Permitir el envío del formulario //POR AHORA IMPIDO EL ENVIO DEL FORMULARIO PARA PROBAR LA FUNCIÓN
+        document.getElementById('svg_loading').style.display = 'inline-block'; //muestra el loading
+        document.getElementById('btn_cancel').disabled=true;
+        document.getElementById('btn_subir').disabled = true;
+        setTimeout(() => {
+            document.getElementById('svg_loading').style.display = 'none'; // oculta el loading
+            tarjeta.value = tarjeta_value; // se manda el valor de los números de tarjeta sin espacios
+            alert('Formulario enviado'); // O puedes eliminar esta línea
+            document.getElementById("ventaForm").submit(); // Enviar el formulario
+        }, 2000);
+        
+        return false; // Para prevenir el envío inmediato del formulario
     }
 }
 
@@ -371,4 +388,18 @@ function ocultarCarrito(input){
         }
     }
     input.classList.toggle('active');
+}
+
+function volverArriba() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Desplazamiento suave
+    });
+}
+
+function scrollToBottom() {
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth' // Esto proporciona un desplazamiento suave
+    });
 }

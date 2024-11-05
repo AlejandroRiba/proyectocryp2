@@ -11,13 +11,7 @@
     </div>
     <div class="wrapper1">
         <div class="option1" onclick="aplicarFiltros()">
-            <input checked="" value="best" name="filtro" type="radio" class="input" />
-            <div class="btn">
-            <span class="span">Best Seller</span>
-            </div>
-        </div>
-        <div class="option1" onclick="aplicarFiltros()">
-            <input value="" name="filtro" type="radio" class="input" />
+            <input checked value="" name="filtro" type="radio" class="input" />
             <div class="btn">
             <span class="span">All Categories</span>
             </div>
@@ -40,6 +34,12 @@
             <span class="span">Accessories</span>
             </div>
         </div>
+        <div class="option1" onclick="aplicarFiltros()">
+            <input value="best" name="filtro" type="radio" class="input" />
+            <div class="btn">
+            <span class="span">Best Seller</span>
+            </div>
+        </div>
     </div>
     <div class="group">
         <button id="btn_shproductos" class="productos" type="button" onclick="ocultarProductos(this)">Show/Hide products</button>
@@ -50,5 +50,8 @@
             <circle r="1" cy="21" cx="20"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg></button>
+    </div>
+    <div class="group">
+        <button class="productos" type="button" style="text-transform: none;" onclick="scrollToBottom()">↓ Bottom</button>
     </div>
 </div>

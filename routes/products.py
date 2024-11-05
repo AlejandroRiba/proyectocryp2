@@ -103,6 +103,8 @@ def eliminar_producto(id):
 def filtrar_productos():
     nombre = request.args.get('nombre', '')
     categoria = request.args.get('categoria', '')
+    pagina_actual = request.args.get('page', 1, type=int)
+    elementos_por_pagina = 4
 
     query = db.session.query(Producto)
     
@@ -123,11 +125,12 @@ def filtrar_productos():
                         )
     if categoria:
         if categoria == "best":
-            query = query.order_by(desc(Producto.salidas)).limit(4)
+            query = query.filter(Producto.salidas > 5).order_by(desc(Producto.salidas))
         else:
             query = query.filter(Producto.categoria == categoria)
 
-    productos = query.all()
+    # Aplicar paginación a la consulta
+    productos = query.paginate(page=pagina_actual, per_page=elementos_por_pagina)
         
         # Convertimos los productos en un formato adecuado para JSON
     productos_data = [{
@@ -140,5 +143,14 @@ def filtrar_productos():
         "color": producto.color
     } for producto in productos]
 
-    return jsonify({"productos": productos_data})
+    # Incluir información de paginación en la respuesta
+    return jsonify({
+        "productos": productos_data,
+        "page": productos.page,
+        "pages": productos.pages,
+        "has_next": productos.has_next,
+        "has_prev": productos.has_prev,
+        "next_num": productos.next_num,
+        "prev_num": productos.prev_num
+    })
     

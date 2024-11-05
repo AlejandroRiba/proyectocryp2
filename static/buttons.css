@@ -325,27 +325,35 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* LOADING */
 .loading {
-    color: white;
-    font-weight: 500;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    line-height: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    padding-top: 0.7rem;
-    padding-bottom: 0.7rem;
-    text-align: center;
-    margin-right: 0.5rem;
-    display: inline-flex;
-    align-items: center;
+    width: 100%;
+    padding: 10px;
     border: none;
+    border-radius: 25px;
+    color: #fff;
+    background: linear-gradient(to right, #7e7e7e, #363636);
+    font-size: 16px;
+    font-family: 'Squada One';
+    cursor: pointer;
+    border: 2px solid #c2bfbf;
+    box-shadow: 4px 4px #c2bfbf;
 }
+
+.send_btn:hover{
+    background: linear-gradient(to right, #504f4f, #1b8102);
+}
+
+.cancel_btn:hover{
+    /* background: linear-gradient(to right, #504f4f, #530827); */
+    background: linear-gradient(to right, #f8735b, #e24469);
+}
+
 
 .loading svg {
     display: inline;
-    width: 1.3rem;
-    height: 1.3rem;
-    margin-right: 0.75rem;
+    width: 14px;
+    padding: 0;
+    margin-right: 10px;
+    height: 14px;
     color: white;
     animation: spin_357 1s linear infinite;
 }
@@ -482,5 +490,28 @@ input[type="number"]::-webkit-outer-spin-button {
   font-weight: bold;
 }
 
+/*BOTONES NEXT Y PREV*/
+.pagination{
+    margin: 0;
+    padding: 10px 20px;
+}
+
+.next {
+    position: relative;
+    font-size: 16px;
+    height: 20px;
+    border: none;
+    color: #b9b9b9;
+    background-color:transparent;
+    overflow: hidden;
+    border-radius: 5px;
+    font-family: 'Squada One', sans-serif;
+}
+   
+.next:hover {
+    background: linear-gradient(to right, #ff4b2b, #ff416c);
+    color: #323232;
+    transition: 0.2s;
+}
   
   
