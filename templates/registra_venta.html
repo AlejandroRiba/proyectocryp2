@@ -99,7 +99,7 @@
     <!-- Footer -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        envioFormVentas('ventaForm', '/procesar_venta'); // Llama a la función con el ID del formulario
+        manejarEnvioFormulario('ventaForm', '/procesar_venta'); // Llama a la función con el ID del formulario
       });
     </script>
     <script src="{{ url_for('static', filename='ventas.js') }}" ></script>

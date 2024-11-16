@@ -24,7 +24,7 @@ input[type="tel"]{
     z-index: 1; /* Asegura que esté por encima del SVG */
     width: 300px;
     padding: 20px 40px;
-    background: #252525;
+    background: #1a2b3d;
     border-radius: 10px;
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
     text-align: center;
@@ -63,7 +63,7 @@ input[type="tel"]{
 }
 
 .login-box h1 {
-    color: #fff;
+    color: #f1e5c6;
     font-size:50px;
 }
 
@@ -85,7 +85,7 @@ input[type="tel"]{
     width: 100%;
     padding: 10px 0;
     font-size: 16px;
-    color: #fff;
+    color: #f1e5c6;
     background: transparent;
     border: none;
     border-bottom: 1px solid #fff;
@@ -108,7 +108,7 @@ input[type="tel"]{
 .input-box input:disabled ~ label {
     top: -20px;
     font-size: 14px;
-    color: #ff7d41;
+    color: #f1f1e6;
     font-family: 'Squada One', sans-serif;
 }
 

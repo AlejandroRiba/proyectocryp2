@@ -40,7 +40,7 @@ def procesar_venta():
     
     tarjeta, cliente = crear_cliente_con_tarjeta(nombre=nombre, apellido=apellido, telefono=numero, numero_tarjeta=card)
 
-    if not (tarjeta and cliente): # Si no se creo correctamnete el cliente
+    if not (tarjeta and cliente): # Si no se creo correctamente el cliente
         return jsonify({"success": False, "message": "Error.", "destino": '/'}), 400
 
     for producto in productos:
