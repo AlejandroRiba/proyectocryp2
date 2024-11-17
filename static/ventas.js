@@ -207,7 +207,7 @@ function aplicarFiltros(page = 1) {
             if (data.productos.length === 0) {
                 const fila = document.createElement("tr");
                 fila.innerHTML = `
-                    <td colspan="10" style="text-align: center; color: red; border-left: none; border-right: none">
+                    <td colspan="10" style="text-align: center; color: var(--color-warning); border-left: none; border-right: none">
                         No results found for this search.
                     </td>
                 `;
