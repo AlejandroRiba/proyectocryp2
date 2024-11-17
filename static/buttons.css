@@ -1,4 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
+/* PALETA DE COLORES */
+:root{
+    /* Colores principales */
+    --color-primary: #2D6A4F;
+    --color-secondary: #40916C;
+    --color-accent: #74C69D;
+    --color-dark: #081C15;
+    /* Fondos */
+    --color-background: rgb(255, 255, 255); /* Fondo principal muy claro */
+    --color-background-light: #B7E4C7; /* Fondo secundario */
+    --color-backgorund-gradient-light: linear-gradient(to right, #B7E4C7, #578f76);
+    --color-background-dark: #1B4332; /* Fondo oscuro para secciones destacadas */
+    /* Textos */
+    --color-text-primary: #081C15; /* Texto principal oscuro */
+    --color-text-secondary: #1B4332; /* Texto secundario más claro */
+    --color-text-inverted: #D8F3DC; /* Texto en fondos oscuros */
+    --color-text-title: #f1e5c6; /* Color crema para algunos titulos */
+    /* Botones y enlaces */
+    --color-button-primary: #2D6A4F;
+    --color-button-primary-hover: linear-gradient(to right, #40916C, #347658);
+    --color-button-secondary: #52B788;
+    --color-link: #2D6A4F;
+    --color-link-hover: #82bea3;
+    /* Bordes y sombras */
+    --color-border: #95D5B2; /* Bordes */
+    --color-shadow: rgba(74, 198, 157, 0.3); /* Sombra translúcida */
+    /* Mensajes de estado */
+    --color-success: #52B788; /* Éxito (verde brillante) */
+    --color-error: #e66139; /* (Agrega un rojo para contraste si es necesario) */
+    --color-warning: #F4A261; /* (Un naranja suave para advertencias) */
+    --color-info: #74C69D; /* Información */
+}
+
+
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -140,7 +174,7 @@ input[type="number"]::-webkit-outer-spin-button {
     background: transparent;
     position: relative;
     cursor: pointer;
-    font-size: 17px;
+    font-size: 14px;
     overflow: visible;
 }
   
@@ -157,7 +191,7 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 0.3em;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     text-align: center;
-    font-size: 16px;
+    font-size: 14px;
     width: 120%; /* Adjusted the width */
     padding: 0.5em 1em; /* Adjusted padding */
     white-space: nowrap; /* Prevent text wrapping */
@@ -182,7 +216,7 @@ input[type="number"]::-webkit-outer-spin-button {
     --secondary-color: #dedede;
     position: relative;
     width: 60px;
-    font-size: 16px;
+    font-size: 14px;
     height: 36px;
     background-color: var(--bg-color);
     border: 2px solid var(--main-color);
@@ -204,7 +238,7 @@ input[type="number"]::-webkit-outer-spin-button {
   
 .option:hover {
     /* background-color: var(--secondary-color); */
-    background:  var(--secondary-gradient);
+    background:  var(--color-background-light);
 }
   
 .input {
@@ -232,7 +266,7 @@ input[type="number"]::-webkit-outer-spin-button {
   
 .input:checked + .btn {
     /* background-color: var(--selec-color); */
-    background: var(--selec-gradient);
+    background: var(--color-backgorund-gradient-light);
     transition: 0.2s cubic-bezier(0, 0, 0, 1);
 }
   
@@ -320,7 +354,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .option1:hover {
     /* background-color:  */
-    background: var(--secondary-gradient);
+    background: var(--color-background-light);
 }
 
 /* LOADING */
@@ -378,10 +412,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Mostrar los productos */
 .productos {
-    font-size: 14px;
-    text-transform: uppercase;
+    font-size: 16px;
     text-align: center;
-    font-weight: bold;
     padding: 10px;
     height: 36px;
     border-radius: 2px;
@@ -396,6 +428,7 @@ input[type="number"]::-webkit-outer-spin-button {
     margin: 0;
     flex-direction: row;
     border: none;
+    font-family: "Squada One", sans-serif;
 }
 
   
@@ -403,11 +436,11 @@ input[type="number"]::-webkit-outer-spin-button {
     transition: 0.5s all ease;
     left: 0;
     right: 0;
-    background: linear-gradient(to right, #ff4b2b, #ff416c);
+    background: var(--color-background-light);
 }
 
 .productos.active{
-    background: linear-gradient(to right, #ff4b2b, #ff416c);
+    background: var(--color-backgorund-gradient-light);
 }
   
 

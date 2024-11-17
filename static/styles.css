@@ -1,5 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed&family=Squada+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed&family=Fjalla+One&family=Squada+One&display=swap');
+/* PALETA DE COLORES */
+:root{
+    /* Colores principales */
+    --color-primary: #2D6A4F;
+    --color-secondary: #40916C;
+    --color-accent: #74C69D;
+    --color-dark: #081C15;
+    /* Fondos */
+    --color-background: rgb(255, 255, 255); /* Fondo principal muy claro */
+    --color-background-light: #B7E4C7; /* Fondo secundario */
+    --color-background-dark: #1B4332; /* Fondo oscuro para secciones destacadas */
+    /* Textos */
+    --color-text-primary: #081C15; /* Texto principal oscuro */
+    --color-text-secondary: #1B4332; /* Texto secundario más claro */
+    --color-text-inverted: #D8F3DC; /* Texto en fondos oscuros */
+    --color-text-title: #f1e5c6; /* Color crema para algunos titulos */
+    /* Botones y enlaces */
+    --color-button-primary: #2D6A4F;
+    --color-button-primary-hover: linear-gradient(to right, #40916C, #347658);
+    --color-button-secondary: #52B788;
+    --color-link: #2D6A4F;
+    --color-link-hover: #82bea3;
+    /* Bordes y sombras */
+    --color-border: #95D5B2; /* Bordes */
+    --color-shadow: rgba(74, 198, 157, 0.3); /* Sombra translúcida */
+    /* Mensajes de estado */
+    --color-success: #52B788; /* Éxito (verde brillante) */
+    --color-error: #e66139; /* (Agrega un rojo para contraste si es necesario) */
+    --color-warning: #F4A261; /* (Un naranja suave para advertencias) */
+    --color-info: #74C69D; /* Información */
+}
+
 
 input[type="text"],
 input[type="password"],
@@ -13,10 +46,10 @@ input[type="tel"]{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90vh;
+    height: 80vh;
     width: 100%; /* Asegura que el contenedor ocupe toda la pantalla */
     overflow: hidden;
-    margin: 0;
+    margin: 10px 0;
 }
 
 .login-box {
@@ -24,14 +57,14 @@ input[type="tel"]{
     z-index: 1; /* Asegura que esté por encima del SVG */
     width: 300px;
     padding: 20px 40px;
-    background: #1a2b3d;
+    background: var(--color-background-dark);
     border-radius: 10px;
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
     text-align: center;
 }
 
 .login-box p{
-    color: #ff5c5c; 
+    color: var(--color-error); 
     font-size: 14px;
     font-family: 'Squada One', sans-serif;
 }
@@ -59,24 +92,27 @@ input[type="tel"]{
 }
 
 .columna{
-    margin: 10px 20px;
+    margin: 0px 20px;
 }
 
 .login-box h1 {
-    color: #f1e5c6;
+    color: var(--color-text-title);
     font-size:50px;
+    padding: 0;
+    margin-top: 10px;
 }
 
 .input-box {
     position: relative;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     font-family: "Barlow Condensed", sans-serif;
 }
 
 .input-box small{
-    color: #ff5c5c; 
+    color: var(--color-warning); 
     display: none; 
     padding: 4px 0; 
+    font-weight: bold;
     justify-self: start;
     font-family: sans-serif;
 }
@@ -85,7 +121,7 @@ input[type="tel"]{
     width: 100%;
     padding: 10px 0;
     font-size: 16px;
-    color: #f1e5c6;
+    color: var(--color-text-inverted);
     background: transparent;
     border: none;
     border-bottom: 1px solid #fff;
@@ -98,9 +134,10 @@ input[type="tel"]{
     left: 0;
     padding: 10px 0;
     font-size: 16px;
-    color: #fff;
+    color: var(--color-text-title);
     pointer-events: none;
     transition: 0.5s;
+    font-weight: 500;
 }
 
 .input-box input:focus ~ label,
@@ -108,8 +145,6 @@ input[type="tel"]{
 .input-box input:disabled ~ label {
     top: -20px;
     font-size: 14px;
-    color: #f1f1e6;
-    font-family: 'Squada One', sans-serif;
 }
 
 .input-box input:disabled{
@@ -123,22 +158,22 @@ input[type="tel"]{
 .button-box button{
     width: 100%;
     padding: 10px;
-    background: linear-gradient(to right, #666666, #494949);
+    background: var(--color-button-primary);
     border: none;
     border-radius: 25px;
-    color: #fff;
+    color: var(--color-text-inverted);
     font-size: 16px;
     font-family: 'Squada One';
     cursor: pointer;
 }
 
 .button-box button:hover{
-    background: linear-gradient(to right, #ff4b2b, #ff416c);
+    background: var(--color-button-primary-hover);
 }
 
 .customButton {
     font-family: 'Squada One';
-    color: white;
+    color: var(--color-text-inverted);
     padding: 10px;
     background-color: transparent;
     border: solid 1px white;
@@ -151,26 +186,27 @@ input[type="tel"]{
 
 .customButtondisabled{
     font-family: 'Squada One';
-    color: white;
     padding: 10px;
     background-color: transparent;
     border: solid 1px white;
+    color: var(--color-text-inverted);
     border-radius: 12px;
     cursor: pointer;
     display: inline-block;
     width: 100%;
     font-size: 16px;
 }
+
 .customButtondisabled:hover{
-    background-color: #252525;
+    background-color: var(--color-background-dark);
 }
 
 .customButton:hover {
-    background: linear-gradient(to right, #ff416c, #b12810);
+    background: var(--color-button-primary-hover);
 }
 
 #customText {
-    color: #fff;
+    color: var(--color-text-title);
     font-size: 14px;
     display: block;
     margin-top: 10px;
@@ -184,13 +220,14 @@ input[type="tel"]{
 }
 
 .links a {
-    color: #fff;
+    color: var(--color-text-title);
     font-size: 16px;
     text-decoration: none;
 }
 
 .links a:hover {
     text-decoration: underline;
+    color: var(--color-link-hover);
 }
 
 .message-container{
@@ -212,9 +249,10 @@ input[type="tel"]{
 /* Label para el checkbox */
 .checkbox-container label {
     font-size: 14px;
-    color: #ff7d41;
+    color: var(--color-text-title);
     margin-right: 10px;
     cursor: pointer;
+    font-family: "Barlow Condensed", sans-serif;
 }
 
 /* Oculta el checkbox real */
@@ -260,13 +298,13 @@ input[type="tel"]{
     height: fit-content;
     overflow: auto;
     padding: 10px 30px;
-    background: #252525;
+    background: var(--color-background-dark);
     color: #b9b9b9;
     border-radius: 10px;
 }
 
 .contenedor_buscador h1 {
-    color: #fff;
+    color: var(--color-text-title);
     font-size:50px;
     text-align: center;
 }
@@ -283,12 +321,13 @@ input[type="tel"]{
     border: 0;
     width: 100%;
     table-layout: auto;
+    font-family: "Fjalla One", sans-serif;
 }
 
 .contenedor_tabla th, td{
     padding: 20px 10px;
     border: 1px rgb(189, 187, 187) solid;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 /* tabla carrito */
@@ -299,11 +338,17 @@ input[type="tel"]{
     width: 100%;
 }
 
+.contenedor_tabla1 h2{
+    color: var(--color-text-title);
+    font-family: "Fjalla One", sans-serif;
+}
+
 .contenedor_tabla1 table{
     text-align: center;
     border-collapse: collapse;
     border: 0;
     table-layout: fixed;
+    font-family: "Fjalla One", sans-serif;
 }
 
 .contenedor_tabla1 th, td{
