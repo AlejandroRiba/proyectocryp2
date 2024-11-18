@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from models.Database import getDatabase
 from sqlalchemy.orm import relationship
+from sqlalchemy.exc import IntegrityError
 
 db = getDatabase()
 
@@ -50,14 +51,20 @@ def crear_producto(id, nombre, color, precio, archivo, categoria):
 
 # Función para eliminar un producto y sus variantes
 def delete_product(producto_id):
-    producto = Producto.query.get(producto_id)
-    archivo = producto.archivo
-    if producto:
-        db.session.delete(producto)
-        db.session.commit()
-        return True, archivo
-    else:
-        return False, None #error/producto no encontrado
+    try:
+        # Buscar el producto en la base de datos
+        producto = Producto.query.get(producto_id)
+        if producto:
+            archivo = producto.archivo  # Guardar información relevante antes de eliminar
+            db.session.delete(producto)
+            db.session.commit()
+            return True, archivo
+        else:
+            return False, None  # Producto no encontrado
+    except IntegrityError:
+        # Manejar error de integridad por relaciones en otras tablas
+        db.session.rollback()  # Revertir cualquier cambio en la sesión
+        return False, None
 
 #Funcion para editar un producto y sus variantes
 def editar_producto_con_variantes(producto_id, nombre, color, precio, variantes, eliminar_variantes_ids, archivo):

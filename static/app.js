@@ -213,3 +213,17 @@ function manejarEnvioFormulario(formId, ruta) {
         });
     });
 }
+
+function volverArriba() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Desplazamiento suave
+    });
+}
+
+function scrollToBottom() {
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth' // Esto proporciona un desplazamiento suave
+    });
+}

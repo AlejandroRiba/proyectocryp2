@@ -6,6 +6,8 @@
     <link rel="icon" href="static/images/logosmall.ico">
     <title>R&R SALES</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css') }}">
 </head>
 <body>
 
@@ -13,52 +15,25 @@
     {% include "shared/navbar.html" %}
     <!-- NAVBAR -->
      <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-    <h1>CONSULTA VENTAS</h1>
-    {% if transacciones %}
-        <table>
-            <thead>
-                <tr>
-                    {% if status == 'admin' %}
-                        <th>Empleado ID</th>
-                    {% endif %}
-                    <th>Fecha</th>
-                    <th>Monto</th>
-                    <th>Cliente ID</th>
-                    <th>Client Name</th>
-                    <th>Card Number</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for transaccion in transacciones %}
-                <tr>
-                    {% if status == 'admin' %}
-                        <td>{{ transaccion.empleado_id }}</td>
-                    {% endif %}
-                    <td>{{ transaccion.fecha }}</td>
-                    <td>{{ transaccion.monto }}</td>
-                    <td>{{transaccion.cliente_id}}</td>
-                    <td>{{ transaccion.cliente.nombre + ' ' + transaccion.cliente.apellido}}</td>
-                    {% if status == 'admin' %}
-                        <td>{{ transaccion.tarjeta.numero_tarjeta }}</td>
-                    {% else %}
-                        <td>****************</td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% elif status != 'admin' %}
-        <p>No has realizado ventas aún.</p>
-    {% else %}
-        <p>Ningún empleado ha realizado transacciones aún.</p>
-    {% endif %}
-    {% if status != admin %}
-        <button onclick="redireccion('/registra_venta')">New Sale</button>
-    {% endif %}
+    <div class="contenedor_buscador">
+    <h1>SALES</h1>
+    <!-- BUSCADOR Y FILTROS -->
+    {% include "shared/filtrosventas.html" %}
+    <!-- BUSCADOR Y FILTROS -->
+    <!-- Tabla de ventas personalizada -->
+    {% include "shared/tablaventas.html" %}
+    <!-- Tabla de ventas personalizada -->
+    <div style="display: flex; gap: 30px; text-align: center; justify-content: center; padding: 20px 0;">
+        <div style="width: 30%;">
+          <button id="btn_subir" class="loading cancel_btn" type="button" onclick="volverArriba()">↑ Back to up</button>
+        </div>
+    </div>
+    </div>
      <!-- TERMINA CONTENIDO DE PÁGINA -->
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
     <script src="static/app.js" ></script>
+    <script src="static/registroventas.js"></script>
 </body>
 </html>

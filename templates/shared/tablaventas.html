@@ -1,0 +1,34 @@
+<div id="ventasTable" class="contenedor_tabla">
+    <table>
+        <thead>
+            <tr>
+                {% if status == 'admin' %}
+                        <th>Employee ID</th>
+                    {% endif %}
+                    <th>Date</th>
+                    <th>Monto</th>
+                    <th>Customer ID</th>
+                    <th>Client Name</th>
+                    <th>Card Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaccion in transacciones %}
+                <tr>
+                    {% if status == 'admin' %}
+                        <td>{{ transaccion.empleado_id }}</td>
+                    {% endif %}
+                    <td>{{ transaccion.fecha }}</td>
+                    <td>{{ transaccion.monto }}</td>
+                    <td>{{transaccion.cliente_id}}</td>
+                    <td>{{ transaccion.cliente.nombre + ' ' + transaccion.cliente.apellido}}</td>
+                    {% if status == 'admin' %}
+                        <td>{{ transaccion.tarjeta.numero_tarjeta }}</td>
+                    {% else %}
+                        <td>****************</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>

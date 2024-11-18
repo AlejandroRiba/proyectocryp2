@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, redirect, render_template, request, sessio
 from sqlalchemy import or_, desc
 from init import getApp
 from models.Database import getDatabase
-from models.Producto import Producto, crear_producto_con_variantes, delete_product, editar_producto_con_variantes, obtener_producto_por_id, obtener_productos
+from models.Producto import Producto, crear_producto_con_variantes, delete_product, editar_producto_con_variantes, obtener_producto_por_id, productos_paginados
 
 products_blueprint = Blueprint('products', __name__)
 app = getApp()
@@ -14,8 +14,8 @@ db = getDatabase()
 @products_blueprint.route('/consulta_productos', methods=['GET'])
 def consulta_productos():
     username = session['username']
-    productos = obtener_productos()
-    return render_template('consulta_productos.html', status=username, productos=productos)
+    productos = productos_paginados()
+    return render_template('consulta_productos.html', status=username, productos=productos, page=1, per_page=4, consulta="producto")
         
 # Ruta para crear producto
 @products_blueprint.route('/crear_producto', methods=['GET', 'POST'])
@@ -88,21 +88,24 @@ def editar_producto_query():
         editar_producto_con_variantes(id,nombre,color,precio,variantes,variantes_a_eliminar, None)
 
 #Ruta para eliminar un producto 
-@products_blueprint.route('/eliminar_producto/<string:id>', methods=['GET'])
-def eliminar_producto(id):
-    if not obtener_producto_por_id(id):
-        redirect('/')
-    
-    borrado, filename = delete_product(id)
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    if borrado and os.path.isfile(file_path): # Verificar si el archivo existe y eliminarlo
-        os.remove(file_path) #elimina la imagen si la consulta de delete se ejecuta con éxito
-    
+@products_blueprint.route('/eliminar_producto', methods=['GET'])
+def eliminar_producto():
+    id = request.args.get('id', '') #obtengo el id de la solicitud fetch
+
+    borrado, filename = delete_product(id) #aquí se intenta borrar el elemento
+    if borrado:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if borrado and os.path.isfile(file_path): # Verificar si el archivo existe y eliminarlo
+            os.remove(file_path) #elimina la imagen si la consulta de delete se ejecuta con éxito
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False})
 
 @products_blueprint.route('/filtrar_productos', methods=['GET'])
 def filtrar_productos():
     nombre = request.args.get('nombre', '')
     categoria = request.args.get('categoria', '')
+    consulta = request.args.get('consulta', '')
     pagina_actual = request.args.get('page', 1, type=int)
     elementos_por_pagina = 4
 
@@ -146,6 +149,7 @@ def filtrar_productos():
     # Incluir información de paginación en la respuesta
     return jsonify({
         "productos": productos_data,
+        "consulta": consulta,
         "page": productos.page,
         "pages": productos.pages,
         "has_next": productos.has_next,

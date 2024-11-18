@@ -2,31 +2,35 @@
 /* PALETA DE COLORES */
 :root{
     /* Colores principales */
-    --color-primary: #2D6A4F;
-    --color-secondary: #40916C;
+    --color-primary: #1D2D44;
+    --color-secondary: #748CAB;
     --color-accent: #74C69D;
-    --color-dark: #081C15;
+    --color-dark: #031b4e;
     /* Fondos */
-    --color-background: rgb(255, 255, 255); /* Fondo principal muy claro */
-    --color-background-light: #B7E4C7; /* Fondo secundario */
-    --color-background-dark: #1B4332; /* Fondo oscuro para secciones destacadas */
+    --color-background: #dae2da; /* Fondo principal muy claro */
+    --color-background-light: #c4d2e6; /* Fondo secundario */
+    --color-backgorund-gradient-light: linear-gradient(to right, #adbdd3, #73aabb);
+    --color-background-dark: #0D1321; /* Fondo oscuro para secciones destacadas */
     /* Textos */
     --color-text-primary: #081C15; /* Texto principal oscuro */
     --color-text-secondary: #1B4332; /* Texto secundario más claro */
     --color-text-inverted: #D8F3DC; /* Texto en fondos oscuros */
     --color-text-title: #f1e5c6; /* Color crema para algunos titulos */
+    --color-text-light: #f1faee;
     /* Botones y enlaces */
-    --color-button-primary: #2D6A4F;
-    --color-button-primary-hover: #40916C;
+    --color-button-primary: #f1e5c6;
+    --color-button-primary-hover: linear-gradient(to right, #748CAB, #95D5B2);
     --color-button-secondary: #52B788;
     --color-link: #2D6A4F;
-    --color-link-hover: #82bea3;
+    --color-link-hover: #b9d2e7;
+    --color-button-bg: #fff;
     /* Bordes y sombras */
     --color-border: #95D5B2; /* Bordes */
     --color-shadow: rgba(74, 198, 157, 0.3); /* Sombra translúcida */
+    --color-box-shadow: #e7dcb2;
     /* Mensajes de estado */
     --color-success: #52B788; /* Éxito (verde brillante) */
-    --color-error: #E63946; /* (Agrega un rojo para contraste si es necesario) */
+    --color-error: #e66139; /* (Agrega un rojo para contraste si es necesario) */
     --color-warning: #F4A261; /* (Un naranja suave para advertencias) */
     --color-info: #74C69D; /* Información */
 }
@@ -37,7 +41,7 @@ body {
     margin: 0; /* Elimina márgenes predeterminados */
     padding: 0; /* Elimina relleno predeterminado */
     height: 100%; /* Asegura que el cuerpo y html ocupen toda la altura */
-    background-color: var(--color-background);
+    background-color: var(--color-background-dark);
 }
 
 .navbar {
@@ -46,7 +50,7 @@ body {
     align-items: center;
     background-color: var(--color-background);
     padding: 13px;
-    border-bottom: 4px solid var(--color-dark);
+    border-bottom: 4px solid var(--color-secondary);
 }
 
 .nav-left, .nav-right {
@@ -88,7 +92,7 @@ footer {
     background-color: var(--color-background); /* Color de fondo */
     padding: 20px; /* Espaciado interno */
     text-align: center; /* Centrar el contenido */
-    border-top: 4px solid var(--color-dark); /* Línea superior */
+    border-top: 4px solid var(--color-secondary); /* Línea superior */
     margin-top: 40px;
 }
 
@@ -177,9 +181,9 @@ footer {
     display: none;
     position: absolute;
     width: 50vw; /* Ocupa todo el ancho de la pantalla */
-    height: 90vh;
+    height: 80vh;
     top: 100%; /* Coloca el contenido debajo del menú */
-    background-color: white;
+    background-color: var(--color-background);
     z-index: 3; /* Asegura que el menú esté sobre otros elementos */
 }
 

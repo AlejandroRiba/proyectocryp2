@@ -1,36 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
-/* PALETA DE COLORES */
-:root{
-    /* Colores principales */
-    --color-primary: #2D6A4F;
-    --color-secondary: #40916C;
-    --color-accent: #74C69D;
-    --color-dark: #081C15;
-    /* Fondos */
-    --color-background: rgb(255, 255, 255); /* Fondo principal muy claro */
-    --color-background-light: #B7E4C7; /* Fondo secundario */
-    --color-backgorund-gradient-light: linear-gradient(to right, #B7E4C7, #578f76);
-    --color-background-dark: #1B4332; /* Fondo oscuro para secciones destacadas */
-    /* Textos */
-    --color-text-primary: #081C15; /* Texto principal oscuro */
-    --color-text-secondary: #1B4332; /* Texto secundario más claro */
-    --color-text-inverted: #D8F3DC; /* Texto en fondos oscuros */
-    --color-text-title: #f1e5c6; /* Color crema para algunos titulos */
-    /* Botones y enlaces */
-    --color-button-primary: #2D6A4F;
-    --color-button-primary-hover: linear-gradient(to right, #40916C, #347658);
-    --color-button-secondary: #52B788;
-    --color-link: #2D6A4F;
-    --color-link-hover: #82bea3;
-    /* Bordes y sombras */
-    --color-border: #95D5B2; /* Bordes */
-    --color-shadow: rgba(74, 198, 157, 0.3); /* Sombra translúcida */
-    /* Mensajes de estado */
-    --color-success: #52B788; /* Éxito (verde brillante) */
-    --color-error: #e66139; /* (Agrega un rojo para contraste si es necesario) */
-    --color-warning: #F4A261; /* (Un naranja suave para advertencias) */
-    --color-info: #74C69D; /* Información */
-}
+
 
 
 
@@ -52,8 +21,8 @@ input[type="number"]::-webkit-outer-spin-button {
     width: 100px;
     height: 35px;
     cursor: pointer;
-    border: 2px solid var(--main-color);
-    box-shadow: 4px 4px var(--main-color);
+    border: 2px solid var(--color-box-shadow);
+    box-shadow: 4px 4px var(--color-box-shadow);
     background-color: var(--bg-color);
     border-radius: 10px;
     overflow: hidden;
@@ -62,7 +31,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .number-control:active {
     transform: translate(3px, 3px);
-    box-shadow: 0px 0px var(--main-color);
+    box-shadow: 0px 0px var(--color-box-shadow);
 }
   
 .number-left::before,
@@ -73,7 +42,7 @@ input[type="number"]::-webkit-outer-spin-button {
     justify-content: center;
     width: 30px;
     height: 40px;
-    color: black;
+    color: var(--color-text-secondary);
     cursor: pointer;
 }
   
@@ -95,12 +64,13 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 18px;
     background-color: transparent;
     text-align: center;
+    color: var(--color-text-secondary);
     font-family: 'Squada One', sans-serif;
 }
   
 .number-left:hover::before,
 .number-right:hover::after {
-    background-color: #dedede;
+    background-color: var(--color-box-shadow);
 }
 
 /* BOTÓN AGREGAR ITEM */ 
@@ -116,9 +86,9 @@ input[type="number"]::-webkit-outer-spin-button {
     cursor: pointer;
     display: flex;
     align-items: center;
-    border: 2px solid var(--main-color);
-    box-shadow: 4px 4px var(--main-color);
-    background-color: var(--bg-color);
+    border: 3px solid var(--color-box-shadow);
+    box-shadow: 3px 3px var(--color-box-shadow);
+    background-color: var(--color-button-bg);
     border-radius: 10px;
     overflow: hidden;
 }
@@ -131,7 +101,7 @@ input[type="number"]::-webkit-outer-spin-button {
   
 .button_item .button_item__text {
     transform: translateX(22px);
-    color: var(--font-color);
+    color: var(--color-text-secondary);
     font-weight: 600;
 }
   
@@ -140,7 +110,7 @@ input[type="number"]::-webkit-outer-spin-button {
     transform: translateX(100px);
     height: 100%;
     width: 39px;
-    background-color: var(--bg-color-sub);
+    background-color: var(--color-box-shadow);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -148,11 +118,11 @@ input[type="number"]::-webkit-outer-spin-button {
   
 .button_item .svg {
     width: 20px;
-    fill: var(--main-color);
+    fill: var(--color-box-shadow);
 }
   
 .button_item:hover {
-    background: var(--bg-color);
+    background: var(--color-button-bg);
 }
   
 .button_item:hover .button_item__text {
@@ -166,7 +136,7 @@ input[type="number"]::-webkit-outer-spin-button {
   
 .button_item:active {
     transform: translate(3px, 3px);
-    box-shadow: 0px 0px var(--main-color);
+    box-shadow: 0px 0px var(--color-box-shadow);
 }
 
 /* TOOTTIP */
@@ -186,8 +156,8 @@ input[type="number"]::-webkit-outer-spin-button {
     opacity: 0;
     pointer-events: none;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-    background: #c2bfbf;
-    color: black;
+    background: var(--color-box-shadow);
+    color: var(--color-text-secondary);
     border-radius: 0.3em;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     text-align: center;
@@ -219,11 +189,11 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 14px;
     height: 36px;
     background-color: var(--bg-color);
-    border: 2px solid var(--main-color);
+    border: 2px solid var(--color-box-shadow);
     border-radius: 10px;
     display: flex;
     flex-direction: row;
-    box-shadow: 4px 4px var(--main-color);
+    box-shadow: 4px 4px var(--color-box-shadow);
     transition: all 0.3s;
 }
   
@@ -261,7 +231,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
   
 .span {
-    color: var(--font-color-dark);
+    color: var(--color-text-secondary);
 }
   
 .input:checked + .btn {
@@ -287,10 +257,10 @@ input[type="number"]::-webkit-outer-spin-button {
     --selec-color: #cecece;
     --secondary-color: #9e9ea7;
     background-color: var(--bg-color);
-    border: 2px solid var(--main-color);
+    border: 2px solid var(--color-box-shadow);
     border-radius: 30px;
     overflow: hidden;
-    box-shadow: 4px 4px var(--main-color);
+    box-shadow: 4px 4px var(--color-box-shadow);
     transition: all 0.3s;
 }
   
@@ -304,12 +274,13 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 8px;
     outline: none;
     background-color: transparent;
-    color: #0d0c22;
+    color: var(--color-text-primary);
     transition: 0.3s ease;
+    font-family: "Barlow Condensed", sans-serif;
 }
   
 .input_search::placeholder {
-    color: #9e9ea7;
+    color: var(--color-text-secondary);
 }
   
 .icon {
@@ -322,24 +293,16 @@ input[type="number"]::-webkit-outer-spin-button {
   
 /* LISTA DE OPCIONES FILTROS */ 
 .wrapper1 {
-    --font-color-dark: #323232;
-    --font-color-light: #fff;
-    --bg-color: #fff;
-    --main-color: #c2bfbf;
-    --selec-color: #cecece;
-    --selec-gradient: linear-gradient(to right, #ff4b2b, #ff416c);
-    --secondary-gradient: linear-gradient(to right, #f8735b, #e24469);
-    --secondary-color: #9e9ea7;
     position: relative;
     width: 500px;
     height: 36px;
     overflow: hidden;
-    background-color: var(--bg-color);
-    border: 2px solid var(--main-color);
+    background-color: var(--color-button-bg);
+    border: 2px solid var(--color-box-shadow);
     border-radius: 30px;
     display: flex;
     flex-direction: row;
-    box-shadow: 4px 4px var(--main-color);
+    box-shadow: 4px 4px var(--color-box-shadow);
     transition: all 0.3s;
 }
 
@@ -363,13 +326,11 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 10px;
     border: none;
     border-radius: 25px;
-    color: #fff;
-    background: linear-gradient(to right, #7e7e7e, #363636);
+    color: var(--color-text-secondary);
+    background: var(--color-button-primary);
     font-size: 16px;
     font-family: 'Squada One';
     cursor: pointer;
-    border: 2px solid #c2bfbf;
-    box-shadow: 4px 4px #c2bfbf;
 }
 
 .loading-disabled{
@@ -381,12 +342,11 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .send_btn:hover{
-    background: linear-gradient(to right, #504f4f, #1b8102);
+    background: var(--color-background-light);
 }
 
 .cancel_btn:hover{
-    /* background: linear-gradient(to right, #504f4f, #530827); */
-    background: linear-gradient(to right, #f8735b, #e24469);
+    background: var(--color-background-light);
 }
 
 
@@ -418,8 +378,8 @@ input[type="number"]::-webkit-outer-spin-button {
     height: 36px;
     border-radius: 2px;
     position: relative;
-    color: #323232;
-    background-color: #e7e7e7;
+    color: var(--color-text-secondary);
+    background-color: var(--color-button-bg);
     text-decoration: none;
     transition: 0.3s ease all;
     overflow: hidden;
@@ -455,11 +415,12 @@ input[type="number"]::-webkit-outer-spin-button {
     border-radius: 5px;      /* Bordes redondeados opcionales */
     cursor: pointer;         /* Cambia el cursor al pasar sobre el botón */
     width: 100%;
+    color: var(--color-text-secondary); 
 }
 
 .icon {
     font-size: 1.5em; /* Ajusta el tamaño del icono */
-    color: #323232;   /* Color del icono */
+    color: var(--color-text-secondary);   /* Color del icono */
 }
 
 /* CREDIT CARD */
@@ -526,7 +487,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .input-label {
   font-size: 13px;
   letter-spacing: 1.5px;
-  color: #e2e2e2;
+  color: var(--color-text-title);
   width: 100%;
   font-weight: bold;
 }

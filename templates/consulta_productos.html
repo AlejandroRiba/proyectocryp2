@@ -6,53 +6,35 @@
     <link rel="icon" href="static/images/logosmall.ico">
     <title>R&R PRODUCTS</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css') }}">
 </head>
 <body>
 
     <!-- NAVBAR -->
     {% include "shared/navbar.html" %}
     <!-- NAVBAR -->
-     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-
-    <h1>CONSULTA PRODUCTOS</h1>
-    <a href="/crear_producto">Crear producto nuevo</a>
-    <table>
-        <thead>
-            <tr>
-                <th>Imagen</th>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Type</th>
-                <!-- <th>Talla</th> -->
-                <th>Color</th>
-                <!-- <th>Stock</th> -->
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for producto in productos %}
-                <tr>
-                    <td><div class="contenedor-square"><img src="static/images/products/{{producto.archivo}}" class="cuadrada"></div></td>
-                    <td>{{ producto.nombre }}</td>
-                    <td>${{ producto.precio }}</td>
-                    <td>{{ producto.categoria }}</td>
-                    <td>{{ producto.color }}</td>
-                        <!-- {% for variante in producto.variantes %}
-                            <td>{{ variante.talla }}</td>
-                            <td>{{ producto.color }}</td>
-                            <td>{{ variante.stock }}</td>
-                        {% endfor %} -->
-                    <td><a href="/editar_producto/{{producto.id}}"><img src="static/images/edit.svg" style="height: 30px;"></a></td>
-                    <td><a href="/eliminar_producto/{{producto.id}}"><img src="static/images/delete.svg" style="height: 30px;"></a></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
+    <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+    <div class="contenedor_buscador">
+        <h1>PRODUCTS</h1>
+        <!-- BUSCADOR Y FILTROS -->
+        {% include "shared/buscador.html" %}
+        <!-- BUSCADOR Y FILTROS -->
+        <!-- TABLA DE PRODUCTOS -->
+        {% include "shared/tablaproductos.html" %}
+        <!-- FIN TABLA DE PRODUCTOS -->
+        <div style="display: flex; gap: 30px; text-align: center; justify-content: center; padding: 20px 0;">
+            <div style="width: 30%;">
+              <button id="btn_subir" class="loading cancel_btn" type="button" onclick="volverArriba()">↑ Back to up</button>
+            </div>
+        </div>
+    </div>
      <!-- TERMINA CONTENIDO DE PÁGINA -->
     <!-- Footer -->
     {% include "shared/footer.html" %}
     <!-- Footer -->
+    <script src="{{ url_for('static', filename='ventas.js') }}" ></script>
+    <script src="{{ url_for('static', filename='app.js') }}" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

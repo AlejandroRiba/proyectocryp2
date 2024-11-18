@@ -7,12 +7,12 @@
                 <a>MENU</a>
                 <div class="menuContent">
                     <ul>
-                        <li><a href="{{ url_for('clients_transactions.registra_venta')}}">Registrar Venta</a></li>
-                        <li><a href="{{ url_for('clients_transactions.consulta_venta')}}">Consultar Ventas</a></li>
+                        <li><a href="{{ url_for('clients_transactions.registra_venta')}}">Register Sale</a></li>
+                        <li><a href="{{ url_for('clients_transactions.consulta_venta')}}">View Sales</a></li>
                         <li><a href="{{ url_for('reports.consulta_informes')}}">Sales Reports</a></li>
                         <li><a href="{{ url_for('products.consulta_productos')}}">Products</a></li>
-                        <li><a href="{{ url_for('reports.generar_informe')}}">Generar Informe de ventas mensuales</a></li>
-                        <li><a href="{{ url_for('users.edit_user', id=status)}}">Editar datos</a></li>
+                        <li><a href="{{ url_for('reports.generar_informe')}}">Generate Monthly Sales Report</a></li>
+                        <li><a href="{{ url_for('users.edit_user', id=status)}}">Edit Data</a></li>
                         {% if status == 'admin' %} 
                             <li><a href="{{ url_for('users.consulta_empleado')}}">Employees</a></li>
                         {% endif %}

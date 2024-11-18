@@ -1,4 +1,8 @@
-<div id="productostabla" class="contenedor_tabla" style="display: none;">
+{% if consulta == "venta" %}
+    <div id="productostabla" class="contenedor_tabla" style="display: none;">
+{% else %}
+    <div id="productostabla" class="contenedor_tabla">
+{% endif %}
     <table>
         <thead>
             <tr>
@@ -10,8 +14,14 @@
                 <th>Size</th>
                 <th>Color</th>
                 <th>Stock</th>
-                <th>Units</th>
-                <th style="border-right: none;">Add</th>
+                {% if consulta == "venta" %}
+                    <th>Units</th>
+                    <th style="border-right: none;">Add</th>
+                {% else %}
+                    <th>Edit</th>
+                    <th style="border-right: none;">Delete</th>
+                {% endif %}
+                
             </tr>
         </thead>
         <tbody>
@@ -89,24 +99,29 @@
                         <td>
                             <span id="stock_{{producto.id}}">{{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
                         </td>
-                        <td>
-                            <div class="tooltip-container">
-                                <span class="tooltip" id="tooltip_{{producto.id}}">Maximum value: {{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
-                                <div class="number-control">
-                                    <div class="number-left" onclick='disminuirvalor("cantidad_{{producto.id}}")'></div>
-                                    <input type="number" name="number" max="{{ producto.variantes[0].stock if producto.variantes else 0 }}" class="number-quantity" id="cantidad_{{producto.id}}" autocomplete="off" value="{{1 if producto.variantes[0].stock > 0 else 0}}" oninput="maxValor(this)">
-                                    <div class="number-right" onclick='aumentarvalor("cantidad_{{producto.id}}")'></div>
+                        {% if consulta == "venta" %}
+                            <td>
+                                <div class="tooltip-container">
+                                    <span class="tooltip" id="tooltip_{{producto.id}}">Maximum value: {{ producto.variantes[0].stock if producto.variantes else 0 }}</span>
+                                    <div class="number-control">
+                                        <div class="number-left" onclick='disminuirvalor("cantidad_{{producto.id}}")'></div>
+                                        <input type="number" name="number" max="{{ producto.variantes[0].stock if producto.variantes else 0 }}" class="number-quantity" id="cantidad_{{producto.id}}" autocomplete="off" value="{{1 if producto.variantes[0].stock > 0 else 0}}" oninput="maxValor(this)">
+                                        <div class="number-right" onclick='aumentarvalor("cantidad_{{producto.id}}")'></div>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td style="border-right: none;">
-                            <div>
-                                <button class="button_item" type="button" onclick="agregarAlCarrito('{{producto.id}}')">
-                                    <span class="button_item__text">Add Item</span>
-                                    <span class="button_item__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
-                                </button>
-                            </div>
-                        </td>
+                            </td>
+                            <td style="border-right: none;">
+                                <div>
+                                    <button class="button_item" type="button" onclick="agregarAlCarrito('{{producto.id}}')">
+                                        <span class="button_item__text">Add Item</span>
+                                        <span class="button_item__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
+                                    </button>
+                                </div>
+                            </td>
+                        {% else %}
+                            <td><a href="/editar_producto/{{producto.id}}"><img src="static/images/edit.svg" style="height: 30px;"></a></td>
+                            <td style="border-right: none;"><img src="static/images/delete.svg" style="height: 30px; cursor: pointer;" onclick="deleteProduct('{{producto.id}}')"></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             {% endif %}
@@ -114,11 +129,11 @@
     </table>
     <div class="pagination">
         {% if productos.has_prev %}
-            <button onclick="aplicarFiltros('{{productos.prev_num}}')">Previous</button>
+            <button onclick="aplicarFiltros('{{productos.prev_num}}', '{{consulta}}')">Previous</button>
         {% endif %}
         <span>/ Page {{ productos.page }} of {{ productos.pages }} /</span>
         {% if productos.has_next %}
-            <button class="next" onclick="aplicarFiltros('{{productos.next_num}}')">Next</button>
+            <button class="next" onclick="aplicarFiltros('{{productos.next_num}}', '{{consulta}}')">Next</button>
         {% endif %}
     </div>
 </div>

@@ -194,15 +194,15 @@ function vaciarCarrito(){
     }
 }
 
-function aplicarFiltros(page = 1) {
+function aplicarFiltros(page, consulta) {
     const nombre = document.getElementById("buscador").value;
     const categoria = document.querySelector(`input[name="filtro"]:checked`).value
 
-    fetch(`/filtrar_productos?nombre=${nombre}&categoria=${categoria}&page=${page}`)
+    fetch(`/filtrar_productos?nombre=${nombre}&categoria=${categoria}&page=${page}&consulta=${consulta}`)
         .then(response => response.json())
         .then(data => {
             const tbody = document.querySelector("tbody");
-            tbody.innerHTML = "";  // Limpiamos las filas existentes
+            tbody.innerHTML = ""; // Limpiamos las filas existentes
 
             if (data.productos.length === 0) {
                 const fila = document.createElement("tr");
@@ -215,73 +215,84 @@ function aplicarFiltros(page = 1) {
             } else {
                 data.productos.forEach(producto => {
                     const fila = document.createElement("tr");
-                    let stock = producto.variantes[0].stock; // Obtiene el valor de stock
+                    let stock = producto.variantes[0]?.stock || 0; // Obtén el valor de stock
                     let cantidadInicial = stock > 0 ? 1 : 0; // Define 1 si el stock es mayor a 0, de lo contrario 0
+
+                    // Renderiza las columnas condicionalmente
+                    let acciones = "";
+                    if (data.consulta === "venta") {
+                        acciones = `
+                            <td>
+                                <div class="tooltip-container">
+                                    <span class="tooltip" id="tooltip_${producto.id}">Maximum value: ${stock}</span>
+                                    <div class="number-control">
+                                        <div class="number-left" onclick='disminuirvalor("cantidad_${producto.id}")'></div>
+                                        <input type="number" name="number" max="${stock}" class="number-quantity" 
+                                            id="cantidad_${producto.id}" autocomplete="off" value="${cantidadInicial}" oninput="maxValor(this)">
+                                        <div class="number-right" onclick='aumentarvalor("cantidad_${producto.id}")'></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="border-right: none;">
+                                <div>
+                                    <button class="button_item" type="button" onclick="agregarAlCarrito('${producto.id}')">
+                                        <span class="button_item__text">Add Item</span>
+                                        <span class="button_item__icon">
+                                            <svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" 
+                                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" 
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <line x1="12" x2="12" y1="5" y2="19"></line>
+                                                <line x1="5" x2="19" y1="12" y2="12"></line>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </td>`;
+                    } else {
+                        acciones = `
+                            <td><a href="/editar_producto/${producto.id}"><img src="static/images/edit.svg" style="height: 30px;"></a></td>
+                            <td style="border-right: none;"><img src="static/images/delete.svg" style="height: 30px; cursor: pointer;" onclick="deleteProduct('${producto.id}')"></td>`;
+                    }
+
                     fila.innerHTML = `
                         <td style="border-left: none;">${producto.id}</td>
                         <td><div class="contenedor-square"><img id="img_${producto.id}" src="static/images/products/${producto.archivo}" class="cuadrada"></div></td>
                         <td id="name_${producto.id}">${producto.nombre}</td>
                         <td id="precio_${producto.id}">$${producto.precio}</td>
                         <td>${producto.categoria}</td>
-                        <td>
-                            ${producto.variantes.length > 1 ? 
-                                `<div style="display: flex; padding: 6px 0;">
-                                    ${producto.variantes.map((variante, index) => `
-                                        ${index % 4 === 0 && index !== 0 ? `</div><div style="display: flex; padding: 6px 0;">` : ""}
-                                        <div class="wrapper">
-                                            <div class="option" onclick="actualizarStock('${producto.id}', '${variante.talla}')">
-                                                <input ${index === 0 ? "checked" : ""} id="option_${producto.id}_${variante.talla}" 
-                                                    value="${variante.talla}" data-stock="${variante.stock}" 
-                                                    name="btn_${producto.id}" type="radio" class="input"/>
-                                                <div class="btn">
-                                                    <span class="span">${variante.talla}</span>
-                                                </div>
+                        <td>${producto.variantes.length > 1 ? 
+                            `<div style="display: flex; padding: 6px 0;">
+                                ${producto.variantes.map((variante, index) => 
+                                    `${index % 4 === 0 && index !== 0 ? `</div><div style="display: flex; padding: 6px 0;">` : ""}
+                                    <div class="wrapper">
+                                        <div class="option" onclick="actualizarStock('${producto.id}', '${variante.talla}')">
+                                            <input ${index === 0 ? "checked" : ""} id="option_${producto.id}_${variante.talla}" 
+                                                value="${variante.talla}" data-stock="${variante.stock}" 
+                                                name="btn_${producto.id}" type="radio" class="input"/>
+                                            <div class="btn">
+                                                <span class="span">${variante.talla}</span>
                                             </div>
                                         </div>
-                                    `).join('')}
-                                </div>`
-                                : `<div style="display: flex; padding: 6px 0;">
-                                        <div class="wrapper" style="pointer-events: none; cursor: default;">
-                                            <div class="option">
-                                                <input checked id="option_${producto.id}_${producto.variantes[0].talla}" 
-                                                    value="${producto.variantes[0].talla}" data-stock="${producto.variantes[0].stock}" 
-                                                    name="btn_${producto.id}" type="radio" class="input"/>
-                                                <div class="btn">
-                                                    <span class="span">${producto.variantes[0].talla}</span>
-                                                </div>
-                                            </div>
+                                    </div>`
+                                ).join('')}
+                            </div>`
+                            : `<div style="display: flex; padding: 6px 0;">
+                                <div class="wrapper" style="pointer-events: none; cursor: default;">
+                                    <div class="option">
+                                        <input checked id="option_${producto.id}_${producto.variantes[0].talla}" 
+                                            value="${producto.variantes[0].talla}" data-stock="${producto.variantes[0].stock}" 
+                                            name="btn_${producto.id}" type="radio" class="input"/>
+                                        <div class="btn">
+                                            <span class="span">${producto.variantes[0].talla}</span>
                                         </div>
-                                </div>`
-                            }
+                                    </div>
+                                </div>
+                            </div>`
+                        }
                         </td>
                         <td>${producto.color}</td>
-                        <td><span id="stock_${producto.id}">${producto.variantes[0].stock}</span></td>
-                        <td>
-                            <div class="tooltip-container">
-                                <span class="tooltip" id="tooltip_${producto.id}">Maximum value: ${producto.variantes[0].stock}</span>
-                                <div class="number-control">
-                                    <div class="number-left" onclick='disminuirvalor("cantidad_${producto.id}")'></div>
-                                    <input type="number" name="number" max="${producto.variantes[0].stock}" class="number-quantity" 
-                                    id="cantidad_${producto.id}" autocomplete="off" value="${cantidadInicial}" oninput="maxValor(this)">
-                                    <div class="number-right" onclick='aumentarvalor("cantidad_${producto.id}")'></div>
-                                </div>
-                            </div>
-                        </td>
-                        <td style="border-right: none;">
-                            <div>
-                                <button class="button_item" type="button" onclick="agregarAlCarrito('${producto.id}')">
-                                    <span class="button_item__text">Add Item</span>
-                                    <span class="button_item__icon">
-                                        <svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" 
-                                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" 
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <line x1="12" x2="12" y1="5" y2="19"></line>
-                                            <line x1="5" x2="19" y1="12" y2="12"></line>
-                                        </svg>
-                                    </span>
-                                </button>
-                            </div>
-                        </td>
+                        <td><span id="stock_${producto.id}">${stock}</span></td>
+                        ${acciones}
                     `;
                     tbody.appendChild(fila);
                 });
@@ -290,9 +301,9 @@ function aplicarFiltros(page = 1) {
             // Actualizar la paginación
             const pagination = document.querySelector(".pagination");
             pagination.innerHTML = `
-                ${data.has_prev ? `<button class="next" onclick="aplicarFiltros(${data.prev_num})">Previous</button>` : ""}
+                ${data.has_prev ? `<button class="next" onclick="aplicarFiltros(${data.prev_num}, '${data.consulta}')">Previous</button>` : ""}
                 <span>/ Page ${data.page} of ${data.pages} /</span>
-                ${data.has_next ? `<button class="next" onclick="aplicarFiltros(${data.next_num})">Next</button>` : ""}
+                ${data.has_next ? `<button class="next" onclick="aplicarFiltros(${data.next_num}, '${data.consulta}')">Next</button>` : ""}
             `;
 
         })
@@ -354,20 +365,6 @@ function ocultarCarrito(input){
     input.classList.toggle('active');
 }
 
-function volverArriba() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth' // Desplazamiento suave
-    });
-}
-
-function scrollToBottom() {
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth' // Esto proporciona un desplazamiento suave
-    });
-}
-
 function prepareSelectedProducts(formId) {  
     if(formId === 'ventaForm'){
         const phone = document.getElementById('numero');
@@ -375,12 +372,20 @@ function prepareSelectedProducts(formId) {
         let tarjeta_value = tarjeta.value.replace(/\s/g, '');
         if (carritolist.length === 0) {
             console.log("La lista está vacía.");
-            alert('Selecciona al menos un producto.');
+            Swal.fire({
+                title: 'Select at least one product.',
+                icon: 'warning',
+                confirmButtonColor: '#748CAB',
+            });
             return false;
         } if(!validarTelefono(phone)){
             return false;
         }if (!luhnCheck(tarjeta_value)){ //algoritmo de luhn
-            alert('Tarjeta no valida');
+            Swal.fire({
+                title: 'Invalid card number, please try again.',
+                icon: 'warning',
+                confirmButtonColor: '#748CAB',
+            });
             return false;
         }else {
             console.log("La lista tiene elementos.");
@@ -401,4 +406,49 @@ function prepareSelectedProducts(formId) {
         }
     }
     return true;
+}
+
+function deleteProduct(idProduct){
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#748CAB',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If the user confirms, proceed with the deletion request
+            fetch(`/eliminar_producto?id=${idProduct}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'The product has been successfully deleted.',
+                            icon: 'success',
+                            confirmButtonColor: '#748CAB',
+                        });
+                        aplicarFiltros(1, 'producto');
+                    } else {
+                        Swal.fire({
+                            title: 'ERROR',
+                            text: 'The product could not be deleted. Check for dependencies.',
+                            icon: 'error',
+                            confirmButtonColor: '#748CAB',
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        title: 'Connection Error',
+                        text: 'There was a problem trying to delete the product.',
+                        icon: 'error',
+                    });
+                });
+        }
+    });
 }

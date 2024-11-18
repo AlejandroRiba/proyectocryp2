@@ -23,7 +23,7 @@ def consulta_clientes():
 def registra_venta():
     username = session['username']
     productos = productos_paginados() #aplica un filtro de productos más vendidos para que no se tenga una tabla muy extensa 
-    return render_template('registra_venta.html', status=username, productos=productos, page=1, per_page=4)
+    return render_template('registra_venta.html', status=username, productos=productos, page=1, per_page=4, consulta="venta")
         
         
 @clients_transactions_blueprint.route('/procesar_venta', methods=['POST'])
