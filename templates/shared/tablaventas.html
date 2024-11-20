@@ -6,7 +6,7 @@
                         <th>Employee ID</th>
                     {% endif %}
                     <th>Date</th>
-                    <th>Monto</th>
+                    <th>Total Amount</th>
                     <th>Customer ID</th>
                     <th>Client Name</th>
                     <th>Card Number</th>
@@ -19,7 +19,7 @@
                         <td>{{ transaccion.empleado_id }}</td>
                     {% endif %}
                     <td>{{ transaccion.fecha }}</td>
-                    <td>{{ transaccion.monto }}</td>
+                    <td>${{ transaccion.monto }}</td>
                     <td>{{transaccion.cliente_id}}</td>
                     <td>{{ transaccion.cliente.nombre + ' ' + transaccion.cliente.apellido}}</td>
                     {% if status == 'admin' %}

@@ -44,7 +44,7 @@ body {
     background-color: var(--color-background-dark);
 }
 
-.wrapper {
+.wrapper-main {
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* Asegura que el contenedor principal ocupe al menos toda la altura de la ventana */
@@ -237,4 +237,6 @@ footer {
 /* Efecto zoom al hacer hover */
 .contenedor-square:hover img {
     transform: scale(3); /* Ajusta el valor para más o menos zoom */
+    position: relative;
+    z-index: 2;
 }
