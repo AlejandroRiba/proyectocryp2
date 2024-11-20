@@ -8,28 +8,32 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
 </head>
 <body>
-
-    <!-- Footer -->
-    {% include "shared/navbar.html" %}
-    <!-- Footer -->
-     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-      <h1>CONSULTA INFORMES</h1>
-      <ul>
-        {% if files %}
-            {% for file in files %}
-                <li>
-                    <a href="{{ url_for('reports.download_report', filename=file) }}" download>{{ file }}</a>
-                </li>
-            {% endfor %}
-        {% else %}
-            <p>No hay reportes disponibles.</p>
-        {% endif %}
-        <button onclick="redireccion('/generar_informe')">New Report</button>
-    </ul>
-     <!-- TERMINA CONTENIDO DE PÁGINA -->
-    <!-- Footer -->
-    {% include "shared/footer.html" %}
-    <!-- Footer -->
+    <div class="warpper">
+        <!-- Footer -->
+        {% include "shared/navbar.html" %}
+        <!-- Footer -->
+        <main>
+            <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+        <h1>CONSULTA INFORMES</h1>
+        <ul>
+            {% if files %}
+                {% for file in files %}
+                    <li>
+                        <a href="{{ url_for('reports.download_report', filename=file) }}" download>{{ file }}</a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p>No hay reportes disponibles.</p>
+            {% endif %}
+            <button onclick="redireccion('/generar_informe')">New Report</button>
+        </ul>
+        <!-- TERMINA CONTENIDO DE PÁGINA -->
+        </main>
+        <!-- Footer -->
+        {% include "shared/footer.html" %}
+        <!-- Footer -->
+    </div>
+    
     <script src="static/app.js" ></script>
 </body>
 </html>

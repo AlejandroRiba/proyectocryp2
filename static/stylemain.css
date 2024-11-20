@@ -44,6 +44,24 @@ body {
     background-color: var(--color-background-dark);
 }
 
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Asegura que el contenedor principal ocupe al menos toda la altura de la ventana */
+}
+
+main {
+    flex: 1; /* Hace que el contenido principal ocupe el espacio disponible */
+    color: var(--color-text-light);
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
 .navbar {
     display: flex;
     justify-content: space-around;
@@ -134,6 +152,7 @@ footer {
 .category {
     text-align: center;
     position: relative;
+    color: var(--color-text-light);
 }
 
 .image-container {

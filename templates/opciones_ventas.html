@@ -8,15 +8,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
 </head>
 <body>
-
+  <div class="warpper">
     <!-- Navbar -->
-     {% include 'shared/navbar.html' %}
+    {% include 'shared/navbar.html' %}
     <!-- Navbar -->
 
-     <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-      <h1>Sales per employee</h1>
-      {% if transacciones %}
-        <table>
+    <main>
+      <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+    <h1>Sales per employee</h1>
+    {% if transacciones %}
+      <table>
           <thead>
               <tr>
                   <th>Fecha</th>
@@ -35,17 +36,19 @@
               </tr>
             {% endfor %}
           </tbody>
-        </table>
+      </table>
       {% else %}
-        <p>No has realizado ventas aún.</p>
+      <p>No has realizado ventas aún.</p>
       {% endif %}
       <button onclick="redireccion('/registra_venta')">New Sale</button>
       <button onclick="redireccion('/consulta_venta')">Sales</button>
      <!-- TERMINA CONTENIDO DE PÁGINA -->
+    </main>
     
-     <!-- Footer -->
-     {% include'shared/footer.html' %}
     <!-- Footer -->
-    <script src="static/app.js" ></script>
+    {% include'shared/footer.html' %}
+    <!-- Footer -->
+  </div>
+  <script src="static/app.js" ></script>
 </body>
 </html>

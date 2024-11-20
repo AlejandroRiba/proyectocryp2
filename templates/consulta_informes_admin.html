@@ -9,47 +9,53 @@
 </head>
 <body>
 
-    <!-- Footer -->
-    {% include "shared/navbar.html" %}
-    <!-- Footer -->
+    <div class="wrapper">
+        <!-- Footer -->
+        {% include "shared/navbar.html" %}
+        <!-- Footer -->
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul class="flashes">
-                {% for category, message in messages %}
-                    <li class="{{ category }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
 
 
-    <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-    <h1>CONSULTA INFORMES</h1>
-    <ul>
-        {% if all_files %}
-            {% for employee_name, files in all_files.items() %}
-                <h3>Reportes de {{ employee_name }}</h3>
-                <ul>
-                    {% for file in files %}
-                        <li>
-                            <a href="{{ url_for('reports.download_report', filename=file) }}" download>{{ file }}</a>
-                            <form action="{{ url_for('reports.verificar_firma_de_archivo', filename=file) }}" method="POST" style="display: inline;">
-                                <button type="submit">Verificar Firma</button>
-                            </form>
-                        </li>
+            <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+            <h1>CONSULTA INFORMES</h1>
+            <ul>
+                {% if all_files %}
+                    {% for employee_name, files in all_files.items() %}
+                        <h3>Reportes de {{ employee_name }}</h3>
+                        <ul>
+                            {% for file in files %}
+                                <li>
+                                    <a href="{{ url_for('reports.download_report', filename=file) }}" download>{{ file }}</a>
+                                    <form action="{{ url_for('reports.verificar_firma_de_archivo', filename=file) }}" method="POST" style="display: inline;">
+                                        <button type="submit">Verificar Firma</button>
+                                    </form>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     {% endfor %}
-                </ul>
-            {% endfor %}
-        {% else %}
-            <p>No hay reportes disponibles.</p>
-        {% endif %}
-        <button onclick="redireccion('/generar_informe')">New Report</button>
-    </ul>
-    <!-- TERMINA CONTENIDO DE PÁGINA -->
-    <!-- Footer -->
-    {% include "shared/footer.html" %}
-    <!-- Footer -->
+                {% else %}
+                    <p>No hay reportes disponibles.</p>
+                {% endif %}
+                <button onclick="redireccion('/generar_informe')">New Report</button>
+            </ul>
+            <!-- TERMINA CONTENIDO DE PÁGINA -->
+        </main>
+        
+        <!-- Footer -->
+        {% include "shared/footer.html" %}
+        <!-- Footer -->
+    </div>
+    
     <script src="static/app.js" ></script>
 </body>
 </html>

@@ -10,7 +10,7 @@ from routes.products import products_blueprint
 from routes.clients_transactions import clients_transactions_blueprint
 
 app = getApp()
-
+ 
 app.register_blueprint(login_blueprint)
 app.register_blueprint(users_blueprint)
 app.register_blueprint(reports_blueprint)
