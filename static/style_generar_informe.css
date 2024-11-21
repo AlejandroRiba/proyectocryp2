@@ -1,0 +1,292 @@
+@import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"] {
+    font-family: "Barlow Condensed", sans-serif;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    width: 100%;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.login-box {
+    position: relative;
+    z-index: 1;
+    width: 300px;
+    padding: 20px 40px;
+    background: var(--color-background-dark);
+    border-radius: 10px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.login-box p {
+    color: var(--color-error);
+    font-size: 14px;
+    font-family: 'Squada One', sans-serif;
+}
+
+.login-box h1 {
+    color: var(--color-text-title);
+    font-size: 50px;
+    margin-top: 10px;
+}
+
+.input-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-box small {
+    color: var(--color-warning);
+    display: none;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.input-box input,
+.input-box select {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--color-text-inverted);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--color-text-title);
+    pointer-events: none;
+    transition: 0.5s;
+    font-weight: 500;
+}
+
+.input-box input:focus ~ label,
+.input-box select:focus ~ label,
+.input-box input:valid ~ label,
+.input-box select:valid ~ label {
+    top: -20px;
+    font-size: 14px;
+}
+
+.input-box input:disabled,
+.input-box select:disabled {
+    color: #797979;
+}
+
+.button-box {
+    text-align: center;
+}
+
+.button-box button {
+    width: 100%;
+    padding: 10px;
+    background: var(--color-button-primary);
+    border: none;
+    border-radius: 25px;
+    color: var(--color-text-primary);
+    font-size: 16px;
+    font-family: 'Squada One';
+    cursor: pointer;
+}
+
+.button-box button:hover {
+    background: var(--color-background-light);
+}
+
+.customButton,
+.customButtondisabled {
+    font-family: 'Squada One';
+    color: var(--color-text-inverted);
+    padding: 10px;
+    background-color: transparent;
+    border: solid 1px white;
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    font-size: 16px;
+}
+
+.customButton:hover {
+    background: var(--color-background-light);
+    color: var(--color-text-primary);
+}
+
+.customButtondisabled:hover {
+    background-color: var(--color-background-dark);
+}
+
+#customText {
+    color: var(--color-text-title);
+    font-size: 14px;
+    display: block;
+    margin-top: 10px;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.links a {
+    color: var(--color-text-title);
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.links a:hover {
+    text-decoration: underline;
+    color: var(--color-link-hover);
+}
+
+.message-container {
+    display: flex;
+    align-items: center;
+    margin-top: -30px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-top: -14px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    gap: 5px;
+}
+
+.checkbox-container label {
+    font-size: 14px;
+    color: var(--color-text-title);
+    margin-right: 10px;
+    cursor: pointer;
+    font-family: "Barlow Condensed", sans-serif;
+}
+
+.checkbox-container input[type="checkbox"] {
+    display: none;
+}
+
+.custom-checkbox {
+    width: 18px;
+    height: 18px;
+    background-color: #080808;
+    border-radius: 4px;
+    border: 2px solid #7e0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.custom-checkbox:before {
+    content: "✓";
+    color: #d3d3d3;
+    font-size: 14px;
+    display: none;
+}
+
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox:before {
+    display: block;
+}
+
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox {
+    border-color: #ff7d41;
+}
+
+.contenedor_buscador {
+    margin: 20px auto;
+    width: 90%;
+    height: fit-content;
+    overflow: auto;
+    padding: 10px 30px;
+    background: var(--color-background-dark);
+    color: var(--color-text-light);
+    border-radius: 10px;
+}
+
+.contenedor_buscador h1 {
+    color: var(--color-text-title);
+    font-size: 50px;
+    text-align: center;
+}
+
+.contenedor_tabla,
+.contenedor_tabla1 {
+    background-color: transparent;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.contenedor_tabla table,
+.contenedor_tabla1 table {
+    text-align: center;
+    border-collapse: collapse;
+    width: 100%;
+    font-family: "Fjalla One", sans-serif;
+}
+
+.contenedor_tabla th,
+.contenedor_tabla td,
+.contenedor_tabla1 th,
+.contenedor_tabla1 td {
+    padding: 20px 10px;
+    border: 1px rgb(189, 187, 187) solid;
+    letter-spacing: 1px;
+}
+
+.contenedor_tabla th,
+.contenedor_tabla1 th {
+    font-weight: normal;
+}
+
+.input-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el select */
+.input-box select {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--color-text-inverted);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    position: relative; /* Para que el label se pueda mover en relación con el select */
+    transition: all 0.3s ease;
+}
+
+/* Estilo para el label */
+.input-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--color-text-title);
+    pointer-events: none;
+    transition: 0.3s ease;
+    font-weight: 500;
+}

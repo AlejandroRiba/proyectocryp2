@@ -71,9 +71,9 @@ def generar_informe():
             if report:
                 return jsonify({"success": True, "message": "Welcome.", "destino": '/consulta_informes'}), 200
             else:
-                return jsonify({"success": False, "message": flash_message, "destino":None}), 400
+                return jsonify({"success": False, "message": flash_message, "destino":None}), 204
         else:
-            return jsonify({"success": False, "message": "Incorrect password. Try again.", "destino":None}), 400
+            return jsonify({"success": False, "message": "Incorrect password. Try again.", "destino":None}), 401
     else:
         username = session['username']
         return render_template('generar_informe.html', status=username)

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="static/images/logosmall.ico">
     <title>R&R REPORT</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_generar_informe.css') }}">
 </head>
 <body>
     <div class="wrapper-main">
@@ -14,55 +15,65 @@
         <!-- Navbar -->
 
         <main>
-            <!-- Contenedor Principal -->
-            <div class="container">
-                <div class="category">
-                    <h1 class="page-title">Generar Informe</h1>
-                    <!-- Formulario -->
+            <div class="login-container">
+                <div class="login-box">
+                    <h1 class="page-title">Generate Report</h1><br>
+                    <!-- Form -->
                     <div class="form-container">
                         <form id="reporte-form" action="{{ url_for('reports.generar_informe') }}" method="POST" class="styled-form">
-                            <label for="year">Seleccione el Año:</label>
-                            <select id="year" name="year" required>
-                                {% for y in range(2020, 2025) %}
-                                <option value="{{ y }}">{{ y }}</option>
-                                {% endfor %}
-                            </select>
+                            
+                            <div class="input-box">
+                                
+                                <select id="year" name="year" required>
+                                    <option value="" disabled selected></option>
+                                    {% for y in range(2024, 2025) %}
+                                    <option value="{{ y }}">{{ y }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="year">Select Year:</label>
+                            </div>
 
-                            <label for="month">Seleccione el Mes:</label>
-                            <select id="month" name="month" required>
-                                <option value="1">Enero</option>
-                                <option value="2">Febrero</option>
-                                <option value="3">Marzo</option>
-                                <option value="4">Abril</option>
-                                <option value="5">Mayo</option>
-                                <option value="6">Junio</option>
-                                <option value="7">Julio</option>
-                                <option value="8">Agosto</option>
-                                <option value="9">Septiembre</option>
-                                <option value="10">Octubre</option>
-                                <option value="11">Noviembre</option>
-                                <option value="12">Diciembre</option>
-                            </select>
+                            <div class="input-box">
+                                <select id="month" name="month" required>
+                                    <option value="" disabled selected></option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                                <label for="month">Select Month:</label>
+                            </div>
 
-                            <label for="password">Password:</label>
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                required 
-                                onclick="ocultaError()" 
-                                title="Enter your password" 
-                                oninput="this.setCustomValidity('')" 
-                                oninvalid="this.setCustomValidity('Por favor ingrese su contraseña')"
-                            >
+                            <div class="input-box">
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    required 
+                                    onclick="ocultaError()" 
+                                    title="Enter your password" 
+                                    oninput="this.setCustomValidity('')" 
+                                    oninvalid="this.setCustomValidity('Please enter your password')"
+                                >
+                                <label for="password">Password:</label>
+                            </div>
 
-                            <!-- Mensaje de error -->
+                            <!-- Error message -->
                             <p id="error_message" class="error-message"></p>
 
-                            <button type="submit" class="primary-button">Generar Reporte</button>
+                            <div class="button-box" style="display: flex; gap: 20px;">
+                                <button type="submit" class="primary-button">Generate Report</button>
+                                <button onclick="redireccion('/consulta_informes')" class="secondary-button">Generated Reports</button>
+                            </div>
                         </form>
-
-                        <button onclick="redireccion('/consulta_informes')" class="secondary-button">Reportes Generados</button>
                     </div>
                 </div>
             </div>
