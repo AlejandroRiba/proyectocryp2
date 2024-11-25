@@ -14,16 +14,29 @@ reports_blueprint = Blueprint('reports', __name__)
 def consulta_informes():
     username = session['username']
     employee = obtener_usuario_por_id(username)
+    
+    # Obtener filtros
+    id_empleado = request.args.get('id_empleado', '')
+    mes = request.args.get('mes', '')
+    año = request.args.get('año', '')
 
     if employee.cargo == 'Employee':
         reportes = obtener_reportes_por_empleado(employee.id)
         files = []
-        for reporte in reportes:
-            file = obtener_archivo_por_id_y_fecha(REPORTS_DIR, employee.id, reporte.fecha.year, reporte.fecha.month)
-            if file:
-                files.append(file)
-        return render_template('consulta_informes.html', status=username, files=files)
 
+        for reporte in reportes:
+            if (not año or reporte.fecha.year == int(año)) and \
+               (not mes or reporte.fecha.month == int(mes)):
+                file = obtener_archivo_por_id_y_fecha(REPORTS_DIR, employee.id, reporte.fecha.year, reporte.fecha.month)
+                if file:
+                    files.append(file)
+
+        return render_template(
+            'consulta_informes.html',
+            status=username,
+            files=files,
+            filtros={'id_empleado': id_empleado, 'mes': mes, 'año': año}
+        )
     else:
         employees = obtener_empleados()
         all_files = {}
@@ -31,18 +44,29 @@ def consulta_informes():
         for employee in employees:
             reportes = obtener_reportes_por_empleado(employee.id)
             employee_files = []
+
             for reporte in reportes:
-                file = obtener_archivo_por_id_y_fecha(REPORTS_DIR, employee.id, reporte.fecha.year, reporte.fecha.month)
-                if file:
-                    employee_files.append(file)
+                if (not año or reporte.fecha.year == int(año)) and \
+                   (not mes or reporte.fecha.month == int(mes)):
+                    file = obtener_archivo_por_id_y_fecha(REPORTS_DIR, employee.id, reporte.fecha.year, reporte.fecha.month)
+                    if file:
+                        employee_files.append(file)
             if employee_files:
                 all_files[employee.nombre] = employee_files
-        return render_template('consulta_informes_admin.html', status=username, all_files=all_files)
+
+        print(all_files)
+        return render_template(
+            'consulta_informes_admin.html',
+            status=username,
+            all_files=all_files,
+            filtros={'id_empleado': id_empleado, 'mes': mes, 'año': año}
+        )
+
     
 @reports_blueprint.route('/verificar_firma_de_archivo/<filename>', methods=['POST'])
 def verificar_firma_de_archivo(filename):
     es_valida = verificar_firma(filename, obtener_empleado_id_de_nombre_archivo(filename))
-
+    print(es_valida)
     if es_valida:
         flash('La firma es válida.', 'success')
     else:
@@ -78,3 +102,29 @@ def generar_informe():
         username = session['username']
         return render_template('generar_informe.html', status=username)
    
+@reports_blueprint.route('/reports', methods=['GET'])
+def listar_reportes():
+    directorio_reportes = REPORTS_DIR
+    id_empleado = request.args.get('id_empleado')
+    mes = request.args.get('mes')
+    año = request.args.get('año')
+
+    # Listar archivos
+    reportes = os.listdir(directorio_reportes)
+    archivos_filtrados = []
+
+    for reporte in reportes:
+        partes = reporte.split('_')  # Ejemplo: "monthlyreport_123_2024-11.pdf"
+        if len(partes) != 3:
+            continue
+
+        _, empleado_id, fecha = partes
+        empleado_id = empleado_id
+        fecha_año, fecha_mes = fecha.split('.')[0].split('-')
+
+        if (not id_empleado or empleado_id == id_empleado) and \
+           (not mes or fecha_mes == mes) and \
+           (not año or fecha_año == año):
+            archivos_filtrados.append(reporte)
+
+    return jsonify(archivos_filtrados)

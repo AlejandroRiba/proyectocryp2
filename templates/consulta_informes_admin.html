@@ -6,6 +6,8 @@
     <link rel="icon" href="static/images/logosmall.ico">
     <title>R&R REPORTS</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_informe_admin.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -14,30 +16,63 @@
         {% include "shared/navbar.html" %}
         <!-- Footer -->
 
-        <main>
-            {% with messages = get_flashed_messages(with_categories=true) %}
+        <script>
+            {% with messages = get_flashed_messages(with_categories=True) %}
                 {% if messages %}
-                    <ul class="flashes">
-                        {% for category, message in messages %}
-                            <li class="{{ category }}">{{ message }}</li>
-                        {% endfor %}
-                    </ul>
+                    {% for category, message in messages %}
+                        Swal.fire({
+                            icon: "{{ 'success' if category == 'success' else 'error' }}", // Cambiar icono según categoría
+                            title: "{{ message }}",
+                            timer: 3000, 
+                            showConfirmButton: false
+                        });
+                    {% endfor %}
                 {% endif %}
             {% endwith %}
+        </script>
 
-
+        <main>
             <!-- EMPIEZA CONTENIDO DE PÁGINA -->
             <h1>CONSULTA INFORMES</h1>
-            <ul>
+            <form action="/consulta_informes" method="get" class="filter-form">
+                <label for="id_empleado">ID Empleado:</label>
+                <input type="text" id="id_empleado" name="id_empleado" value="{{ filtros.id_empleado }}">
+            
+                <label for="mes">Mes:</label>
+                <select id="mes" name="mes">
+                    <option value="" {% if filtros.mes == '' %}selected{% endif %}>-- Seleccionar --</option>
+                    <option value="01" {% if filtros.mes == '01' %}selected{% endif %}>Enero</option>
+                    <option value="02" {% if filtros.mes == '02' %}selected{% endif %}>Febrero</option>
+                    <option value="03" {% if filtros.mes == '03' %}selected{% endif %}>Marzo</option>
+                    <option value="04" {% if filtros.mes == '04' %}selected{% endif %}>Abril</option>
+                    <option value="05" {% if filtros.mes == '05' %}selected{% endif %}>Mayo</option>
+                    <option value="06" {% if filtros.mes == '06' %}selected{% endif %}>Junio</option>
+                    <option value="07" {% if filtros.mes == '07' %}selected{% endif %}>Julio</option>
+                    <option value="08" {% if filtros.mes == '08' %}selected{% endif %}>Agosto</option>
+                    <option value="09" {% if filtros.mes == '09' %}selected{% endif %}>Septiembre</option>
+                    <option value="10" {% if filtros.mes == '10' %}selected{% endif %}>Octubre</option>
+                    <option value="11" {% if filtros.mes == '11' %}selected{% endif %}>Noviembre</option>
+                    <option value="12" {% if filtros.mes == '12' %}selected{% endif %}>Diciembre</option>
+                </select>
+            
+                <label for="año">Año:</label>
+                <input type="number" id="año" name="año" min="2024" max="2025" value="{{ filtros.año }}">
+            
+                <button type="submit">Filtrar</button>
+            </form>
+            
+            
+            <ul class="report-list">
                 {% if all_files %}
                     {% for employee_name, files in all_files.items() %}
                         <h3>Reportes de {{ employee_name }}</h3>
                         <ul>
                             {% for file in files %}
                                 <li>
-                                    <a href="{{ url_for('reports.download_report', filename=file) }}" download>{{ file }}</a>
+                                    <span>{{ file }}</span>
+                                    <button onclick="descargarArchivo('{{ url_for('reports.download_report', filename=file) }}')" class="loading">Descargar</button>
                                     <form action="{{ url_for('reports.verificar_firma_de_archivo', filename=file) }}" method="POST" style="display: inline;">
-                                        <button type="submit">Verificar Firma</button>
+                                        <button type="submit" class="loading">Verificar Firma</button>
                                     </form>
                                 </li>
                             {% endfor %}
@@ -55,7 +90,31 @@
         {% include "shared/footer.html" %}
         <!-- Footer -->
     </div>
-    
+    <script>
+        function descargarArchivo(url) {
+            window.location.href = url;
+        }
+        document.querySelector('.filter-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const queryString = new URLSearchParams(formData).toString();
+            const response = await fetch(`/reports?${queryString}`);
+            const archivos = await response.json();
+
+            // Actualizar la lista de reportes en la página
+            const listaReportes = document.querySelector('.report-list');
+            listaReportes.innerHTML = archivos.map(archivo => `
+                <li>
+                    <span>${archivo}</span>
+                    <button onclick="descargarArchivo('download_report/${archivo}')" class="loading">Descargar</button>
+                    <form action="verificar_firma_de_archivo/${archivo}" method="POST" style="display: inline;">
+                        <button type="submit" class="loading">Verificar Firma</button>
+                    </form>
+                </li>
+            `).join('');
+        });
+
+    </script>    
     <script src="static/app.js" ></script>
 </body>
 </html>

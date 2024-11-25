@@ -1,0 +1,19 @@
+.loading {
+    width: auto;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    color: var(--color-text-secondary);
+    background: var(--color-button-primary);
+    font-size: 16px;
+    font-family: 'Squada One';
+    cursor: pointer;
+}
+
+.loading-disabled{
+    cursor: not-allowed;
+    pointer-events: none;
+}
+.loading-disabled:hover{
+    background: linear-gradient(to right, #7e7e7e, #363636);
+}
