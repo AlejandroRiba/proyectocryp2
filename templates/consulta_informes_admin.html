@@ -68,8 +68,16 @@
                         <h3>Reportes de {{ employee_name }}</h3>
                         <ul>
                             {% for file in files %}
+                                {% set parts = file.split('_') %}
+                                {% set id_empleado = parts[1] %}
+                                {% set fecha = parts[2].replace('.pdf', '') %}
+                                {% set year, month = fecha.split('-') %}
+                                {% set meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'] %}
+                                {% set mes_formateado = meses[month|int - 1] %}
+                                {% set nombre_formateado = "Reporte mensual de " ~ mes_formateado ~ " " ~ year ~ " (" ~ id_empleado ~ ")" %}
+                                
                                 <li>
-                                    <span>{{ file }}</span>
+                                    <span>{{ nombre_formateado }}</span>
                                     <button onclick="descargarArchivo('{{ url_for('reports.download_report', filename=file) }}')" class="loading">Descargar</button>
                                     <form action="{{ url_for('reports.verificar_firma_de_archivo', filename=file) }}" method="POST" style="display: inline;">
                                         <button type="submit" class="loading">Verificar Firma</button>
@@ -83,6 +91,7 @@
                 {% endif %}
                 <button onclick="redireccion('/generar_informe')">New Report</button>
             </ul>
+            
             <!-- TERMINA CONTENIDO DE PÁGINA -->
         </main>
         
@@ -101,18 +110,40 @@
             const response = await fetch(`/reports?${queryString}`);
             const archivos = await response.json();
 
+            // Definir nombres de los meses
+            const meses = [
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", 
+                "Junio", "Julio", "Agosto", "Septiembre", 
+                "Octubre", "Noviembre", "Diciembre"
+            ];
+
             // Actualizar la lista de reportes en la página
             const listaReportes = document.querySelector('.report-list');
-            listaReportes.innerHTML = archivos.map(archivo => `
-                <li>
-                    <span>${archivo}</span>
-                    <button onclick="descargarArchivo('download_report/${archivo}')" class="loading">Descargar</button>
-                    <form action="verificar_firma_de_archivo/${archivo}" method="POST" style="display: inline;">
-                        <button type="submit" class="loading">Verificar Firma</button>
-                    </form>
-                </li>
-            `).join('');
+            if (archivos.length > 0) {
+                listaReportes.innerHTML = archivos.map(archivo => {
+                    // Extraer las partes del archivo
+                    const partes = archivo.split('_');
+                    const idEmpleado = partes[1];
+                    const [year, month] = partes[2].replace('.pdf', '').split('-');
+                    const mesFormateado = meses[parseInt(month, 10) - 1];
+                    const nombreFormateado = `Reporte mensual de ${mesFormateado} ${year} (${idEmpleado})`;
+
+                    // Generar HTML formateado
+                    return `
+                        <li>
+                            <span>${nombreFormateado}</span>
+                            <button onclick="descargarArchivo('download_report/${archivo}')" class="loading">Descargar</button>
+                            <form action="verificar_firma_de_archivo/${archivo}" method="POST" style="display: inline;">
+                                <button type="submit" class="loading">Verificar Firma</button>
+                            </form>
+                        </li>
+                    `;
+                }).join('');
+            } else {
+                listaReportes.innerHTML = '<p>No hay reportes disponibles.</p>';
+            }
         });
+
 
     </script>    
     <script src="static/app.js" ></script>
