@@ -76,7 +76,7 @@ def verificar_firma_de_archivo(filename):
     
 @reports_blueprint.route('/download_report/<filename>')
 def download_report(filename):
-    # Verifica que el archivo exista en la carpeta `reports` antes de enviarlo
+    # Verifica que el archivo exista en la carpeta `reports` antes de enviarlo}
     if filename in os.listdir(REPORTS_DIR):
         return send_from_directory(REPORTS_DIR, filename, as_attachment=True)
     else:
