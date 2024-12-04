@@ -47,7 +47,7 @@ body {
 .wrapper-main {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Asegura que el contenedor principal ocupe al menos toda la altura de la ventana */
+    min-height: 75vh; /* Asegura que el contenedor principal ocupe al menos toda la altura de la ventana */
 }
 
 main {

@@ -7,6 +7,7 @@
     <title>R&R REPORT</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style_generar_informe.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="wrapper-main">
@@ -14,17 +15,34 @@
         {% include "shared/navbar.html" %}
         <!-- Navbar -->
 
+        <script>
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        Swal.fire({
+                            icon: "{{ 'success' if category == 'success' else 'error' }}", // Cambiar icono según categoría
+                            title: "{{ message }}",
+                            timer: 3000, 
+                            showConfirmButton: false
+                        });
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </script>
+
         <main>
             <div class="login-container">
                 <div class="login-box">
                     <h1 class="page-title">Generate Report</h1><br>
                     <!-- Form -->
                     <div class="form-container">
-                        <form id="reporte-form" action="{{ url_for('reports.generar_informe') }}" method="POST" class="styled-form">
+                        <form id="reporte-form" action="{{ url_for('reports.generar_informe') }}" method="POST" class="styled-form" novalidate>
                             
                             <div class="input-box">
                                 
-                                <select id="year" name="year" required>
+                                <select id="year" name="year" required 
+                                oninvalid="event.preventDefault();" 
+                                oninput="this.setCustomValidity('')">
                                     <option value="" disabled selected></option>
                                     {% for y in range(2024, 2025) %}
                                     <option value="{{ y }}">{{ y }}</option>
@@ -34,7 +52,9 @@
                             </div>
 
                             <div class="input-box">
-                                <select id="month" name="month" required>
+                                <select id="month" name="month"required 
+                                oninvalid="event.preventDefault();" 
+                                oninput="this.setCustomValidity('')">
                                     <option value="" disabled selected></option>
                                     <option value="1">January</option>
                                     <option value="2">February</option>
@@ -58,6 +78,8 @@
                                     id="password" 
                                     name="password" 
                                     required 
+                                    oninvalid="event.preventDefault();" 
+                                    oninput="this.setCustomValidity('')"
                                     onclick="ocultaError()" 
                                     title="Enter your password" 
                                     oninput="this.setCustomValidity('')" 
@@ -68,7 +90,7 @@
 
                             <!-- Error message -->
                             <p id="error_message" class="error-message"></p>
-
+                            
                             <div class="button-box" style="display: flex; gap: 20px;">
                                 <button type="submit" class="primary-button">Generate Report</button>
                                 <button onclick="redireccion('/consulta_informes')" class="secondary-button">Generated Reports</button>
@@ -86,7 +108,90 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            manejarEnvioFormulario('reporte-form', '/generar_informe');
+            const form = document.getElementById('reporte-form');
+
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault(); // Evitar el envío tradicional del formulario
+
+                const formData = new FormData(form);
+
+                const year = document.getElementById('year').value;
+                const month = document.getElementById('month').value;
+                const password = document.getElementById('password').value;
+
+                if (!year) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Missing Field',
+                        text: 'Please select a year.',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+                else if (!month) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Missing Field',
+                        text: 'Please select a month.',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+                else if (!password) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Missing Field',
+                        text: 'Please enter your password.',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    return;
+        }
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    let result = null;
+                    if (response.status !== 204) { // Verifica si hay contenido
+                        result = await response.json();
+                    }
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: result?.message || 'Report generated successfully.',
+                            timer: 3000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            if (result?.destino) {
+                                window.location.href = result.destino; // Redirigir si hay destino
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: result?.message || 'An error occurred.',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred. Please try again later.',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                    console.error('Error:', error);
+                }
+            });
         });
     </script>
     <script src="static/app.js"></script>

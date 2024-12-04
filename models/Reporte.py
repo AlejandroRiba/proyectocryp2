@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import extract
 from models.Database import getDatabase
 
 db = getDatabase()
@@ -17,4 +17,12 @@ def crear_reporte(empleado_id, fecha):
 
 def obtener_reportes_por_empleado(empleado_id):
     reportes = Reporte.query.filter_by(empleado_id=empleado_id).all()
+    return reportes
+
+def obtener_reporte_por_fecha_y_empleado(empleado_id, mes, anio):
+    reportes = Reporte.query.filter(
+        Reporte.empleado_id == empleado_id,
+        extract('month', Reporte.fecha) == mes,
+        extract('year', Reporte.fecha) == anio
+    ).all()
     return reportes

@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, abort, flash, jsonify, redirect, render_template, request, send_from_directory, session, url_for
 
-from models.Reporte import obtener_reportes_por_empleado
+from models.Reporte import obtener_reportes_por_empleado, obtener_reporte_por_fecha_y_empleado
 from models.Usuario import obtener_empleados, obtener_usuario_por_id
 from pyFunctions import mainfunc
 from pyFunctions.reportepdf import generar_informe_ventas_mensual, obtener_archivo_por_id_y_fecha, obtener_empleado_id_de_nombre_archivo, verificar_firma
@@ -85,22 +85,32 @@ def download_report(filename):
 # Ruta para generar un informe
 @reports_blueprint.route('/generar_informe', methods=['GET', 'POST'])
 def generar_informe():
-    if request.method == 'POST':
-        access = mainfunc.auth(session['username'], request.form['password'], None)
-        if access:
-            year = int(request.form['year'])
-            month = int(request.form['month'])
-            private_key = session['private_key']
-            report, flash_message = generar_informe_ventas_mensual(session['username'], year, month, private_key)
-            if report:
-                return jsonify({"success": True, "message": "Welcome.", "destino": '/consulta_informes'}), 200
-            else:
-                return jsonify({"success": False, "message": flash_message, "destino":None}), 204
-        else:
-            return jsonify({"success": False, "message": "Incorrect password. Try again.", "destino":None}), 401
-    else:
+    if request.method == 'GET':
         username = session['username']
         return render_template('generar_informe.html', status=username)
+    if request.method == 'POST':
+        access = mainfunc.auth(session['username'], request.form['password'], None)
+        if not access:
+            return jsonify({"success": False, "message": "Incorrect password. Try again.", "destino":None}), 401
+        
+        year = int(request.form['year'])
+        month = int(request.form['month'])
+
+        #Corrección: verificar si existe un reporte del mismo mes y año creado previamente
+        existeReporte = obtener_reporte_por_fecha_y_empleado(empleado_id = session['username'], mes = month, anio = year)
+        if existeReporte:
+            return jsonify({"success": False, "message": "There is already a report for this month and year created.", "destino": None}), 401
+
+        private_key = session['private_key']
+        report, flash_message = generar_informe_ventas_mensual(session['username'], year, month, private_key)
+        print(flash_message)
+        print(report)
+        if report:
+            return jsonify({"success": True, "message": "Welcome.", "destino": '/consulta_informes'}), 200
+        else:
+            return jsonify({"success": False, "message": flash_message, "destino":None}), 401
+            
+        
    
 @reports_blueprint.route('/reports', methods=['GET'])
 def listar_reportes():

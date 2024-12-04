@@ -64,7 +64,6 @@ def procesar_información(empleado_id, year, month):
         ).all()
 
         if not transacciones:
-            print("No hay transacciones para este periodo.")
             return None, "No transactions for this period."
 
         # Crear lista para almacenar detalles del reporte
