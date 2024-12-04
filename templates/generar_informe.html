@@ -15,21 +15,6 @@
         {% include "shared/navbar.html" %}
         <!-- Navbar -->
 
-        <script>
-            {% with messages = get_flashed_messages(with_categories=True) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        Swal.fire({
-                            icon: "{{ 'success' if category == 'success' else 'error' }}", // Cambiar icono según categoría
-                            title: "{{ message }}",
-                            timer: 3000, 
-                            showConfirmButton: false
-                        });
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        </script>
-
         <main>
             <div class="login-container">
                 <div class="login-box">
@@ -180,6 +165,7 @@
                             timer: 3000,
                             showConfirmButton: false
                         });
+                        console.log("Error recibido. --depuración")
                     }
                 } catch (error) {
                     Swal.fire({
