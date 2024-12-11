@@ -115,6 +115,28 @@ function eliminarVariante(varianteId) {
     }
 }
 
+function validarVariantes() {
+    const variantes = document.querySelectorAll('.variante');
+    let alMenosUnaActiva = false;
+
+    variantes.forEach(variante => {
+        const checkboxEliminar = variante.querySelector('input[type="checkbox"][name="delete"]');
+        
+        // Si no tiene checkbox (es nueva) o no está marcada para eliminar
+        if (!checkboxEliminar || !checkboxEliminar.checked) {
+            alMenosUnaActiva = true;
+        }
+    });
+
+    if (!alMenosUnaActiva) {
+        alert('Debe existir al menos una variante activa (nueva o sin eliminar) para actualizar el producto.');
+        return false;
+    }
+
+    return true;
+}
+
+
 function activarIdinput(id){
     const input = document.getElementById(id);
     if(input){

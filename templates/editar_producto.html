@@ -15,11 +15,19 @@
         <!-- NAVBAR -->
         
         <main>
-            <!-- EMPIEZA CONTENIDO DE PÁGINA -->
+            <!-- EMPIEZA CONTENIDO DE PÁGINA action="/editar_producto_query" -->
+            <script>
+                window.onbeforeunload = function() {
+                    // Limpiar los campos del formulario
+                    const form = document.getElementById('editProductForm');
+                    if (form) {
+                        form.reset(); // Restablece todos los campos del formulario
+                    }
+                };
+            </script>
+            <h1>EDIT PRODUCT</h1>
 
-            <h1>CREAR PRODUCTO</h1>
-
-            <form method="POST" action="/editar_producto_query" enctype="multipart/form-data">
+            <form id="editProductForm" method="POST"  enctype="multipart/form-data">
                 <h3>Tipo de Producto:</h3><br>
                 <label for="tipo_producto">{{producto.categoria}}</label><br>
                 <input type="text" id="tipo_producto" name="tipo_producto" value="{{producto.categoria}}" style="display: none;">
@@ -61,7 +69,7 @@
                     <input id="editimage" type="checkbox" name="edit-image" value="{{producto.archivo}}" onclick="edit_image()">
                     <br><br>
 
-                    <input type="submit" value="Actualizar Producto" onclick="activarIdinput('id_product')">
+                    <input type="submit" value="Actualizar Producto" onclick="return validarVariantes()">
                 </div>
                 
             </form>
