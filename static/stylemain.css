@@ -1,4 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
+@font-face {
+    font-family: "Squada One";
+    src: url("fonts/SquadaOne-Regular.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Fjalla One";
+    src: url("fonts/FjallaOne-Regular.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Barlow Condensed";
+    src: url("fonts/BarlowCondensed-Black.ttf") format('truetype'),
+         url("fonts/BarlowCondensed-Bold.ttf") format('truetype'),
+         url("fonts/BarlowCondensed-Italic.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* PALETA DE COLORES */
 :root{
     /* Colores principales */
@@ -37,7 +59,7 @@
 
 
 body {
-    font-family: 'Squada One', sans-serif;
+    font-family: 'Squada One';
     margin: 0; /* Elimina márgenes predeterminados */
     padding: 0; /* Elimina relleno predeterminado */
     height: 100%; /* Asegura que el cuerpo y html ocupen toda la altura */

@@ -1,13 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Squada+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed&family=Squada+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed&family=Fjalla+One&family=Squada+One&display=swap');
+@font-face {
+    font-family: 'Squada One';
+    src: url("fonts/SquadaOne-Regular.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Fjalla One';
+    src: url("fonts/FjallaOne-Regular.ttf") format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Barlow Condensed';
+    src: url("fonts/BarlowCondensed-Regular.ttf") format('truetype'),;
+    font-weight: normal;
+    font-style: normal;
+}
 
 
 input[type="text"],
 input[type="password"],
 input[type="email"],
 input[type="tel"]{
-    font-family: "Barlow Condensed", sans-serif;
+    font-family: "Barlow Condensed";
 }
 
 .login-container {

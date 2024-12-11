@@ -3,8 +3,8 @@
         <thead>
             <tr>
                 {% if status == 'admin' %}
-                        <th>Employee ID</th>
-                    {% endif %}
+                    <th>Employee ID</th>
+                {% endif %}
                     <th>Date</th>
                     <th>Total Amount</th>
                     <th>Customer ID</th>
@@ -13,12 +13,12 @@
             </tr>
         </thead>
         <tbody>
-            {% if not transacciones.items %}
-            <tr>
-                <td colspan="10" style="text-align: center; color: var(--color-warning); border-left: none; border-right: none">
-                    No sales found.
-                </td>
-            </tr>
+            {% if not transacciones %}
+                <tr>
+                    <td colspan="10" style="text-align: center; color: var(--color-warning); border-left: none; border-right: none">
+                        No sales found.
+                    </td>
+                </tr>
             {% else %}
                 {% for transaccion in transacciones %}
                     <tr>
