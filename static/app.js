@@ -59,7 +59,7 @@ function actualizarOpcionesTalla(tallaSelect, tipoProducto, option) {
             tallaSelect.appendChild(option);
         });
     } else if (tipoProducto === 'Accessories') {
-        const tallasRopa = ['One Size', 'Adjustable'];
+        const tallasRopa = ['One Size', 'Adjustable', '6 7/8', '7', '7 1/8', '7 1/4', '7 3/8', '7 1/2', '7 5/8', '7 3/4', '7 7/8', '8'];
 
         tallasRopa.forEach(talla => {
             const option = document.createElement('option');
@@ -83,7 +83,9 @@ function agregarVariante(contador) {
         <div class="container_cols2"> 
         <div class="columna">
         <div class="input-box">
-        <select id="talla-${varianteCount}" name="talla" required>
+        <select id="talla-${varianteCount}" name="talla" required title="Select a size" 
+        oninvalid="this.setCustomValidity('Please select a size')" 
+        oninput="this.setCustomValidity('')">
             <option value="" disabled selected>Selecciona una talla</option>
         </select>
         <label for="talla-${varianteCount}">Talla:</label>
@@ -91,7 +93,7 @@ function agregarVariante(contador) {
         </div>
         <div class="columna">
         <div class="input-box">
-        <input type="number" id="stock-${varianteCount}" name="stock" min="0" required>
+        <input type="number" id="stock-${varianteCount}" name="stock" min="0" required title="Enter the stock" oninvalid="this.setCustomValidity('Please enter a valid number')" oninput="this.setCustomValidity('')">
         <label for="stock-${varianteCount}">Stock:</label>
         </div>
         </div>
@@ -143,10 +145,15 @@ function validarVariantes() {
     });
 
     if (!alMenosUnaActiva) {
-        alert('Debe existir al menos una variante activa (nueva o sin eliminar) para actualizar el producto.');
+        Swal.fire({
+            icon: "error", 
+            title: "There must be at least one active variant. If you want to delete the product completely, do it from the table.",
+            showConfirmButton: true
+        });
         return false;
     }
 
+    activarIdinput('id_product');
     return true;
 }
 
@@ -210,10 +217,12 @@ function manejarEnvioFormulario(formId, ruta) {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         // Realiza las validaciones telefono e email, si no son el form correspondiente devuelve true
-        if (!validateForm(formId)) {
-            // Si `prepareSelectedProducts` retorna false, no se envía el formulario
-            submitButton.disabled = false; // Habilitar el botón nuevamente
-            return; // Sale de la función
+        if(formId =! 'editProductForm'){
+            if (!validateForm(formId)) {
+                // Si `prepareSelectedProducts` retorna false, no se envía el formulario
+                submitButton.disabled = false; // Habilitar el botón nuevamente
+                return; // Sale de la función
+            }
         }
         // Realiza las validaciones para los productos, si no es el form de venta, devuelve true
         if(formId == "ventaForm"){
@@ -267,5 +276,63 @@ function scrollToBottom() {
     window.scrollTo({
         top: document.body.scrollHeight,
         behavior: 'smooth' // Esto proporciona un desplazamiento suave
+    });
+}
+
+
+function manejarProducto(formId, ruta) {
+    const form = document.getElementById(formId);
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerText; // Guarda el texto original del botón
+
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Cambia el texto del botón y lo desactiva
+        submitButton.innerText = 'Loading...';
+        submitButton.disabled = true;
+
+        const formData = new FormData(this);
+
+        fetch(ruta, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            // Restaura el botón al estado original
+            submitButton.innerText = originalText;
+            submitButton.disabled = false;
+
+            if (data.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: data.message,
+                    showConfirmButton: true, // Mostrar el botón de confirmación
+                    confirmButtonText: "OK",  // Texto del botón
+                    customClass: {
+                        confirmButton: "custom-swal-button"
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) { // Ejecutar la redirección solo después de confirmar
+                        window.location.href = data.destino;
+                    }
+                });
+            } else {
+                // Muestra el mensaje de error en el frontend
+                Swal.fire({
+                    icon: "error", 
+                    title: data.message,
+                    showConfirmButton: true
+                });
+            }
+        })
+        .catch(error => {
+            submitButton.innerText = originalText;
+            submitButton.disabled = false;
+            console.error('Error:', error)
+        });
     });
 }

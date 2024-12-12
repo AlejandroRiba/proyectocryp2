@@ -1,7 +1,8 @@
 input[type="text"],
 input[type="password"],
 input[type="email"],
-input[type="tel"] {
+input[type="tel"],
+input[type="number"]{
     font-family: "Barlow Condensed", sans-serif;
 }
 
@@ -16,7 +17,7 @@ input[type="tel"] {
 .login-box {
     position: relative;
     z-index: 1;
-    width: 500px;
+    width: 700px;
     padding: 20px 40px;
     background: var(--color-background-dark);
     border-radius: 10px;
@@ -69,7 +70,18 @@ input[type="tel"] {
     font-size: 14px;
 }
 
+.input-box select:focus ~ label,
+.input-box select:valid ~ label,
+.input-box select:disabled ~ label {
+    top: -20px;
+    font-size: 14px;
+}
+
 .input-box input:disabled{
+    color: #797979;
+}
+
+.input-box select:disabled{
     color: #797979;
 }
 
@@ -93,6 +105,7 @@ input[type="tel"] {
     top: -20px;
     font-size: 14px;
 }
+
 
 /* Estilo para el select */
 .input-box select {
@@ -136,6 +149,10 @@ input[type="tel"] {
     padding: 0;
 }
 
+.columna-dos-columnas {
+    grid-column: span 2; /* Ocupa dos columnas */
+}
+
 .columna{
     margin: 0px 20px;
 }
@@ -164,8 +181,8 @@ input[type="tel"] {
     font-family: 'Squada One';
     padding: 10px;
     background-color: transparent;
-    border: solid 1px white;
-    color: var(--color-text-inverted);
+    border: solid 1px #797979;
+    color: #797979;
     border-radius: 12px;
     cursor: pointer;
     display: inline-block;
@@ -190,3 +207,54 @@ input[type="tel"] {
     width: 100%;
 }
 
+/* Contenedor para el checkbox y su etiqueta */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espacio entre el checkbox y su etiqueta */
+}
+
+/* Label para el checkbox */
+.checkbox-container label {
+    font-size: 14px;
+    color: var(--color-text-title);
+    margin-right: 10px;
+    cursor: pointer;
+    font-family: "Barlow Condensed", sans-serif;
+}
+
+/* Oculta el checkbox real */
+.checkbox-container input[type="checkbox"] {
+    display: none;
+}
+
+/* Diseño del checkbox personalizado */
+.custom-checkbox {
+    width: 18px;
+    height: 18px;
+    background-color: #080808;
+    border-radius: 4px;
+    border: 2px solid #7e0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+/* Icono del check (oculto por defecto) */
+.custom-checkbox:before {
+    content: "✓";
+    color: #d3d3d3;
+    font-size: 14px;
+    display: none;
+}
+
+/* Mostrar el icono del check cuando esté seleccionado */
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox:before {
+    display: block;
+}
+
+/* Cambiar el fondo del checkbox cuando esté seleccionado */
+.checkbox-container input[type="checkbox"]:checked + .custom-checkbox {
+    border-color: #ff7d41;
+}

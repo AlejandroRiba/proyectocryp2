@@ -21,23 +21,29 @@ def consulta_productos():
 @products_blueprint.route('/crear_producto', methods=['GET', 'POST'])
 def crear_producto():
     if request.method == 'POST':
-        id = request.form['id_product']
-        nombre = request.form['nombre']
-        color = request.form['color']
-        precio = request.form['precio']
-        categoria = request.form['tipo_producto']
+        try:
+            id = request.form['id_product']
+            nombre = request.form['nombre']
+            color = request.form['color']
+            precio = request.form['precio']
+            categoria = request.form['tipo_producto']
 
-        file = request.files['image']
-        variantes = []
-        tallas = request.form.getlist('talla')
-        stocks = request.form.getlist('stock')
-        # Agrupar tallas y stocks
-        for talla, stock in zip(tallas, stocks):
-            variantes.append({'talla': talla, 'stock': stock})
-        crear_producto_con_variantes(id, nombre, color, precio, variantes, file.filename, categoria=categoria)
-        #guardar la imagen del producto
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-        return redirect('/consulta_productos')
+            file = request.files['image']
+            variantes = []
+            tallas = request.form.getlist('talla')
+            stocks = request.form.getlist('stock')
+            # Agrupar tallas y stocks
+            for talla, stock in zip(tallas, stocks):
+                variantes.append({'talla': talla, 'stock': stock})
+            crear_producto_con_variantes(id, nombre, color, precio, variantes, file.filename, categoria=categoria)
+            #guardar la imagen del producto
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+
+            # Respuesta positiva
+            return jsonify({'success': True, 'message': 'Product created successfully.', 'destino': 'consulta_productos'}), 200
+
+        except ValueError as e:
+            return jsonify({'success': False, 'message': 'Internal server error.', 'destino': None}), 400 
     else:
         username = session['username']
         return render_template('crear_producto.html', status=username)
@@ -54,38 +60,45 @@ def editar_producto(id):
 #Ruta para editar un producto 
 @products_blueprint.route('/editar_producto_query', methods=['POST'])
 def editar_producto_query():
-    id = request.form['id_product']
-    nombre = request.form['nombre']
-    color = request.form['color']
-    precio = request.form['precio']
-    variantes = []
-    variantes_a_eliminar = request.form.getlist('delete')
-    tallas = request.form.getlist('talla')
-    stocks = request.form.getlist('stock')
-    ids = request.form.getlist('id_variante')
-    # Agrupar tallas y stocks
-    for index, (talla, stock) in enumerate(zip(tallas, stocks)):
-        # Verifica si el índice existe en la lista ids
-        if index < len(ids):  # Solo si hay un ID correspondiente
-            id_v = ids[index]
-            variantes.append({'talla': talla, 'id': id_v, 'stock': stock})
+    try:
+        id = request.form['id_product']
+        nombre = request.form['nombre']
+        color = request.form['color']
+        precio = request.form['precio']
+        variantes = []
+        variantes_a_eliminar = request.form.getlist('delete')
+        tallas = request.form.getlist('talla')
+        stocks = request.form.getlist('stock')
+        ids = request.form.getlist('id_variante')
+        # Agrupar tallas y stocks
+        for index, (talla, stock) in enumerate(zip(tallas, stocks)):
+            # Verifica si el índice existe en la lista ids
+            if index < len(ids):  # Solo si hay un ID correspondiente
+                id_v = ids[index]
+                variantes.append({'talla': talla, 'id': id_v, 'stock': stock})
+            else:
+                variantes.append({'talla': talla, 'id': 0, 'stock': stock})  # ID despreciable
+
+        if 'image' in request.files: #si si se activo la checkbox de editar
+            file = request.files['image']
+            lastFile = request.form['edit-image']
+            nuevo_path = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
+            last_path = os.path.join(app.config['UPLOAD_FOLDER'],lastFile)
+            # Elimina la imagen existente si el archivo es diferente
+            if os.path.isfile(last_path) and file.filename != lastFile:
+                os.remove(last_path)
+
+            # Guarda el nuevo archivo (se reemplazará si tiene el mismo nombre)
+            file.save(nuevo_path)
+            editar_producto_con_variantes(id,nombre,color,precio,variantes,variantes_a_eliminar, file.filename)
         else:
-            variantes.append({'talla': talla, 'id': 0, 'stock': stock})  # ID despreciable
+            editar_producto_con_variantes(id,nombre,color,precio,variantes,variantes_a_eliminar, None)
 
-    if 'image' in request.files: #si si se activo la checkbox de editar
-        file = request.files['image']
-        lastFile = request.form['edit-image']
-        nuevo_path = os.path.join(app.config['UPLOAD_FOLDER'],file.filename)
-        last_path = os.path.join(app.config['UPLOAD_FOLDER'],lastFile)
-        # Elimina la imagen existente si el archivo es diferente
-        if os.path.isfile(last_path) and file.filename != lastFile:
-            os.remove(last_path)
+        # Respuesta positiva
+        return jsonify({'success': True, 'message': 'Product updated successfully.', 'destino': 'consulta_productos'}), 200
 
-        # Guarda el nuevo archivo (se reemplazará si tiene el mismo nombre)
-        file.save(nuevo_path)
-        editar_producto_con_variantes(id,nombre,color,precio,variantes,variantes_a_eliminar, file.filename)
-    else:
-        editar_producto_con_variantes(id,nombre,color,precio,variantes,variantes_a_eliminar, None)
+    except ValueError as e:
+        return jsonify({'success': False, 'message': 'Internal server error.', 'destino': None}), 400   
 
 #Ruta para eliminar un producto 
 @products_blueprint.route('/eliminar_producto', methods=['GET'])

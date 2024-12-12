@@ -160,6 +160,21 @@ footer {
 }
 
 
+.custom-swal-button {
+    background-color: var(--color-background-dark); /* Cambia el color del fondo */
+    color: var(--color-text-inverted); /* Cambia el color del texto */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.custom-swal-button:hover {
+    background-color: var(--color-primary); /* Color al pasar el mouse */
+}
+
 
 .container {
     display: flex;

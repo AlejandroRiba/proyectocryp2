@@ -6,73 +6,134 @@
     <link rel="icon" href="{{ url_for('static', filename='images/logosmall.ico') }}">
     <title>R&R PRODUCTS</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_creareditarproduct.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sweetalert2.min.css') }}">
+    <script src="{{ url_for('static', filename='sweetalert2.min.js') }}"></script>
 </head>
 <body>
-
+    <script>
+        window.onbeforeunload = function() {
+            // Limpiar los campos del formulario
+            const form = document.getElementById('editProductForm');
+            if (form) {
+                form.reset(); // Restablece todos los campos del formulario
+            }
+        };
+    </script>
     <div class="wrapper-main">
         <!-- NAVBAR -->
         {% include "shared/navbar.html" %}
         <!-- NAVBAR -->
-        
         <main>
             <!-- EMPIEZA CONTENIDO DE PÁGINA action="/editar_producto_query" -->
-            <script>
-                window.onbeforeunload = function() {
-                    // Limpiar los campos del formulario
-                    const form = document.getElementById('editProductForm');
-                    if (form) {
-                        form.reset(); // Restablece todos los campos del formulario
-                    }
-                };
-            </script>
-            <h1>EDIT PRODUCT</h1>
+            <div class="prod-container">
+                <div class="login-box">
+                    <h1>EDIT PRODUCT</h1>
 
-            <form id="editProductForm" method="POST"  enctype="multipart/form-data">
-                <h3>Tipo de Producto:</h3><br>
-                <label for="tipo_producto">{{producto.categoria}}</label><br>
-                <input type="text" id="tipo_producto" name="tipo_producto" value="{{producto.categoria}}" style="display: none;">
-                <div id="formulario">
-                    <label for="id_product">Nombre del Producto:</label>
-                    <input type="text" id="id_product" name="id_product" value="{{producto.id}}" disabled required><br><br>
-                    <label for="nombre">Nombre del Producto:</label>
-                    <input type="text" id="nombre" name="nombre" value="{{producto.nombre}}" required><br><br>
-
-                    <label for="color">Color:</label>
-                    <input type="text" id="color" name="color" value="{{producto.color}}" required><br><br>
-
-                    <label for="precio">Precio:</label>
-                    <input type="number" step="0.01" id="precio" name="precio" value="{{producto.precio}}" required><br><br>
-
-                    <h3>Variantes</h3>
-                    <div id="variantes">
-                    {% for variante in producto.variantes %}
-                        <div class="variante variantedefinida">
-                            <input name="id_variante" value="{{variante.id}}" style="display: none;">
-                            <label for="talla-{{ loop.index }}">Talla:</label>
-                            <select id="talla-{{ loop.index }}" name="talla" required>
-                                <option value="{{variante.talla}}" selected>{{variante.talla}}</option>
-                            </select>
-
-                            <label for="stock-{{ loop.index }}">Stock:</label>
-                            <input id="stock-{{ loop.index }}" type="number" name="stock" value="{{variante.stock}}" required>
-                            <label for="delete-{{loop.index}}">DELETE?</label>
-                            <input id="delete-{{loop.index}}" type="checkbox" name="delete" value="{{variante.id}}" onclick="toggleInputs('{{ loop.index }}')">
-                            <br><br>
+                    <form id="editProductForm" method="POST"  enctype="multipart/form-data" action="/editar_producto_query">
+                        <div class="container_cols">
+                            <div class="columna">
+                                <div class="radio-input">
+                                    <h3>Category:</h3>
+                                    <input type="radio" class="rad-input" name="label_visual" checked disabled>
+                                    <label for="tipo_producto" class="label-radio">{{producto.categoria}}</label><br>
+                                    <input type="text" id="tipo_producto" name="tipo_producto" value="{{producto.categoria}}" style="display: none;">
+                                </div>
+                            </div>
+                            <div class="columna">
+                                <div class="input-box">
+                                    <input type="text" id="id_product" name="id_product" value="{{producto.id}}" maxlength="6" disabled required title="Enter the product ID" oninvalid="this.setCustomValidity('Please enter the product ID')" oninput="this.setCustomValidity('')"><br>
+                                    <label for="id_product">Product ID:</label>
+                                </div>
+                                <div class="input-box">
+                                    <input type="text" id="nombre" name="nombre" value="{{producto.nombre}}" maxlength="50" required title="Enter the product name" oninvalid="this.setCustomValidity('Please enter the product name')" oninput="this.setCustomValidity('')"><br>
+                                    <label for="nombre">Product Name:</label>
+                                </div>
+                                <div class="input-box">
+                                    <input type="text" id="color" name="color" value="{{producto.color}}" required title="Enter the product color" oninvalid="this.setCustomValidity('Please enter the product color')" oninput="this.setCustomValidity('')"><br>
+                                    <label for="color">Color:</label>
+                                </div>
+                                <div class="input-box">
+                                    <input type="number" step="0.01" id="precio" name="precio" value="{{producto.precio}}" min="0" required title="Enter the product prize" oninvalid="this.setCustomValidity('Please enter a valid prize')" oninput="this.setCustomValidity('')"><br>
+                                    <label for="precio">Prize:</label>
+                                </div>
+                            </div>
                         </div>
-                    {% endfor %}
-                    </div>
-                    <button type="button" onclick="agregarVariante('{{ producto.variantes|length if producto.variantes else 0 }}')">Agregar Variante</button><br><br>
+                        
+                            <div id="variantes">
+                            <h3>Variantes</h3>
+                            {% for variante in producto.variantes %}
+                                <div class="variante variantedefinida">
+                                    <div class="container_cols2">
+                                        <div class="columna">
+                                            <div class="input-box">
+                                                <select id="talla-{{ loop.index }}" name="talla" required title="Select a size" 
+                                                oninvalid="this.setCustomValidity('Please select a size')" 
+                                                oninput="this.setCustomValidity('')">
+                                                    <option value="{{variante.talla}}" selected>{{variante.talla}}</option>
+                                                </select>
+                                                <label for="talla-{{ loop.index }}">Talla:</label>
+                                                <input name="id_variante" value="{{variante.id}}" style="display: none;">
+                                            </div>
+                                        </div>
+                                        <div class="columna">
+                                            <div class="input-box">
+                                                <input id="stock-{{ loop.index }}" type="number" name="stock" min="0" value="{{variante.stock}}" required title="Enter the stock" oninvalid="this.setCustomValidity('Please enter a valid number')" oninput="this.setCustomValidity('')">
+                                                <label for="stock-{{ loop.index }}">Stock:</label>
+                                            </div>
+                                        </div>
+                                        <div class="columna columna-boton">
+                                            <div class="checkbox-container">
+                                                <input id="delete-{{loop.index}}" type="checkbox" name="delete" value="{{variante.id}}" onclick="">
+                                                <div class="custom-checkbox" onclick="togglecheckBox('delete-{{loop.index}}'), toggleInputs('{{ loop.index }}')"></div>
+                                                <label for="delete-{{loop.index}}">DELETE?</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                </div><br><br> 
+                            {% endfor %}
+                            </div>
+                            <div style="display: flex; justify-content: center;">
+                                <button class="button_item" type="button" onclick="agregarVariante('{{ producto.variantes|length if producto.variantes else 0 }}')">
+                                    <span class="button_item__text">Add Variant</span>
+                                    <span class="button_item__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
+                                </button>
+                            </div><br><br>
+                            
+                            <br><br>
+                            <div style="display: flex; justify-content: center; width: 100%;">
+                                
+                            </div>
+                            <div class="container_cols2">
+                                <div class="columna-dos-columnas">
+                                    <div class="input-box">
+                                        <input type="file" id="image" accept="image/*" name="image" required hidden disabled>
+                                        <button type="button" id="customButton" class="customButton">Edit an Image</button>
+                                    </div>
+                                </div>
+                                <div class="columna columna-boton">
+                                    <div class="checkbox-container">
+                                        <input id="editimage" type="checkbox" name="edit-image" value="{{producto.archivo}}">
+                                        <div class="custom-checkbox" onclick="togglecheckBox('editimage'), edit_image()"></div>
+                                        <label for="editimage">EDIT IMAGE?</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
 
-                    <label for="image">Edit image:</label>
-                    <input type="file" id="image" name="image" accept="image/*" disabled required>
-                    <label for="editimage">Edit image?</label>
-                    <input id="editimage" type="checkbox" name="edit-image" value="{{producto.archivo}}" onclick="edit_image()">
-                    <br><br>
-
-                    <input type="submit" value="Actualizar Producto" onclick="return validarVariantes()">
+                            <div style="display: flex; gap: 30px; text-align: center; justify-content: center; padding: 20px 0;">
+                                <div style="width: 50%;">
+                                  <button id="btn_enviar" class="loading send_btn" type="submit" onclick="return validarVariantes()">Edit Product</button>
+                                </div>
+                                <div  style="width: 50%;">
+                                  <button id="btn_cancel" class="loading cancel_btn" type="button" onclick="redireccion('/consulta_productos')">Cancel</button>
+                                </div>
+                            </div>
+                    </form>
                 </div>
-                
-            </form>
+            </div>
             <!-- TERMINA CONTENIDO DE PÁGINA -->
         </main>
         
@@ -80,7 +141,11 @@
         {% include "shared/footer.html" %}
         <!-- Footer -->
     </div>
-    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            manejarProducto('editProductForm', '/editar_producto_query'); // Llama a la función con el ID del formulario
+        });
+    </script>
     <script>
         function toggleInputs(index) {
             const stockInput = document.getElementById(`stock-${index}`);
@@ -97,16 +162,6 @@
             }
         }
 
-        function edit_image(){
-            const inputImg = document.getElementById('image');
-            const checkbox = document.getElementById('editimage');
-            if(checkbox.checked){
-                inputImg.disabled = false;
-            } else{
-                inputImg.disabled = true;
-            }
-        }
-
         function inicializarVariantes() {
             const variantes = document.querySelectorAll('.variantedefinida');
             variantes.forEach(variante => {
@@ -120,5 +175,7 @@
         document.addEventListener('DOMContentLoaded', inicializarVariantes);
     </script>
     <script src="{{ url_for('static', filename='app.js') }}" ></script>
+    <script src="{{ url_for('static', filename='editImageproducts.js') }}" ></script>
+    <script src="{{ url_for('static', filename='validations.js') }}" ></script>
 </body>
 </html>
