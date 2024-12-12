@@ -5,21 +5,18 @@ input[type="tel"] {
     font-family: "Barlow Condensed", sans-serif;
 }
 
-.container {
+.prod-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 75vh;
-    height: 100%;
     width: 100%;
     margin: 10px 0;
-    overflow: hidden;
 }
 
 .login-box {
     position: relative;
     z-index: 1;
-    width: 300px;
+    width: 500px;
     padding: 20px 40px;
     background: var(--color-background-dark);
     border-radius: 10px;
@@ -123,3 +120,73 @@ input[type="tel"] {
     transition: 0.3s ease;
     font-weight: 500;
 }
+
+.container_cols{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 0;
+    padding: 0;
+}
+
+.container_cols2{
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0;
+    padding: 0;
+}
+
+.columna{
+    margin: 0px 20px;
+}
+
+.columna-boton{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* Espaciado uniforme vertical */
+    align-items: center;
+}
+
+.customButton {
+    font-family: 'Squada One';
+    color: var(--color-text-inverted);
+    padding: 10px;
+    background-color: transparent;
+    border: solid 1px white;
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    font-size: 16px;
+}
+
+.customButtondisabled{
+    font-family: 'Squada One';
+    padding: 10px;
+    background-color: transparent;
+    border: solid 1px white;
+    color: var(--color-text-inverted);
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    font-size: 16px;
+}
+
+.customButtondisabled:hover{
+    background-color: var(--color-background-dark);
+}
+
+.customButton:hover {
+    background: var(--color-background-light);
+    color: var(--color-text-primary);
+}
+
+#customText {
+    color: var(--color-text-title);
+    font-size: 14px;
+    display: block;
+    margin-top: 10px;
+    width: 100%;
+}
+

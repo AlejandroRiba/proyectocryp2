@@ -10,80 +10,102 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css') }}">
 </head>
 <body>
+    <script>
+        window.onbeforeunload = function() {
+            // Limpiar los campos del formulario
+            const form = document.getElementById('formNewProduct');
+            if (form) {
+                form.reset(); // Restablece todos los campos del formulario
+            }
+        };
+    </script>
     <div class="wrapper-main">
         <!-- NAVBAR -->
         {% include "shared/navbar.html" %}
         <!-- NAVBAR -->
-        
         <main>
             <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-            <script>
-                window.onbeforeunload = function() {
-                    // Limpiar los campos del formulario
-                    const form = document.getElementById('formNewProduct');
-                    if (form) {
-                        form.reset(); // Restablece todos los campos del formulario
-                    }
-                };
-            </script>
-            <div class="container">
+            <div class="prod-container">
                 <div class="login-box">
                     <h1>NEW PRODUCT</h1>
-                    <form id="formNewProduct" method="POST" action="/crear_producto" enctype="multipart/form-data">            
-                        <div class="radio-input">
-                            <h3>Tipo de Producto:</h3>
-                            <input type="radio" class="rad-input" id="calzado" name="tipo_producto" value="Shoes" onchange="cambiarTipoProducto()" required>
-                            <label for="calzado" class="label-radio">Shoes</label>
+                    <form id="formNewProduct" method="POST" action="/crear_producto" enctype="multipart/form-data">         
+                    <div class="container_cols"> 
+                        <div class="columna">
+                            <div class="radio-input">
+                                <h3>Tipo de Producto:</h3>
+                                <input type="radio" class="rad-input" id="calzado" name="tipo_producto" value="Shoes" onchange="cambiarTipoProducto()" required>
+                                <label for="calzado" class="label-radio">Shoes</label>
+                                <br>
+                                <input type="radio" class="rad-input" id="ropa" name="tipo_producto" value="Clothing" onchange="cambiarTipoProducto()" required>
+                                <label for="ropa" class="label-radio">Clothing</label>
+                                <br>
+                                <input type="radio" class="rad-input" id="accesorios" name="tipo_producto" value="Accessories" onchange="cambiarTipoProducto()" required>
+                                <label for="accesorios" class="label-radio">Accessories</label>
+                            </div>
                             <br>
-                            <input type="radio" class="rad-input" id="ropa" name="tipo_producto" value="Clothing" onchange="cambiarTipoProducto()" required>
-                            <label for="ropa" class="label-radio">Clothing</label>
-                            <br>
-                            <input type="radio" class="rad-input" id="accesorios" name="tipo_producto" value="Accessories" onchange="cambiarTipoProducto()" required>
-                            <label for="accesorios" class="label-radio">Accessories</label>
                         </div>
-                        <br>
-                        <div id="formulario" style="display: none;">
-                            <div class="input-box">
-                                <input type="text" id="id_product" name="id_product" required><br>
-                                <label for="id_product">Product ID:</label>
-                            </div>
-                            <div class="input-box">
-                                <input type="text" id="nombre" name="nombre" required><br>
-                                <label for="nombre">Product Name:</label>
-                            </div>
-                            <div class="input-box">
-                                <input type="text" id="color" name="color" required><br>
-                                <label for="color">Color:</label>
-                            </div>
-                            <div class="input-box">
-                                <input type="number" step="0.01" id="precio" name="precio" required><br>
-                                <label for="precio">Prize:</label>
-                            </div>
+                        <div class="columna">
+                                <div class="input-box">
+                                    <input type="text" id="id_product" name="id_product" required><br>
+                                    <label for="id_product">Product ID:</label>
+                                </div>
+                                <div class="input-box">
+                                    <input type="text" id="nombre" name="nombre" required><br>
+                                    <label for="nombre">Product Name:</label>
+                                </div>
+                                <div class="input-box">
+                                    <input type="text" id="color" name="color" required><br>
+                                    <label for="color">Color:</label>
+                                </div>
+                                <div class="input-box">
+                                    <input type="number" step="0.01" id="precio" name="precio" min="0" required><br>
+                                    <label for="precio">Prize:</label>
+                                </div>
+                        </div>
+                    </div>
+
+                        <div id="variantes" style="display: none;">
                             <h3>Variants</h3>
-                            <div id="variantes">
-                                <div class="variante">
-                                    <div class="input-box">
-                                        <select id="talla-0" name="talla" required>
-                                            <option value="" disabled selected>Selecciona una talla</option>
-                                        </select>
-                                        <label for="talla-0">Talla:</label>
+                            <div class="variante">
+                                <div class="container_cols2"> 
+                                    <div class="columna">
+                                        <div class="input-box">
+                                            <select id="talla-0" name="talla" required>
+                                                <option value="" disabled selected></option>
+                                            </select>
+                                            <label for="talla-0">Talla:</label>
+                                        </div>
                                     </div>
-                                    <div class="input-box">
-                                        <input id="stock-0" type="number" name="stock" required>
-                                        <label for="stock-0">Stock:</label>
-                                        <br>
+                                    <div class="columna">
+                                        <div class="input-box">
+                                            <input id="stock-0" type="number" name="stock" min="0" required>
+                                            <label for="stock-0">Stock:</label>
+                                            <br>
+                                        </div>
+                                    </div>
+                                    <div class="columna columna-boton" >
+                                        <button class="button_item" type="button" onclick="agregarVariante()">
+                                            <span class="button_item__text">Add Variant</span>
+                                            <span class="button_item__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg></span>
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
-    
-                            <button type="button" onclick="agregarVariante()">Agregar Variante</button><br><br>
-    
-                            <label for="image">Selecciona una imagen:</label>
-                            <input type="file" id="image" name="image" accept="image/*" required> <br>
-    
-                            <input type="submit" value="Crear Producto">
+                            </div><br><br>
+                        </div><br><br>  
+
+                        <div class="input-box">
+                            <input type="file" id="image" accept="image/*" name="file" required hidden>
+                            <button type="button" id="customButton" class="customButton">Select an Image</button>
+                            <span id="customText">No file selected</span>
                         </div>
-                        
+                        <div style="display: flex; gap: 30px; text-align: center; justify-content: center; padding: 20px 0;">
+                            <div style="width: 50%;">
+                              <button id="btn_enviar" class="loading send_btn" type="submit">Create Product</button>
+                            </div>
+                            <div  style="width: 50%;">
+                              <button id="btn_cancel" class="loading cancel_btn" type="button" onclick="redireccion('/')">Cancel</button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -94,6 +116,23 @@
         {% include "shared/footer.html" %}
         <!-- Footer -->
     </div>
+    <script>
+        const realFileBtn = document.getElementById('image');
+        const customBtn = document.getElementById('customButton');
+        const customTxt = document.getElementById('customText');
+
+        customBtn.addEventListener('click', function() {
+            realFileBtn.click();
+        });
+
+        realFileBtn.addEventListener('change', function() {
+            if (realFileBtn.files.length > 0) {
+                customTxt.textContent = realFileBtn.files[0].name;
+            } else {
+                customTxt.textContent = "No file selected";
+            }
+        });
+    </script>
     <script src="static/app.js" ></script>
 </body>
 </html>

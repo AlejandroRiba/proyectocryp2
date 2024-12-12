@@ -7,7 +7,7 @@ function redireccion(paginaDest){
 function cambiarTipoProducto() {
     const tipoProducto = document.querySelector('input[name="tipo_producto"]:checked').value;
     const varianteDivs = document.querySelectorAll('.variante');
-    const div = document.getElementById('formulario');
+    const div = document.getElementById('variantes');
     if (tipoProducto != null){
         if (div.style.display === 'none' || div.style.display === '') {
             div.style.display = 'block'; // Cambia a block
@@ -80,14 +80,28 @@ function agregarVariante(contador) {
     varianteDiv.id = `variante-${varianteCount}`;
 
     varianteDiv.innerHTML = `
-        <label for="talla-${varianteCount}">Talla:</label>
+        <div class="container_cols2"> 
+        <div class="columna">
+        <div class="input-box">
         <select id="talla-${varianteCount}" name="talla" required>
             <option value="" disabled selected>Selecciona una talla</option>
         </select>
+        <label for="talla-${varianteCount}">Talla:</label>
+        </div>
+        </div>
+        <div class="columna">
+        <div class="input-box">
+        <input type="number" id="stock-${varianteCount}" name="stock" min="0" required>
         <label for="stock-${varianteCount}">Stock:</label>
-        <input type="number" id="stock-${varianteCount}" name="stock" required>
-        <button type="button" onclick="eliminarVariante('variante-${varianteCount}')">Eliminar</button>
-        <br><br>
+        </div>
+        </div>
+        <div class="columna columna-boton">
+        <button class="button_item" type="button" onclick="eliminarVariante('variante-${varianteCount}')">
+            <span class="button_item__text">Delete</span>
+            <span class="button_item__icon"><svg class="svg" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><line x1="5" y1="5" x2="19" y2="19"></line><line x1="19" y1="5" x2="5" y2="19"></line></svg></span>
+        </button>
+        </div>
+        </div><br><br>
     `;
 
     // Agregar la nueva variante al DOM
