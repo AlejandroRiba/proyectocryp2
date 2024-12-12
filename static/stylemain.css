@@ -14,9 +14,7 @@
 
 @font-face {
     font-family: "Barlow Condensed";
-    src: url("fonts/BarlowCondensed-Black.ttf") format('truetype'),
-         url("fonts/BarlowCondensed-Bold.ttf") format('truetype'),
-         url("fonts/BarlowCondensed-Italic.ttf") format('truetype');
+    src: url("fonts/BarlowCondensed-Regular.ttf") format('truetype');
     font-weight: normal;
     font-style: normal;
 }

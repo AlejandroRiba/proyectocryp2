@@ -1,0 +1,125 @@
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"] {
+    font-family: "Barlow Condensed", sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+    height: 100%;
+    width: 100%;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.login-box {
+    position: relative;
+    z-index: 1;
+    width: 300px;
+    padding: 20px 40px;
+    background: var(--color-background-dark);
+    border-radius: 10px;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.login-box p {
+    color: var(--color-error);
+    font-size: 14px;
+    font-family: 'Squada One', sans-serif;
+}
+
+.login-box h1 {
+    color: var(--color-text-title);
+    font-size: 50px;
+    margin-top: 10px;
+}
+
+.input-box {
+    position: relative;
+    margin-bottom: 20px;
+    font-family: "Barlow Condensed", sans-serif;
+}
+
+.input-box small{
+    color: var(--color-warning); 
+    display: none; 
+    padding: 4px 0; 
+    font-weight: bold;
+    justify-self: start;
+    font-family: sans-serif;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--color-text-inverted);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+}
+
+.input-box input:focus ~ label,
+.input-box input:valid ~ label,
+.input-box input:disabled ~ label {
+    top: -20px;
+    font-size: 14px;
+}
+
+.input-box input:disabled{
+    color: #797979;
+}
+
+
+.input-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--color-text-title);
+    pointer-events: none;
+    transition: 0.5s;
+    font-weight: 500;
+}
+
+.input-box input:focus ~ label,
+.input-box select:focus ~ label,
+.input-box input:valid ~ label,
+.input-box select:valid ~ label {
+    top: -20px;
+    font-size: 14px;
+}
+
+/* Estilo para el select */
+.input-box select {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--color-text-inverted);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    position: relative; /* Para que el label se pueda mover en relación con el select */
+    transition: all 0.3s ease;
+}
+
+/* Estilo para el label */
+.input-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--color-text-title);
+    pointer-events: none;
+    transition: 0.3s ease;
+    font-weight: 500;
+}

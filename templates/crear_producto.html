@@ -6,6 +6,8 @@
     <link rel="icon" href="static/images/logosmall.ico">
     <title>R&R PRODUCTS</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_creareditarproduct.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css') }}">
 </head>
 <body>
     <div class="wrapper-main">
@@ -15,51 +17,76 @@
         
         <main>
             <!-- EMPIEZA CONTENIDO DE PÁGINA -->
-            <h1>NEW PRODUCT</h1>
-            
-            <form method="POST" action="/crear_producto" enctype="multipart/form-data">
-                <h3>Tipo de Producto:</h3><br>
-                <input type="radio" id="calzado" name="tipo_producto" value="Shoes" onchange="cambiarTipoProducto()" required>
-                <label for="calzado">Shoes</label><br>
-                <input type="radio" id="ropa" name="tipo_producto" value="Clothing" onchange="cambiarTipoProducto()" required>
-                <label for="ropa">Clothing</label><br><br>
-                <input type="radio" id="accesorios" name="tipo_producto" value="Accessories" onchange="cambiarTipoProducto()" required>
-                <label for="accesorios">Accessories</label><br><br>
-                <div id="formulario" style="display: none;">
-                    <label for="id_product">Product ID:</label>
-                    <input type="text" id="id_product" name="id_product" required><br><br>
-                    <label for="nombre">Product Name:</label>
-                    <input type="text" id="nombre" name="nombre" required><br><br>
-
-                    <label for="color">Color:</label>
-                    <input type="text" id="color" name="color" required><br><br>
-
-                    <label for="precio">Prize:</label>
-                    <input type="number" step="0.01" id="precio" name="precio" required><br><br>
-
-                    <h3>Variants</h3>
-                    <div id="variantes">
-                        <div class="variante">
-                            <label for="talla-0">Talla:</label>
-                            <select id="talla-0" name="talla" required>
-                                <option value="" disabled selected>Selecciona una talla</option>
-                            </select>
-
-                            <label for="stock-0">Stock:</label>
-                            <input id="stock-0" type="number" name="stock" required>
-                            <br><br>
+            <script>
+                window.onbeforeunload = function() {
+                    // Limpiar los campos del formulario
+                    const form = document.getElementById('formNewProduct');
+                    if (form) {
+                        form.reset(); // Restablece todos los campos del formulario
+                    }
+                };
+            </script>
+            <div class="container">
+                <div class="login-box">
+                    <h1>NEW PRODUCT</h1>
+                    <form id="formNewProduct" method="POST" action="/crear_producto" enctype="multipart/form-data">            
+                        <div class="radio-input">
+                            <h3>Tipo de Producto:</h3>
+                            <input type="radio" class="rad-input" id="calzado" name="tipo_producto" value="Shoes" onchange="cambiarTipoProducto()" required>
+                            <label for="calzado" class="label-radio">Shoes</label>
+                            <br>
+                            <input type="radio" class="rad-input" id="ropa" name="tipo_producto" value="Clothing" onchange="cambiarTipoProducto()" required>
+                            <label for="ropa" class="label-radio">Clothing</label>
+                            <br>
+                            <input type="radio" class="rad-input" id="accesorios" name="tipo_producto" value="Accessories" onchange="cambiarTipoProducto()" required>
+                            <label for="accesorios" class="label-radio">Accessories</label>
                         </div>
-                    </div>
-
-                    <button type="button" onclick="agregarVariante()">Agregar Variante</button><br><br>
-
-                    <label for="image">Selecciona una imagen:</label>
-                    <input type="file" id="image" name="image" accept="image/*" required> <br>
-
-                    <input type="submit" value="Crear Producto">
+                        <br>
+                        <div id="formulario" style="display: none;">
+                            <div class="input-box">
+                                <input type="text" id="id_product" name="id_product" required><br>
+                                <label for="id_product">Product ID:</label>
+                            </div>
+                            <div class="input-box">
+                                <input type="text" id="nombre" name="nombre" required><br>
+                                <label for="nombre">Product Name:</label>
+                            </div>
+                            <div class="input-box">
+                                <input type="text" id="color" name="color" required><br>
+                                <label for="color">Color:</label>
+                            </div>
+                            <div class="input-box">
+                                <input type="number" step="0.01" id="precio" name="precio" required><br>
+                                <label for="precio">Prize:</label>
+                            </div>
+                            <h3>Variants</h3>
+                            <div id="variantes">
+                                <div class="variante">
+                                    <div class="input-box">
+                                        <select id="talla-0" name="talla" required>
+                                            <option value="" disabled selected>Selecciona una talla</option>
+                                        </select>
+                                        <label for="talla-0">Talla:</label>
+                                    </div>
+                                    <div class="input-box">
+                                        <input id="stock-0" type="number" name="stock" required>
+                                        <label for="stock-0">Stock:</label>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <button type="button" onclick="agregarVariante()">Agregar Variante</button><br><br>
+    
+                            <label for="image">Selecciona una imagen:</label>
+                            <input type="file" id="image" name="image" accept="image/*" required> <br>
+    
+                            <input type="submit" value="Crear Producto">
+                        </div>
+                        
+                    </form>
                 </div>
-                
-            </form>
+            </div>
             <!-- TERMINA CONTENIDO DE PÁGINA -->
         </main>
 
@@ -67,7 +94,6 @@
         {% include "shared/footer.html" %}
         <!-- Footer -->
     </div>
-    
     <script src="static/app.js" ></script>
 </body>
 </html>

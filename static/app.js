@@ -30,7 +30,7 @@ function actualizarOpcionesTalla(tallaSelect, tipoProducto, option) {
         defaultOption.disabled = false;
     } else{
         defaultOption.value = '';
-        defaultOption.textContent = 'Selecciona una talla';
+        defaultOption.textContent = '';
         defaultOption.disabled = true;
     }
     console.log(defaultOption.value)
