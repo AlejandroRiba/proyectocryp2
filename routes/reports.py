@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, abort, flash, jsonify, redirect, render_template, request, send_from_directory, session, url_for
 
 from models.Reporte import obtener_reportes_por_empleado, obtener_reporte_por_fecha_y_empleado
-from models.Usuario import obtener_empleados, obtener_usuario_por_id
+from models.Usuario import Usuario, obtener_empleados, obtener_usuario_por_id
 from pyFunctions import mainfunc
 from pyFunctions.reportepdf import generar_informe_ventas_mensual, obtener_archivo_por_id_y_fecha, obtener_empleado_id_de_nombre_archivo, verificar_firma
 from init import REPORTS_DIR
@@ -41,6 +41,9 @@ def consulta_informes():
         employees = obtener_empleados()
         all_files = {}
 
+        employee: Usuario
+        employees: list[Usuario]
+        employees_ids: list[str] = []
         for employee in employees:
             reportes = obtener_reportes_por_empleado(employee.id)
             employee_files = []
@@ -52,14 +55,16 @@ def consulta_informes():
                     if file:
                         employee_files.append(file)
             if employee_files:
-                all_files[employee.nombre] = employee_files
+                all_files[employee.nombre_completo()] = employee_files
+                employees_ids.append(employee.id)
+                
 
-        print(all_files)
         return render_template(
             'consulta_informes_admin.html',
             status=username,
             all_files=all_files,
-            filtros={'id_empleado': id_empleado, 'mes': mes, 'año': año}
+            filtros={'id_empleado': id_empleado, 'mes': mes, 'año': año},
+            employees_ids = employees_ids
         )
 
     
@@ -68,11 +73,9 @@ def verificar_firma_de_archivo(filename):
     es_valida = verificar_firma(filename, obtener_empleado_id_de_nombre_archivo(filename))
     print(es_valida)
     if es_valida:
-        flash('La firma es válida.', 'success')
+       return jsonify({"message": "Firma válida"}), 200
     else:
-        flash('La firma no es válida.', 'danger')
-
-    return redirect('/consulta_informes')
+        return jsonify({"message": "Firma inválida"}), 400
     
 @reports_blueprint.route('/download_report/<filename>')
 def download_report(filename):
@@ -103,8 +106,6 @@ def generar_informe():
 
         private_key = session['private_key']
         report, flash_message = generar_informe_ventas_mensual(session['username'], year, month, private_key)
-        print(flash_message)
-        print(report)
         if report:
             return jsonify({"success": True, "message": "Welcome.", "destino": '/consulta_informes'}), 200
         else:

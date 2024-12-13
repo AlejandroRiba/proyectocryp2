@@ -30,7 +30,7 @@
     --color-background: #dae2da; /* Fondo principal muy claro */
     --color-background-light: #c4d2e6; /* Fondo secundario */
     --color-backgorund-gradient-light: linear-gradient(to right, #adbdd3, #73aabb);
-    --color-background-dark: #161f33; /* Fondo oscuro para secciones destacadas */
+    --color-background-dark: #0e1523; /* Fondo oscuro para secciones destacadas */
     /* Textos */
     --color-text-primary: #081C15; /* Texto principal oscuro */
     --color-text-secondary: #1B4332; /* Texto secundario más claro */

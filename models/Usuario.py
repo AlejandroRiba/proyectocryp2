@@ -14,6 +14,15 @@ class Usuario(db.Model):
     password = db.Column(db.String(50), nullable=False)
     publickey = db.Column(db.String(620), nullable=False)
 
+    def __repr__(self):
+        return f'<Usuario {self.id}>'
+    
+    def nombre_completo(self):
+        return f'{self.nombre} {self.apellido}'
+    
+    def __getattribute__(self, name):
+        return super().__getattribute__(name)
+
 def crear_usuario(id, nombre, apellido, email, phone, password, key):
     try:
         if id == 'admin':
