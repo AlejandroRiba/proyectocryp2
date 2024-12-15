@@ -20,7 +20,7 @@ input[type="tel"] {
     z-index: 1;
     width: 300px;
     padding: 20px 40px;
-    background: var(--color-background-dark);
+    background: #0e1523;
     border-radius: 10px;
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
     text-align: center;

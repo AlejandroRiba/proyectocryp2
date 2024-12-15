@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 import re
 from models.Database import getDatabase
 from models.Usuario import Usuario, obtener_usuario_por_id
@@ -245,16 +245,19 @@ def verificar_firma(pdf_filename, empleado_id):
 
 def generar_informe_ventas_mensual(empleado_id, year, month, private_key):
     ventas, flash_message = procesar_información(empleado_id, year, month)
-    if ventas != None:
-        pdf_filename = f"monthlyreport_{empleado_id}_{year}-{month}.pdf"
-        generar_pdf_ventas(ventas, pdf_filename)
-        pdf_file = os.path.join(PDF_PATH, pdf_filename)
-        agregar_firma(pdf_file, private_key)
-        crear_reporte(empleado_id, datetime.now().date())
-        return True, None
-    else: 
+    if ventas is None:
         return False, flash_message
-
+    pdf_filename = f"monthlyreport_{empleado_id}_{year}-{month:02d}.pdf"
+    generar_pdf_ventas(ventas, pdf_filename)
+    pdf_file = os.path.join(PDF_PATH, pdf_filename)
+    agregar_firma(pdf_file, private_key)
+        
+    # Crear fecha con base en el año y mes proporcionados
+    fecha_reporte = date(year, month, 1)
+        
+    crear_reporte(empleado_id, fecha_reporte)
+    return True, None
+    
 def obtener_archivo_por_id_y_fecha(directorio, id_empleado, año, mes):
     patron_fecha = f"{año}-{mes:02d}"  # Formatear el mes con dos dígitos
     for archivo in os.listdir(directorio):

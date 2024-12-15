@@ -208,6 +208,7 @@ function togglecheckBox(id){ //FUNCIÓN PARA ACTIVAR/DESACTIVAR UN CHECKBOX DESD
 }
 
 function manejarEnvioFormulario(formId, ruta) {
+    console.log(formId);
     const form = document.getElementById(formId);
     const submitButton = form.querySelector('button[type="submit"]');
     const originalText = submitButton.innerText; // Guarda el texto original del botón
@@ -216,16 +217,19 @@ function manejarEnvioFormulario(formId, ruta) {
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        console.log(formId + "");
         // Realiza las validaciones telefono e email, si no son el form correspondiente devuelve true
-        if(formId =! 'editProductForm'){
+        if(formId != 'editProductForm'){
             if (!validateForm(formId)) {
                 // Si `prepareSelectedProducts` retorna false, no se envía el formulario
                 submitButton.disabled = false; // Habilitar el botón nuevamente
                 return; // Sale de la función
             }
         }
+        console.log(formId + "" === "ventaForm");
+        console.log(formId + "" == "ventaForm");
         // Realiza las validaciones para los productos, si no es el form de venta, devuelve true
-        if(formId == "ventaForm"){
+        if(formId === "ventaForm"){
             if (!prepareSelectedProducts(formId)) {
                 // Si `prepareSelectedProducts` retorna false, no se envía el formulario
                 submitButton.disabled = false; // Habilitar el botón nuevamente
@@ -238,6 +242,7 @@ function manejarEnvioFormulario(formId, ruta) {
         submitButton.disabled = true;
 
         const formData = new FormData(this);
+        console.log(JSON.stringify(formData));
 
         fetch(ruta, {
             method: 'POST',

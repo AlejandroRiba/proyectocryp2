@@ -11,7 +11,7 @@ class Cliente(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nombre = db.Column(db.String(50), nullable=False)
     apellido = db.Column(db.String(50), nullable=False)
-    telefono = db.Column(db.String(15), unique=True,  nullable=False)
+    telefono = db.Column(db.String(15),  nullable=False)
 
     # Configuramos la relación en cascada para eliminar las tarjetas asociadas
     tarjetas = relationship('Tarjeta', backref='cliente', cascade="all, delete-orphan")

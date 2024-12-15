@@ -1,6 +1,5 @@
 import os
 from flask import Blueprint, abort, flash, jsonify, redirect, render_template, request, send_from_directory, session, url_for
-
 from models.Reporte import obtener_reportes_por_empleado, obtener_reporte_por_fecha_y_empleado
 from models.Usuario import Usuario, obtener_empleados, obtener_usuario_por_id
 from pyFunctions import mainfunc
@@ -13,7 +12,7 @@ reports_blueprint = Blueprint('reports', __name__)
 @reports_blueprint.route('/consulta_informes', methods=['GET'])
 def consulta_informes():
     username = session['username']
-    employee = obtener_usuario_por_id(username)
+    employee: Usuario = obtener_usuario_por_id(username)
     
     # Obtener filtros
     id_empleado = request.args.get('id_empleado', '')
@@ -35,7 +34,8 @@ def consulta_informes():
             'consulta_informes.html',
             status=username,
             files=files,
-            filtros={'id_empleado': id_empleado, 'mes': mes, 'año': año}
+            filtros={'id_empleado': id_empleado, 'mes': mes, 'año': año},
+            employee=employee
         )
     else:
         employees = obtener_empleados()
@@ -107,9 +107,9 @@ def generar_informe():
         private_key = session['private_key']
         report, flash_message = generar_informe_ventas_mensual(session['username'], year, month, private_key)
         if report:
-            return jsonify({"success": True, "message": "Welcome.", "destino": '/consulta_informes'}), 200
+            return jsonify({"success": True, "message": "Success.", "destino": '/consulta_informes'}), 200
         else:
-            return jsonify({"success": False, "message": flash_message, "destino":None}), 401
+            return jsonify({"success": False, "message": flash_fmessage, "destino":None}), 401
             
         
    
