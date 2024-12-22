@@ -7,7 +7,9 @@
                 <a>MENU</a>
                 <div class="menuContent">
                     <ul>
-                        <li><a href="{{ url_for('clients_transactions.registra_venta')}}">Register Sale</a></li>
+                        {% if status != 'admin' %} 
+                            <li><a href="{{ url_for('clients_transactions.registra_venta')}}">Register Sale</a></li>
+                        {% endif %}
                         <li><a href="{{ url_for('clients_transactions.consulta_venta')}}">View Sales</a></li>
                         <li><a href="{{ url_for('reports.consulta_informes')}}">Sales Reports</a></li>
                         <li><a href="{{ url_for('products.consulta_productos')}}">Products</a></li>

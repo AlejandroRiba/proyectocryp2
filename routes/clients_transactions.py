@@ -62,22 +62,44 @@ def procesar_venta():
     crear_transaccion_con_detalles(empleado_id=username, fecha=datetime.now(), monto=monto, productos=productos, tarjeta_id=tarjeta.id, cliente_id=cliente.id)
     return jsonify({"success": True, "message": "Sale registered.", "destino": '/consulta_venta'}), 200
 
+# Ruta para hacer la verificación de contraseña
+@clients_transactions_blueprint.route('/consulta_venta', methods=['POST'])
+def verify_password():
+    data = request.get_json()
+    password = data.get('password')
+    username = session['username']
+    access = mainfunc.auth(username, password,None)
+    if access:
+        employee = obtener_usuario_por_id(username)
+        transacciones_list = []
+        if employee.cargo == 'Employee':
+            transacciones = transacciones_por_empleado(username)
+            if transacciones:
+                transacciones_list = [
+                    {"id": t.id, "empleado_id": t.empleado_id, "fecha": t.fecha.strftime('%Y-%m-%d'), "monto": t.monto, "cliente": t.cliente.nombre + ' ' + t.cliente.apellido, "tarjeta": ''} for t in transacciones
+                ]
+            return jsonify(success=True, transacciones=transacciones_list)
+        
+        private_key = session['private_key']
+        transacciones = consulta_transacciones()
+        if transacciones:
+            for transaccion in transacciones:
+                llave_cifrada = obtener_clave_tarjeta(transaccion.tarjeta.numero_tarjeta)
+                tarjeta = mainfunc.descifrar_tarjeta(transaccion.tarjeta.numero_tarjeta, private_key, llave_cifrada)
+                transaccion.tarjeta.numero_tarjeta = tarjeta
+            
+            transacciones_list = [
+                    {"id": t.id, "empleado_id": t.empleado_id, "fecha": t.fecha.strftime('%Y-%m-%d'), "monto": t.monto, "cliente": t.cliente.nombre + ' ' + t.cliente.apellido, "tarjeta":t.tarjeta.numero_tarjeta} for t in transacciones
+                ]
+        return jsonify(success=True, transacciones=transacciones_list)
+
+    else:
+        return jsonify(success=False, message="Incorrect password"), 401
+
+
 # Ruta para consultar ventas
 @clients_transactions_blueprint.route('/consulta_venta', methods=['GET'])
 def consulta_venta():
     username = session['username']
-    employee = obtener_usuario_por_id(username)
-
-    if employee.cargo == 'Employee':
-        transacciones = transacciones_por_empleado(username)
-        return render_template('consulta_venta.html', status=username, transacciones=transacciones)
-
-    private_key = session['private_key']
-    transacciones = consulta_transacciones()
-    for transaccion in transacciones:
-        llave_cifrada = obtener_clave_tarjeta(transaccion.tarjeta.numero_tarjeta)
-        tarjeta = mainfunc.descifrar_tarjeta(transaccion.tarjeta.numero_tarjeta, private_key, llave_cifrada)
-        transaccion.tarjeta.numero_tarjeta = tarjeta
-                
-    return render_template('consulta_venta.html', status=username, transacciones=transacciones)
+    return render_template('consulta_venta.html', status=username)
      

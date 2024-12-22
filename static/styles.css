@@ -49,6 +49,14 @@ input[type="tel"]{
     text-align: center;
 }
 
+.swal_popup{
+    background: var(--color-background-dark);
+    border-radius: 10px !important;      /* Redondea las esquinas */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; /* Agrega una sombra suave */
+    padding: 20px !important;  
+    color: var(--color-text-inverted);
+}
+
 .login-box p{
     color: var(--color-error); 
     font-size: 14px;

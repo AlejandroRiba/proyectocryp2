@@ -345,6 +345,15 @@ input[type="number"]::-webkit-outer-spin-button {
     background: var(--color-background-light);
 }
 
+/* Alineación horizontal de los botones */
+.button-actions {
+    display: flex !important;          /* Flexbox aplicado al contenedor de los botones */
+    justify-content: space-evenly !important;  /* Distribuye los botones con espacio equitativo */
+    gap: 30px !important;              /* Espacio entre los botones */
+    width: 250px !important;  
+    flex-wrap: nowrap !important;      /* No permite que los botones se acomoden en múltiples filas */
+}
+
 .cancel_btn:hover{
     background: var(--color-background-light);
 }
