@@ -78,14 +78,30 @@ def verificar_firma_de_archivo(filename):
        return jsonify({"message": "Firma válida"}), 200
     else:
         return jsonify({"message": "Firma inválida"}), 400
-    
-@reports_blueprint.route('/download_report/<filename>')
-def download_report(filename):
-    # Verifica que el archivo exista en la carpeta `reports` antes de enviarlo}
-    if filename in os.listdir(REPORTS_DIR):
-        return send_from_directory(REPORTS_DIR, filename, as_attachment=True)
-    else:
-        abort(404)  # Devuelve un error 404 si el archivo no existe
+
+
+#Ruta para autorizar la descarga
+@reports_blueprint.route('/autoriza_descarga', methods=['POST'])
+def autoriza_descarga():
+    data = request.get_json()
+    password = data.get('password')
+    filename = data.get('url')
+    username = session['username']
+    # Validar la sesión
+    if not username:
+        return jsonify(success=False, message="User not authenticated"), 401
+
+    # Validar credenciales
+    if not mainfunc.auth(username, password, None):
+        return jsonify(success=False, message="Incorrect password"), 401
+
+    # Validar que el archivo existe
+    file_path = os.path.join(REPORTS_DIR, filename)
+    if not os.path.isfile(file_path):
+        return jsonify(success=False, message="File not found"), 404
+
+    # Enviar el archivo
+    return send_from_directory(REPORTS_DIR, filename, as_attachment=True)
 
 # Ruta para generar un informe
 @reports_blueprint.route('/generar_informe', methods=['GET', 'POST'])
@@ -138,6 +154,13 @@ def listar_reportes():
         if (not id_empleado or empleado_id == id_empleado) and \
            (not mes or fecha_mes == mes) and \
            (not año or fecha_año == año):
-            archivos_filtrados.append(reporte)
+            # Obtener el usuario por ID
+            empleado: Usuario = obtener_usuario_por_id(empleado_id)
+
+            if empleado:
+                archivos_filtrados.append({
+                    "archivo": reporte,
+                    "nombre_completo": empleado.nombre_completo()
+                })
 
     return jsonify(archivos_filtrados)

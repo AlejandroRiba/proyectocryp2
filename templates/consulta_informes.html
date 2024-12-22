@@ -24,10 +24,19 @@
                 <h1 class="title">CONSULT REPORTS</h1>
             </div>
             <div class="reports-container">
-                <form action="/consulta_informes" method="get" class="filter-form">
+                <script>
+                    window.onbeforeunload = function() {
+                        // Limpiar los campos del formulario
+                        const form = document.getElementById('filtros-informes');
+                        if (form) {
+                            form.reset(); // Restablece todos los campos del formulario
+                        }
+                    };
+                </script>
+                <form action="/consulta_informes" method="get" class="filter-form" id="filtros-informes">
                     <div class="filtros">
                         <h2>Filters: </h2>
-                        
+                        <input type="text" id="id_empleado" name="id_empleado" value="{{status}}" hidden>
                         <div class="group">
                             <select id="mes" name="mes" class="input_search">
                                 <option value="" {% if filtros.mes == '' %}selected{% endif %}>Month</option>
@@ -47,7 +56,7 @@
                         </div>
                         
                         <div class="group">
-                            <input type="number" class="input_search" id="año" name="año" min="2024" max="2025" value="{{ filtros.año }}" placeholder="Año">
+                            <input type="number" class="input_search" id="año" name="año" min="2024" max="2025" value="{{ filtros.año }}" placeholder="Year">
                         </div>
                         
                         <div class="group">
@@ -59,7 +68,7 @@
                         </div>
                     </div>
                 </form>
-                
+                <br><br>
                 <ul class="report-list">
                     {% if files %}
                             <h3>Reports of <span id="employee_name">{{employee.nombre_completo()}}</span></h3>
@@ -75,8 +84,8 @@
                                     
                                     <li>
                                         <span>{{ nombre_formateado }}</span>
-                                        <button onclick="descargarArchivo('{{ url_for('reports.download_report', filename=file) }}')" class="loading">Download</button>
-                                    </li>
+                                        <button onclick="solicita_permiso('{{file}}')" class="loadingrport">Download</button>
+                                    </li><br><br>
                                 {% endfor %}
                             </ul>
                     {% else %}
@@ -88,12 +97,81 @@
         </main>
         {% include "shared/footer.html" %}
     </div>
-    
-    <script src="static/app.js" ></script>
     <script>
-        function descargarArchivo(url) {
-            window.location.href = url;
-        }
+        document.querySelector('.filter-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const idEmpleado = document.querySelector('#id_empleado').value.trim();
+            const mes = document.querySelector('#mes').value.trim();
+            const año = document.querySelector('#año').value.trim();
+
+            // Verificar si todos los campos están vacíos
+            if (!mes && !año) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No filters',
+                    text: 'Please select at least one filter before applying.',
+                    timer: 3000,
+                    showConfirmButton: false,
+                    customClass: {
+                        confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                        cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                        actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                        popup: 'swal_popup'
+                    },
+                });
+                return; // No hacer nada si no hay filtros seleccionados
+            }
+
+            const formData = new FormData(this);
+            const queryString = new URLSearchParams(formData).toString();
+            const response = await fetch(`/reports?${queryString}`);
+            const archivos = await response.json();
+
+            // Definir nombres de los meses
+            const meses = [
+                "January", "February", "March", "April", "May",
+                "June", "July", "August", "September",
+                "October", "November", "December"
+            ];
+            const listaReportes = document.querySelector('.report-list');
+            if (archivos.length > 0) {
+                // Generar contenido dinámicamente para cada reporte
+                const employeeName = archivos[0].nombre_completo;
+
+                // Crear el encabezado y la lista
+                let contenidoHTML = `
+                    <h3>Reports of <span id="employee_name">${employeeName}</span></h3>
+                    <ul>
+                `;
+
+                // Generar los elementos <li> para cada reporte
+                contenidoHTML += archivos.map(archivoObj => {
+                    const { archivo } = archivoObj; // Extraer el nombre del archivo
+                    const partes = archivo.split('_'); // Dividir el nombre del archivo
+                    const [year, month] = partes[2].replace('.pdf', '').split('-'); // Extraer año y mes
+                    const mesFormateado = meses[parseInt(month, 10) - 1]; // Formatear el mes
+                    const nombreFormateado = `Monthly report of ${mesFormateado} ${year}`;
+
+                    return `
+                        <li>
+                            <span>${nombreFormateado}</span>
+                            <button onclick="solicita_permiso('${archivo}')" class="loadingrport">Download</button>
+                        </li><br><br>
+                    `;
+                }).join('');
+
+                // Cerrar la lista <ul>
+                contenidoHTML += '</ul>';
+
+                // Insertar el contenido generado en el contenedor
+                listaReportes.innerHTML = contenidoHTML;
+            } else {
+                listaReportes.innerHTML = '<p style="color: var(--color-warning);">No reports available.</p>';
+            }
+        });
     </script>
+    <script src="static/app.js" ></script>
+    <script src="static/consulta_informe.js"></script>
 </body>
 </html>

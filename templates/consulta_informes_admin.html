@@ -48,8 +48,16 @@
                 <h1 class="title">CONSULT REPORTS</h1>
             </div>
             <div class="reports-container">
-                
-                <form action="/consulta_informes" method="get" class="filter-form">
+                <script>
+                    window.onbeforeunload = function() {
+                        // Limpiar los campos del formulario
+                        const form = document.getElementById('filtros-informes');
+                        if (form) {
+                            form.reset(); // Restablece todos los campos del formulario
+                        }
+                    };
+                </script>
+                <form action="/consulta_informes" method="get" class="filter-form" id="filtros-informes">
                     <div class="filtros">
                         <h2>Filters: </h2>
                         <div class="group">
@@ -75,7 +83,7 @@
                         </div>
                         
                         <div class="group">
-                            <input type="number" class="input_search" id="año" name="año" min="2024" max="2025" value="{{ filtros.año }}" placeholder="Año">
+                            <input type="number" class="input_search" id="año" name="año" min="2024" max="2025" value="{{ filtros.año }}" placeholder="Year">
                         </div>
                         
                         <div class="group">
@@ -104,14 +112,14 @@
                                     
                                     <li>
                                         <span>{{ nombre_formateado }}</span>
-                                        <button onclick="descargarArchivo('{{ url_for('reports.download_report', filename=file) }}')" class="loading">Download</button>
-                                        <button onclick="verificarFirma('{{ file }}')" class="loading">Verify Signature</button>
-                                    </li>
+                                        <button onclick="solicita_permiso('{{file}}')" class="loadingrport">Download</button>
+                                        <button onclick="verificarFirma('{{ file }}')" class="loadingrport">Verify Signature</button>
+                                    </li><br><br>
                                 {% endfor %}
                             </ul>
                         {% endfor %}
                     {% else %}
-                        <p>No hay reportes disponibles.</p>
+                        <p style="color: var(--color-warning);">No reports available.</p>
                     {% endif %}
                     <!-- <button onclick="redireccion('/generar_informe')">New Report</button> -->
                 </ul>
@@ -134,13 +142,6 @@
             });
         });
 
-        function descargarArchivo(url) {
-            window.location.href = url;
-        }
-
-        function reload(){
-            location.reload();
-        }
 
         document.querySelector('.filter-form').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -173,28 +174,54 @@
             const archivos = await response.json();
 
             // Definir nombres de los meses
-            const months = [
+            const meses = [
                 "January", "February", "March", "April", "May",
                 "June", "July", "August", "September",
                 "October", "November", "December"
             ];
             const listaReportes = document.querySelector('.report-list');
             if (archivos.length > 0) {
-                listaReportes.innerHTML = archivos.map(archivo => {
-                    const partes = archivo.split('_');
-                    const idEmpleado = partes[1];
-                    const [year, month] = partes[2].replace('.pdf', '').split('-');
-                    const mesFormateado = meses[parseInt(month, 10) - 1];
-                    const nombreFormateado = `Monthly report of ${mesFormateado} ${year} (${idEmpleado})`;
+                // Agrupar los archivos por empleado
+                const archivosPorEmpleado = archivos.reduce((acc, archivoObj) => {
+                    const { nombre_completo, archivo } = archivoObj;
+                    if (!acc[nombre_completo]) {
+                        acc[nombre_completo] = [];
+                    }
+                    acc[nombre_completo].push(archivo);
+                    return acc;
+                }, {});
 
-                    return `
-                        <li>
-                            <span>${nombreFormateado}</span>
-                            <button onclick="descargarArchivo('download_report/${archivo}')" class="loading">Download</button>
-                            <button onclick="verificarFirma('${archivo}')" class="loading">Verify Signature</button>
-                        </li>
+                // Crear el contenido HTML agrupado por empleado
+                let contenidoHTML = '';
+                Object.entries(archivosPorEmpleado).forEach(([nombreEmpleado, archivosEmpleado]) => {
+                    contenidoHTML += `
+                        <h3>Reports of <span id="employee_name">${nombreEmpleado}</span></h3>
+                        <ul>
                     `;
-                }).join('');
+
+                    // Generar los <li> para los archivos del empleado actual
+                    contenidoHTML += archivosEmpleado.map(archivo => {
+                        const partes = archivo.split('_');
+                        const idEmpleado = partes[1];
+                        const [year, month] = partes[2].replace('.pdf', '').split('-');
+                        const mesFormateado = meses[parseInt(month, 10) - 1];
+                        const nombreFormateado = `Monthly report of ${mesFormateado} ${year} (${idEmpleado})`;
+
+                        return `
+                            <li>
+                                <span>${nombreFormateado}</span>
+                                <button onclick="solicita_permiso('${archivo}')" class="loadingrport">Download</button>
+                                <button onclick="verificarFirma('${archivo}')" class="loadingrport">Verify Signature</button>
+                            </li><br><br>
+                        `;
+                    }).join('');
+
+                    // Cerrar la lista <ul>
+                    contenidoHTML += '</ul>';
+                });
+
+                // Insertar el contenido generado en el contenedor
+                listaReportes.innerHTML = contenidoHTML;
             } else {
                 listaReportes.innerHTML = '<p style="color: var(--color-warning);">No reports available.</p>';
             }
@@ -258,5 +285,6 @@
         }
     </script>    
     <script src="static/app.js" ></script>
+    <script src="static/consulta_informe.js"></script>
 </body>
 </html>

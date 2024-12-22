@@ -1,4 +1,4 @@
-.loading {
+.loadingrport {
     width: auto;
     padding: 10px;
     border: none;
@@ -11,11 +11,15 @@
     margin: 0 15px;
 }
 
-.loading-disabled{
+.loadingrport:hover{
+    background: var(--color-background-light);
+}
+
+.loadingrport-disabled{
     cursor: not-allowed;
     pointer-events: none;
 }
-.loading-disabled:hover{
+.loadingrport-disabled:hover{
     background: linear-gradient(to right, #7e7e7e, #363636);
 }
 

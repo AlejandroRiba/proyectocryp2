@@ -107,6 +107,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('reporte-form');
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerText; // Guarda el texto original del botón
 
             form.addEventListener('submit', async function(event) {
                 event.preventDefault(); // Evitar el envío tradicional del formulario
@@ -164,7 +166,11 @@
                         },
                     });
                     return;
-        }
+                }
+
+                // Cambia el texto del botón y lo desactiva
+                submitButton.innerText = 'Loading...';
+                submitButton.disabled = true;
 
                 try {
                     const response = await fetch(form.action, {
@@ -177,6 +183,9 @@
                         result = await response.json();
                     }
                     if (response.ok) {
+                        // Restaura el botón al estado original
+                        submitButton.innerText = originalText;
+                        submitButton.disabled = false;
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
@@ -195,6 +204,9 @@
                             }
                         });
                     } else {
+                        // Restaura el botón al estado original
+                        submitButton.innerText = originalText;
+                        submitButton.disabled = false;
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -211,6 +223,9 @@
                         console.log("Error recibido. --depuración")
                     }
                 } catch (error) {
+                    // Restaura el botón al estado original
+                    submitButton.innerText = originalText;
+                    submitButton.disabled = false;
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',

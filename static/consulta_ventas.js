@@ -19,7 +19,7 @@ function inicio_consultaVentas(status){
         },
         buttonsStyling: false, // Desactiva los estilos predeterminados de SweetAlert
         showLoaderOnConfirm: true,
-        backdrop: 'rgba(0, 0, 0, 3)', // Fondo con efecto difuminado
+        backdrop: 'rgba(0, 0, 0, 0.7)', // Fondo con efecto difuminado
         allowOutsideClick: false, // Evita que se cierre al hacer clic fuera
         preConfirm: (password) => {
             return fetch('/consulta_venta', {
