@@ -6,10 +6,23 @@
     <link rel="icon" href="static/images/logosmall.ico">
     <title>R&R REPORT</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style_generar_informe.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='sweetalert2.min.css') }}">
 </head>
 <body>
+    {% if status == 'admin' %}
+      <script>
+        // Ejecuta el Sweet Alert al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            showAdminAlert()
+            // Espera 3 segundos antes de redirigir
+            setTimeout(() => {
+                redireccion('/');
+            }, 3000); // 3000 milisegundos = 3 segundos
+        });
+      </script>
+    {% endif %} 
     <div class="wrapper-main">
         <!-- Navbar -->
         {% include "shared/navbar.html" %}
@@ -110,7 +123,13 @@
                         title: 'Missing Field',
                         text: 'Please select a year.',
                         timer: 3000,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        customClass: {
+                            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                            actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                            popup: 'swal_popup'
+                        },
                     });
                     return;
                 }
@@ -120,7 +139,13 @@
                         title: 'Missing Field',
                         text: 'Please select a month.',
                         timer: 3000,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        customClass: {
+                            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                            actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                            popup: 'swal_popup'
+                        },
                     });
                     return;
                 }
@@ -130,7 +155,13 @@
                         title: 'Missing Field',
                         text: 'Please enter your password.',
                         timer: 3000,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        customClass: {
+                            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                            actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                            popup: 'swal_popup'
+                        },
                     });
                     return;
         }
@@ -151,7 +182,13 @@
                             title: 'Success',
                             text: result?.message || 'Report generated successfully.',
                             timer: 3000,
-                            showConfirmButton: false
+                            showConfirmButton: false,
+                            customClass: {
+                                confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                                cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                                actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                                popup: 'swal_popup'
+                            },
                         }).then(() => {
                             if (result?.destino) {
                                 window.location.href = result.destino; // Redirigir si hay destino
@@ -163,7 +200,13 @@
                             title: 'Error',
                             text: result?.message || 'An error occurred.',
                             timer: 3000,
-                            showConfirmButton: false
+                            showConfirmButton: false,
+                            customClass: {
+                                confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                                cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                                actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                                popup: 'swal_popup'
+                            },
                         });
                         console.log("Error recibido. --depuración")
                     }
@@ -173,7 +216,13 @@
                         title: 'Error',
                         text: 'An unexpected error occurred. Please try again later.',
                         timer: 3000,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        customClass: {
+                            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                            actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                            popup: 'swal_popup'
+                        },
                     });
                     console.error('Error:', error);
                 }

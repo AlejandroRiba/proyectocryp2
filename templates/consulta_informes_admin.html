@@ -30,7 +30,13 @@
                             icon: "{{ 'success' if category == 'success' else 'error' }}", // Cambiar icono según categoría
                             title: "{{ message }}",
                             timer: 3000, 
-                            showConfirmButton: false
+                            showConfirmButton: false,
+                            customClass: {
+                                confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                                cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                                actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                                popup: 'swal_popup'
+                            },
                         });
                     {% endfor %}
                 {% endif %}
@@ -85,16 +91,16 @@
                 <ul class="report-list">
                     {% if all_files %}
                         {% for employee_name, files in all_files.items() %}
-                            <h3>Reportes de <span id="employee_name">{{ employee_name }}</span></h3>
+                            <h3>Reports of <span id="employee_name">{{ employee_name }}</span></h3>
                             <ul>
                                 {% for file in files %}
                                     {% set parts = file.split('_') %}
                                     {% set id_empleado = parts[1] %}
                                     {% set fecha = parts[2].replace('.pdf', '') %}
                                     {% set year, month = fecha.split('-') %}
-                                    {% set meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'] %}
+                                    {% set meses = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] %}
                                     {% set mes_formateado = meses[month|int - 1] %}
-                                    {% set nombre_formateado = "Reporte mensual de " ~ mes_formateado ~ " " ~ year ~ " (" ~ id_empleado ~ ")" %}
+                                    {% set nombre_formateado = "Monthly report of " ~ mes_formateado ~ " " ~ year ~ " (" ~ id_empleado ~ ")" %}
                                     
                                     <li>
                                         <span>{{ nombre_formateado }}</span>
@@ -147,10 +153,16 @@
             if (!idEmpleado && !mes && !año) {
                 Swal.fire({
                     icon: 'info',
-                    title: 'Sin filtros',
-                    text: 'Por favor selecciona al menos un filtro antes de aplicar.',
+                    title: 'No filters',
+                    text: 'Please select at least one filter before applying.',
                     timer: 3000,
-                    showConfirmButton: false
+                    showConfirmButton: false,
+                    customClass: {
+                        confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                        cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                        actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                        popup: 'swal_popup'
+                    },
                 });
                 return; // No hacer nada si no hay filtros seleccionados
             }
@@ -161,12 +173,11 @@
             const archivos = await response.json();
 
             // Definir nombres de los meses
-            const meses = [
-                "Enero", "Febrero", "Marzo", "Abril", "Mayo", 
-                "Junio", "Julio", "Agosto", "Septiembre", 
-                "Octubre", "Noviembre", "Diciembre"
+            const months = [
+                "January", "February", "March", "April", "May",
+                "June", "July", "August", "September",
+                "October", "November", "December"
             ];
-
             const listaReportes = document.querySelector('.report-list');
             if (archivos.length > 0) {
                 listaReportes.innerHTML = archivos.map(archivo => {
@@ -174,7 +185,7 @@
                     const idEmpleado = partes[1];
                     const [year, month] = partes[2].replace('.pdf', '').split('-');
                     const mesFormateado = meses[parseInt(month, 10) - 1];
-                    const nombreFormateado = `Reporte mensual de ${mesFormateado} ${year} (${idEmpleado})`;
+                    const nombreFormateado = `Monthly report of ${mesFormateado} ${year} (${idEmpleado})`;
 
                     return `
                         <li>
@@ -185,7 +196,7 @@
                     `;
                 }).join('');
             } else {
-                listaReportes.innerHTML = '<p>No hay reportes disponibles.</p>';
+                listaReportes.innerHTML = '<p style="color: var(--color-warning);">No reports available.</p>';
             }
         });
 
@@ -202,28 +213,46 @@
                     const data = await response.json();
                     Swal.fire({
                         icon: 'success',
-                        title: 'Firma Verificada',
-                        text: `El archivo ${filename} tiene una firma válida.`,
+                        title: 'Signature Verified',
+                        text: `The file ${filename} has a valid signature.`,
                         timer: 3000,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        customClass: {
+                            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                            actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                            popup: 'swal_popup'
+                        },
                     });
                 } else {
                     const error = await response.json();
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error al Verificar',
-                        text: error.message || 'No se pudo verificar la firma.',
+                        title: 'Verification Error',
+                        text: error.message || 'The signature could not be verified.',
                         timer: 3000,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        customClass: {
+                            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                            actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                            popup: 'swal_popup'
+                        },
                     });
                 }
             } catch (err) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Ocurrió un error al intentar verificar la firma.',
+                    text: 'An error occurred while trying to verify the signature.',
                     timer: 3000,
-                    showConfirmButton: false
+                    showConfirmButton: false,
+                    customClass: {
+                        confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                        cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                        actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                        popup: 'swal_popup'
+                    },
                 });
             }
         }

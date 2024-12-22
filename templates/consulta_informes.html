@@ -59,18 +59,19 @@
                         </div>
                     </div>
                 </form>
+                
                 <ul class="report-list">
                     {% if files %}
-                            <h3>Reportes mensuales de <span id="employee_name">{{employee.nombre_completo()}}</span></h3>
+                            <h3>Reports of <span id="employee_name">{{employee.nombre_completo()}}</span></h3>
                             <ul>
                                 {% for file in files %}
                                     {% set parts = file.split('_') %}
                                     {% set id_empleado = parts[1] %}
                                     {% set fecha = parts[2].replace('.pdf', '') %}
                                     {% set year, month = fecha.split('-') %}
-                                    {% set meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'] %}
+                                    {% set meses = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] %}
                                     {% set mes_formateado = meses[month|int - 1] %}
-                                    {% set nombre_formateado = "Reporte mensual de " ~ mes_formateado ~ " " ~ year ~ " "%}
+                                    {% set nombre_formateado = "Monthly report of " ~ mes_formateado ~ " " ~ year ~ " "%}
                                     
                                     <li>
                                         <span>{{ nombre_formateado }}</span>
@@ -79,7 +80,7 @@
                                 {% endfor %}
                             </ul>
                     {% else %}
-                        <p>No hay reportes disponibles.</p>
+                        <p style="color: var(--color-warning);">No reports available.</p>
                     {% endif %}
                     <!-- <button onclick="redireccion('/generar_informe')">New Report</button> -->
                 </ul>

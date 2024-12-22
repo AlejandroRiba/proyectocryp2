@@ -16,7 +16,6 @@ function inicio_consultaVentas(status){
             cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
             actions: 'button-actions',// Clase personalizada para el contenedor de botones
             popup: 'swal_popup'
-            
         },
         buttonsStyling: false, // Desactiva los estilos predeterminados de SweetAlert
         showLoaderOnConfirm: true,

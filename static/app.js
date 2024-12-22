@@ -148,7 +148,14 @@ function validarVariantes() {
         Swal.fire({
             icon: "error", 
             title: "There must be at least one active variant. If you want to delete the product completely, do it from the table.",
-            showConfirmButton: true
+            showConfirmButton: true,
+            customClass: {
+                confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                popup: 'swal_popup'
+                
+            },
         });
         return false;
     }
@@ -318,8 +325,11 @@ function manejarProducto(formId, ruta) {
                     showConfirmButton: true, // Mostrar el botón de confirmación
                     confirmButtonText: "OK",  // Texto del botón
                     customClass: {
-                        confirmButton: "custom-swal-button"
-                    }
+                        confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                        cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                        actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                        popup: 'swal_popup'
+                    },
                 }).then((result) => {
                     if (result.isConfirmed) { // Ejecutar la redirección solo después de confirmar
                         window.location.href = data.destino;
@@ -330,7 +340,13 @@ function manejarProducto(formId, ruta) {
                 Swal.fire({
                     icon: "error", 
                     title: data.message,
-                    showConfirmButton: true
+                    showConfirmButton: true,
+                    customClass: {
+                        confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                        cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                        actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                        popup: 'swal_popup'
+                    },
                 });
             }
         })

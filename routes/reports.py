@@ -51,7 +51,9 @@ def consulta_informes():
             for reporte in reportes:
                 if (not año or reporte.fecha.year == int(año)) and \
                    (not mes or reporte.fecha.month == int(mes)):
+                    print(f'fecha del reporte {reporte.fecha}')
                     file = obtener_archivo_por_id_y_fecha(REPORTS_DIR, employee.id, reporte.fecha.year, reporte.fecha.month)
+                    print(f'Reportes de {employee.id} SON {file}')
                     if file:
                         employee_files.append(file)
             if employee_files:
@@ -109,7 +111,7 @@ def generar_informe():
         if report:
             return jsonify({"success": True, "message": "Success.", "destino": '/consulta_informes'}), 200
         else:
-            return jsonify({"success": False, "message": flash_fmessage, "destino":None}), 401
+            return jsonify({"success": False, "message": flash_message, "destino":None}), 401
             
         
    

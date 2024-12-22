@@ -259,13 +259,16 @@ def generar_informe_ventas_mensual(empleado_id, year, month, private_key):
     return True, None
     
 def obtener_archivo_por_id_y_fecha(directorio, id_empleado, año, mes):
+    print(f'Busqueda de archivos para {id_empleado}')
     patron_fecha = f"{año}-{mes:02d}"  # Formatear el mes con dos dígitos
+    print(f'Patron fecha {patron_fecha}')
     for archivo in os.listdir(directorio):
         if (
             archivo.startswith(f"monthlyreport_{id_empleado}_") and
             patron_fecha in archivo and
             archivo.endswith(".pdf")
         ):
+            print(f'archivo encontrado en directorio -- {archivo}')
             return archivo  # Devuelve el archivo en cuanto se encuentra
     return None  # Si no se encuentra ningún archivo, devuelve None
 

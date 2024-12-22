@@ -375,7 +375,12 @@ function prepareSelectedProducts(formId) {
             Swal.fire({
                 title: 'Select at least one product.',
                 icon: 'warning',
-                confirmButtonColor: '#748CAB',
+                customClass: {
+                    confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                    cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                    actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                    popup: 'swal_popup'
+                },
             });
             return false;
         } if(!validarTelefono(phone)){
@@ -384,7 +389,12 @@ function prepareSelectedProducts(formId) {
             Swal.fire({
                 title: 'Invalid card number, please try again.',
                 icon: 'warning',
-                confirmButtonColor: '#748CAB',
+                customClass: {
+                    confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                    cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                    actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                    popup: 'swal_popup'
+                },
             });
             return false;
         }else {
@@ -414,8 +424,12 @@ function deleteProduct(idProduct){
         text: "This action cannot be undone!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#748CAB',
-        cancelButtonColor: '#d33',
+        customClass: {
+            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+            actions: 'button-actions',// Clase personalizada para el contenedor de botones
+            popup: 'swal_popup'
+        },
         confirmButtonText: 'Yes, delete it',
         cancelButtonText: 'Cancel'
     }).then((result) => {
@@ -429,7 +443,12 @@ function deleteProduct(idProduct){
                             title: 'Deleted!',
                             text: 'The product has been successfully deleted.',
                             icon: 'success',
-                            confirmButtonColor: '#748CAB',
+                            customClass: {
+                                confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                                cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                                actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                                popup: 'swal_popup'
+                            },
                         });
                         aplicarFiltros(1, 'producto');
                     } else {
@@ -437,7 +456,12 @@ function deleteProduct(idProduct){
                             title: 'ERROR',
                             text: 'The product could not be deleted. Check for dependencies.',
                             icon: 'error',
-                            confirmButtonColor: '#748CAB',
+                            customClass: {
+                                confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                                cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                                actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                                popup: 'swal_popup'
+                            },
                         });
                     }
                 })
@@ -447,6 +471,12 @@ function deleteProduct(idProduct){
                         title: 'Connection Error',
                         text: 'There was a problem trying to delete the product.',
                         icon: 'error',
+                        customClass: {
+                            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                            actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                            popup: 'swal_popup'
+                        },
                     });
                 });
         }

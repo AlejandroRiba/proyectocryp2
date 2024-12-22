@@ -47,7 +47,9 @@ input[type="tel"] {
     color: var(--color-warning);
     display: none;
     font-weight: bold;
-    font-family: sans-serif;
+    justify-self: start;
+    align-content: start;
+    text-align: start;
 }
 
 .input-box input,
