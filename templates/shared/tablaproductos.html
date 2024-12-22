@@ -119,8 +119,8 @@
                                 </div>
                             </td>
                         {% else %}
-                            <td><a href="/editar_producto/{{producto.id}}"><img src="static/images/edit.svg" style="height: 30px;"></a></td>
-                            <td style="border-right: none;"><img src="static/images/delete.svg" style="height: 30px; cursor: pointer;" onclick="deleteProduct('{{producto.id}}')"></td>
+                            <td><img src="static/images/edit.svg" style="height: 30px;" onclick="editProduct('{{producto.id}}', '{{status}}')"></td>
+                            <td style="border-right: none;"><img src="static/images/delete.svg" style="height: 30px; cursor: pointer;" onclick="deleteProduct('{{producto.id}}', '{{status}}')"></td>
                         {% endif %}
                     </tr>
                 {% endfor %}

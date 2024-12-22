@@ -116,6 +116,7 @@ def eliminar_producto():
 
 @products_blueprint.route('/filtrar_productos', methods=['GET'])
 def filtrar_productos():
+    username = session['username']
     nombre = request.args.get('nombre', '')
     categoria = request.args.get('categoria', '')
     consulta = request.args.get('consulta', '')
@@ -161,6 +162,7 @@ def filtrar_productos():
 
     # Incluir información de paginación en la respuesta
     return jsonify({
+        "status": username,
         "productos": productos_data,
         "consulta": consulta,
         "page": productos.page,

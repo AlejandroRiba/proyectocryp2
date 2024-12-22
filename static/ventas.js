@@ -250,8 +250,8 @@ function aplicarFiltros(page, consulta) {
                             </td>`;
                     } else {
                         acciones = `
-                            <td><a href="/editar_producto/${producto.id}"><img src="static/images/edit.svg" style="height: 30px;"></a></td>
-                            <td style="border-right: none;"><img src="static/images/delete.svg" style="height: 30px; cursor: pointer;" onclick="deleteProduct('${producto.id}')"></td>`;
+                            <td><img src="static/images/edit.svg" style="height: 30px;" onclick="editProduct('${producto.id}', '${data.status}')"></td>
+                            <td style="border-right: none;"><img src="static/images/delete.svg" style="height: 30px; cursor: pointer;" onclick="deleteProduct('${producto.id}', '${data.status}')"></td>`;
                     }
 
                     fila.innerHTML = `
@@ -418,43 +418,70 @@ function prepareSelectedProducts(formId) {
     return true;
 }
 
-function deleteProduct(idProduct){
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "This action cannot be undone!",
-        icon: 'warning',
-        showCancelButton: true,
-        customClass: {
-            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
-            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
-            actions: 'button-actions',// Clase personalizada para el contenedor de botones
-            popup: 'swal_popup'
-        },
-        confirmButtonText: 'Yes, delete it',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // If the user confirms, proceed with the deletion request
-            fetch(`/eliminar_producto?id=${idProduct}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
+function editProduct(idProduct, status){
+    if(status != 'admin'){
+        showDeletWarning('edit');
+    }else{
+        redireccion('/editar_producto/'+idProduct)
+    }
+}
+
+
+function deleteProduct(idProduct, status){
+    if(status != 'admin'){
+        showDeletWarning('delete');
+    }else{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            customClass: {
+                confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                popup: 'swal_popup'
+            },
+            confirmButtonText: 'Yes, delete it',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms, proceed with the deletion request
+                fetch(`/eliminar_producto?id=${idProduct}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: 'The product has been successfully deleted.',
+                                icon: 'success',
+                                customClass: {
+                                    confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                                    cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                                    actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                                    popup: 'swal_popup'
+                                },
+                            });
+                            aplicarFiltros(1, 'producto');
+                        } else {
+                            Swal.fire({
+                                title: 'ERROR',
+                                text: 'The product could not be deleted. Check for dependencies.',
+                                icon: 'error',
+                                customClass: {
+                                    confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                                    cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                                    actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                                    popup: 'swal_popup'
+                                },
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
                         Swal.fire({
-                            title: 'Deleted!',
-                            text: 'The product has been successfully deleted.',
-                            icon: 'success',
-                            customClass: {
-                                confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
-                                cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
-                                actions: 'button-actions',// Clase personalizada para el contenedor de botones
-                                popup: 'swal_popup'
-                            },
-                        });
-                        aplicarFiltros(1, 'producto');
-                    } else {
-                        Swal.fire({
-                            title: 'ERROR',
-                            text: 'The product could not be deleted. Check for dependencies.',
+                            title: 'Connection Error',
+                            text: 'There was a problem trying to delete the product.',
                             icon: 'error',
                             customClass: {
                                 confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
@@ -463,22 +490,8 @@ function deleteProduct(idProduct){
                                 popup: 'swal_popup'
                             },
                         });
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    Swal.fire({
-                        title: 'Connection Error',
-                        text: 'There was a problem trying to delete the product.',
-                        icon: 'error',
-                        customClass: {
-                            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
-                            cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
-                            actions: 'button-actions',// Clase personalizada para el contenedor de botones
-                            popup: 'swal_popup'
-                        },
                     });
-                });
-        }
-    });
+            }
+        });
+    }
 }

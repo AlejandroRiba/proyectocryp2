@@ -378,3 +378,23 @@ function showAdminAlert() {
         },
     });
 }
+
+//ALERT PARA EL INTENTO DE ELIMINAR PRODUCTO
+function showDeletWarning(tipo) {
+    Swal.fire({
+        title: 'Account Type Required',
+        text: 'To ' + tipo + ' the product, an administrator account is required.',
+        icon: 'warning',  // Usamos el ícono de advertencia
+        showConfirmButton: false,  // Oculta el botón de confirmación
+        showCancelButton: false,   // No muestra el botón de cancelar
+        backdrop: 'rgba(0, 0, 0, 0.5)', // Asegura que el fondo no se pueda cerrar haciendo clic fuera
+        timer: 3000, // El alert se cierra después de 3 segundos (3000 ms)
+        timerProgressBar: true, // Muestra una barra de progreso mientras se espera
+        allowOutsideClick: false, // Evita que se cierre al hacer clic fuera
+        customClass: {
+            confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+            actions: 'button-actions',// Clase personalizada para el contenedor de botones
+            popup: 'swal_popup'
+        },
+    });
+}
