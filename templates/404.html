@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <title>R&R - Page not found</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>404</h1>
-    <p>Lo sentimos, la página que buscas no existe.</p>
-    <p><a href="/">Volver a la página principal</a></p>
+    <div class="login-container">
+        <div class="login-box">
+            <h1>404</h1>
+            <p>Lo sentimos, la página que buscas no existe.</p>
+            <p><a href="/" style="color: aliceblue;">Volver a la página principal</a></p>
+        </div>
+    </div>
 </body>
 </html>
