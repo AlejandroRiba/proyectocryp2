@@ -137,6 +137,14 @@
             const listaReportes = document.querySelector('.report-list');
             if (archivos.length > 0) {
                 // Generar contenido dinámicamente para cada reporte
+                // Ordenar los archivos por fecha en orden descendente
+                archivos.sort((a, b) => {
+                    const fechaA = a.archivo.split('_')[2].replace('.pdf', ''); // Extraer la fecha como "YYYY-MM"
+                    const fechaB = b.archivo.split('_')[2].replace('.pdf', ''); // Extraer la fecha como "YYYY-MM"
+
+                    // Comparar fechas (a primero para orden ascendente)
+                    return fechaA.localeCompare(fechaB);
+                });
                 const employeeName = archivos[0].nombre_completo;
 
                 // Crear el encabezado y la lista
