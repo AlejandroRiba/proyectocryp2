@@ -7,7 +7,7 @@ from models.Producto import productos_paginados, modificar_salidas_producto, mod
 from models.Producto import obtener_salidas_producto, obtener_stock_variante, obtener_variante_por_id_y_talla, obtener_variantes_por_producto_id
 from models.Tarjeta import obtener_clave_tarjeta
 from models.Transaccion import consulta_transacciones, crear_transaccion_con_detalles, transacciones_por_empleado
-from models.Usuario import obtener_usuario_por_id
+from models.Usuario import obtener_usuario_por_id, obtener_empleados
 from pyFunctions import mainfunc
 
 clients_transactions_blueprint = Blueprint('clients_transactions', __name__)
@@ -78,7 +78,8 @@ def verify_password():
                 transacciones_list = [
                     {"id": t.id, "empleado_id": t.empleado_id, "fecha": t.fecha.strftime('%Y-%m-%d'), "monto": t.monto, "cliente": t.cliente.nombre + ' ' + t.cliente.apellido, "tarjeta": ''} for t in transacciones
                 ]
-            return jsonify(success=True, transacciones=transacciones_list)
+            empleados_list = [{"id": username, "nombre_completo": employee.nombre_completo()}]
+            return jsonify(success=True, transacciones=transacciones_list, empleados=empleados_list)
         
         private_key = session['private_key']
         transacciones = consulta_transacciones()
@@ -91,7 +92,12 @@ def verify_password():
             transacciones_list = [
                     {"id": t.id, "empleado_id": t.empleado_id, "fecha": t.fecha.strftime('%Y-%m-%d'), "monto": t.monto, "cliente": t.cliente.nombre + ' ' + t.cliente.apellido, "tarjeta":t.tarjeta.numero_tarjeta} for t in transacciones
                 ]
-        return jsonify(success=True, transacciones=transacciones_list)
+            
+        empleados = obtener_empleados()
+        empleados_list = [
+            {"id": emp.id, "nombre_completo": emp.nombre_completo()} for emp in empleados
+        ]
+        return jsonify(success=True, transacciones=transacciones_list, empleados=empleados_list)
 
     else:
         return jsonify(success=False, message="Incorrect password"), 401

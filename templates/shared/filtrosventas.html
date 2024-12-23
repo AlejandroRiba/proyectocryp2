@@ -7,41 +7,56 @@
             ></path>
         </g>
         </svg>
-        <input class="input_search" id="buscador" type="search" placeholder="Search" oninput="aplicarFiltros()"/>
+        <input class="input_search" id="buscador" type="search" placeholder="Search customer"/>
     </div>
-    <div class="wrapper1">
-        <div class="option1" onclick="aplicarFiltros()">
-            <input checked value="" name="filtro" type="radio" class="input" />
-            <div class="btn">
-            <span class="span">All Sales</span>
-            </div>
+    {% if status == 'admin' %} 
+        <div class="group">
+            <button  id="toggleDropdown" onclick="toggleDropdown()" class="select-button">Select employees <i class="fa fa-caret-down"></i></button>
         </div>
-        <div class="option1" onclick="aplicarFiltros()">
-            <input value="Today" name="filtro" type="radio" class="input" />
-            <div class="btn">
-            <span class="span">Today</span>
-            </div>
+        <!-- Contenedor de la lista desplegable -->
+        <div id="dropdown" class="dropdown-content">
+            <!-- Los checkboxes se generarán aquí -->
         </div>
-        <div class="option1" onclick="aplicarFiltros()">
-            <input value="Weekly" name="filtro" type="radio" class="input" />
-            <div class="btn">
-            <span class="span">Weekly</span>
-            </div>
-        </div>
-        <div class="option1" onclick="aplicarFiltros()">
-            <input value="Monthly" name="filtro" type="radio" class="input" />
-            <div class="btn">
-            <span class="span">Monthly</span>
-            </div>
-        </div>
-        <div class="option1" onclick="aplicarFiltros()">
-            <input value="Yearly" name="filtro" type="radio" class="input" />
-            <div class="btn">
-            <span class="span">Yearly</span>
-            </div>
-        </div>
+    {% endif %}
+    
+    <div class="group">
+        <select id="mes" name="mes" class="select-button">
+            <option value="">Month</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+    </div>
+
+    <div class="group">
+        <input type="number" class="input_search" id="año" name="año" min="2024" max="2025" value="" placeholder="Year">
+    </div>
+
+    <div class="group" style="width: 100px;">
+        <input type="number" class="select-button" id="minAmount" name="minAmount" min="0" max="1000000" step="1" value="" placeholder="Min $">
+    </div>
+
+    <div class="group" style="width: 100px;">
+        <input type="number" class="select-button" id="maxAmount" name="maxAmount" min="0" max="1000000" step="1" value="" placeholder="Max $">
     </div>
     
+    <div class="group">
+        <button id="applyfilters" class="productos" type="button" style="text-transform: none;" onclick="aplicarFiltrosVentas(false, '{{status}}')">Apply</button>
+    </div>
+
+    <div class="group">
+        <button id="clearfilters" class="productos" type="button" style="text-transform: none;" onclick="clearFiltros()">Clear</button>
+    </div>
+
     <div class="group">
         <button class="productos" type="button" style="text-transform: none;" onclick="scrollToBottom()">↓ Bottom</button>
     </div>

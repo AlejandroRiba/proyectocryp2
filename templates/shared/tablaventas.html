@@ -12,30 +12,10 @@
             </tr>
         </thead>
         <tbody>
-            <!-- {% if not transacciones %}
-                <tr>
-                    <td colspan="10" style="text-align: center; color: var(--color-warning); border-left: none; border-right: none">
-                        No sales found.
-                    </td>
-                </tr>
-            {% else %}
-                {% for transaccion in transacciones %}
-                    <tr>
-                        {% if status == 'admin' %}
-                            <td>{{ transaccion.empleado_id }}</td>
-                        {% endif %}
-                        <td>{{ transaccion.fecha }}</td>
-                        <td>${{ transaccion.monto }}</td>
-                        <td>{{transaccion.cliente_id}}</td>
-                        <td>{{ transaccion.cliente.nombre + ' ' + transaccion.cliente.apellido}}</td>
-                        {% if status == 'admin' %}
-                            <td>{{ transaccion.tarjeta.numero_tarjeta }}</td>
-                        {% else %}
-                            <td>****************</td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            {% endif %} -->
+            <tr id="noResultsRow" style="display: none; text-align: center; color: var(--color-warning);">
+                <td colspan="5" style="border-left: none; border-right: none"> No sales found.</td>
+            </tr>
+            <!-- CONTENIDO DINAMICO -->
         </tbody>
     </table>
 </div>
