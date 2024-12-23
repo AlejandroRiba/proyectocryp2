@@ -7,8 +7,21 @@
     <title>R&R EDIT USER</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sweetalert2.min.css') }}">
 </head>
 <body>
+    {% if status != usuario.id and status != 'admin' %}
+      <script>
+        // Ejecuta el Sweet Alert al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            showAdminAlert('administrator')
+            // Espera 3 segundos antes de redirigir
+            setTimeout(() => {
+                redireccion('/');
+            }, 3000); // 3000 milisegundos = 3 segundos
+        });
+      </script>
+    {% endif %} 
     <div class="wrapper-main">
         <!-- NAVBAR -->
         {% include "shared/navbar.html" %}
@@ -81,7 +94,7 @@
                         <p id="error_message"></p>
                         <div class="button-box" style="display: flex; gap: 20px;">
                             <button type="submit">Upload Changes</button>
-                            <button onclick="redireccion('/')">Cancel</button>
+                            <button onclick="redireccion('/consulta_empleado')">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -102,6 +115,7 @@
     <script src="{{ url_for('static', filename='ventas.js') }}" ></script>
     <script src="{{ url_for('static', filename='app.js') }}" ></script>
     <script src="{{ url_for('static', filename='validations.js') }}" ></script>
+    <script src="{{ url_for('static', filename='sweetalert2.min.js') }}"></script>
 </body>
 </html>
 

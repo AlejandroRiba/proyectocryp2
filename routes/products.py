@@ -103,14 +103,18 @@ def editar_producto_query():
 #Ruta para eliminar un producto 
 @products_blueprint.route('/eliminar_producto', methods=['GET'])
 def eliminar_producto():
-    id = request.args.get('id', '') #obtengo el id de la solicitud fetch
+    username = session['username']
+    if username == 'admin':
+        id = request.args.get('id', '') #obtengo el id de la solicitud fetch
 
-    borrado, filename = delete_product(id) #aquí se intenta borrar el elemento
-    if borrado:
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        if borrado and os.path.isfile(file_path): # Verificar si el archivo existe y eliminarlo
-            os.remove(file_path) #elimina la imagen si la consulta de delete se ejecuta con éxito
-        return jsonify({"success": True})
+        borrado, filename = delete_product(id) #aquí se intenta borrar el elemento
+        if borrado:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            if borrado and os.path.isfile(file_path): # Verificar si el archivo existe y eliminarlo
+                os.remove(file_path) #elimina la imagen si la consulta de delete se ejecuta con éxito
+            return jsonify({"success": True})
+        else:
+            return jsonify({"success": False})
     else:
         return jsonify({"success": False})
 

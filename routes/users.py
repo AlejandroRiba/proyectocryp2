@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, redirect, render_template, request, session
 
-from models.Usuario import obtener_empleados, obtener_usuario_por_id
+from models.Usuario import obtener_empleados, obtener_usuario_por_id, eliminar_usuario
 from pyFunctions import mainfunc
 
 
@@ -45,6 +45,20 @@ def editar_empleado():
             return jsonify({"success": False, "message": "The password cannot be <<admin>>.", "destino": None}), 400
         
     if mainfunc.autoriza_edit(id,password,nombre,apellido,email,number,newpassword,userid):
-        return jsonify({"success": True, "message": None, "destino": '/'}), 400
+        return jsonify({"success": True, "message": None, "destino": '/'}), 200
     else:
         return jsonify({"success": False, "message": "Incorrect password.", "destino": None}), 400
+    
+#Ruta para eliminar los datos de un empleado
+@users_blueprint.route('/eliminar_empleado', methods=['POST'])
+def eliminar_empleado():
+    username = session['username']
+    id = request.form['id']
+    if username == 'admin':
+        resultado, mensaje = eliminar_usuario(id)
+        if resultado:
+            return jsonify({"success": True, "message": mensaje}), 200
+        else:
+            return jsonify({"success": False, "message": mensaje}), 400
+    else:
+        return jsonify({"success": False, "message":"You're not de admin."}), 400

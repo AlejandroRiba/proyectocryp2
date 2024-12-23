@@ -360,10 +360,10 @@ function manejarProducto(formId, ruta) {
 
 
 //ALERT PARA EL PERFIL DE ADMIN
-function showAdminAlert() {
+function showAdminAlert(cargo) {
     Swal.fire({
         title: 'Account Type Required',
-        text: 'To register a sale, you must log in as an employee.',
+        text: 'To register a sale, you must log in as an ' + cargo +'.',
         icon: 'warning',  // Usamos el ícono de advertencia
         showConfirmButton: false,  // Oculta el botón de confirmación
         showCancelButton: false,   // No muestra el botón de cancelar
@@ -397,4 +397,77 @@ function showDeletWarning(tipo) {
             popup: 'swal_popup'
         },
     });
+}
+
+
+//Funcion para eliminar usuario
+function deleteEmployee(idEmpleado, status){
+    if(status != 'admin'){
+        showAdminAlert('administrator');
+    }else{
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            customClass: {
+                confirmButton: 'loading send_btn', // Clase personalizada para el botón de Confirmar
+                cancelButton: 'loading cancel_btn', // Clase personalizada para el botón de Cancelar
+                actions: 'button-actions',// Clase personalizada para el contenedor de botones
+                popup: 'swal_popup'
+            },
+            confirmButtonText: 'Yes, delete it',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms, proceed with the deletion request
+                fetch(`/eliminar_empleado`, {
+                    method: 'POST', 
+                    body: new URLSearchParams({ 'id': idEmpleado }) // Se envía el id en el body de la solicitud
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: data.message,
+                            icon: 'success',
+                            customClass: {
+                                confirmButton: 'loading send_btn',
+                                cancelButton: 'loading cancel_btn',
+                                actions: 'button-actions',
+                                popup: 'swal_popup'
+                            },
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'ERROR',
+                            text: data.message,
+                            icon: 'error',
+                            customClass: {
+                                confirmButton: 'loading send_btn',
+                                cancelButton: 'loading cancel_btn',
+                                actions: 'button-actions',
+                                popup: 'swal_popup'
+                            },
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        title: 'Connection Error',
+                        text: 'There was a problem trying to delete the employee.',
+                        icon: 'error',
+                        customClass: {
+                            confirmButton: 'loading send_btn',
+                            cancelButton: 'loading cancel_btn',
+                            actions: 'button-actions',
+                            popup: 'swal_popup'
+                        },
+                    });
+                });
+            }
+        });
+    }
 }

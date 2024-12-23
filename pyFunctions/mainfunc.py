@@ -37,15 +37,18 @@ def auth(id, password, data_file):
     usuario = obtener_usuario_por_id(id)
     verif = True
     if usuario:
-        real_password = hasheo(password)
+        if usuario.cargo != 'Fired':
+            real_password = hasheo(password)
 
-        if data_file != None:
-            verif = verif_clave(data_file, usuario.publickey)
+            if data_file != None:
+                verif = verif_clave(data_file, usuario.publickey)
 
-        if real_password == usuario.password and verif:
-            return True #todo es corecto
+            if real_password == usuario.password and verif:
+                return True #todo es corecto
+            else:
+                return False #contraseña o documento incorrecto
         else:
-            return False #contraseña o documento incorrecto
+           return False #no permite el acceso (medida preventiva, no se debería entrar a este punto)
         
     else:
         return False

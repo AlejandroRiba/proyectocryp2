@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import case
 from sqlalchemy.exc import IntegrityError
 from models.Database import getDatabase
 
@@ -43,7 +44,12 @@ def crear_usuario(id, nombre, apellido, email, phone, password, key):
         return False
 
 def obtener_empleados():
-    return Usuario.query.filter_by(cargo='Employee').all()
+    return Usuario.query.filter(Usuario.cargo.in_(['Employee', 'Fired'])) \
+        .order_by(case(
+            (Usuario.cargo == 'Employee', 1),
+            (Usuario.cargo == 'Fired', 2),
+            else_=3
+        )).all()
 
 def obtener_password(id):
     usuario = obtener_usuario_por_id(id)
@@ -80,4 +86,35 @@ def confirma_existencia_admin():
             return False #si existe el usuario admin pero aún no ha iniciado sesión para cambiar de contraseña
     else:
         return False
+
+
+def eliminar_usuario(id):
+    try:
+        usuario = obtener_usuario_por_id(id)
+        if usuario:
+            if usuario.cargo == 'Fired':
+                return False, "User already deactivated."
+            else:
+                # Intentar eliminar el usuario
+                db.session.delete(usuario)
+                db.session.commit()
+                print(f"Usuario {id} eliminado exitosamente.")
+                return True, "User deleted successfully."
+        else:
+            print(f"Usuario {id} no encontrado.")
+            return False, "User not found."
+    except IntegrityError:
+        # Si hay dependencias, limpia los campos y marca como desactivado
+        db.session.rollback()  # Revertir cualquier cambio pendiente
+        usuario = obtener_usuario_por_id(id)
+        if usuario:
+            usuario.password = ""
+            usuario.cargo = "Fired"
+            db.session.commit()
+            print(f"Usuario {id} no se pudo eliminar, pero se desactivó correctamente.")
+            return True, "User couldn't be deleted, but was deactivated."
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error al intentar eliminar el usuario {id}: {e}")
+        return False, f"Error trying to delete user {id}: {e}"
 
