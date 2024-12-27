@@ -14,6 +14,7 @@ from reportlab.lib.units import cm
 import os
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
+from reportlab.platypus import Frame, PageBreak
 from reportlab.lib.units import inch, cm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
@@ -58,6 +59,25 @@ def obtener_nombre_mes(numero_mes):
         return meses[numero_mes - 1]
     else:
         return "Número de mes no válido"
+    
+def verificar_espacio(elements, contenido, page_height, top_margin, bottom_margin, current_y):
+    """
+    Verifica si hay espacio suficiente en la página para agregar contenido.
+
+    :param elements: Lista de elementos a renderizar en el PDF.
+    :param contenido: Altura total requerida por el nuevo contenido.
+    :param page_height: Altura total de la página.
+    :param top_margin: Margen superior.
+    :param bottom_margin: Margen inferior.
+    :param current_y: Posición actual en la página.
+    :return: Nueva posición `current_y`.
+    """
+    espacio_disponible = page_height - top_margin - bottom_margin - current_y
+    if contenido > espacio_disponible:
+        # Si no hay suficiente espacio, agregar salto de página
+        elements.append(PageBreak())
+        current_y = top_margin  # Reiniciar posición para la nueva página
+    return current_y
 
 def procesar_información(empleado_id, year, month):
     try:
@@ -100,7 +120,7 @@ def procesar_información(empleado_id, year, month):
                 imagen = get_image_path(producto.archivo)
                 monto = detalle.cantidad * producto.precio
                 detalles.append(
-                    [producto.id, Image(imagen, width=1.5*cm, height=1.5*cm), Paragraph(producto.nombre), detalle.talla, detalle.cantidad, f'${producto.precio}', f'${monto}']
+                    [producto.id, Image(imagen, width=1*cm, height=1*cm), Paragraph(producto.nombre), detalle.talla, detalle.cantidad, f'${producto.precio}', f'${monto}']
                 )
 
             monto_total += transaccion.monto
@@ -131,6 +151,10 @@ def generar_pdf_ventas(report_data, pdf_filename):
         'leftMargin': 1.5 * cm,    # Margen izquierdo
         'rightMargin': 1.5 * cm     # Margen derecho
     }
+    page_height = letter[1]  # Altura de la página
+    top_margin = 0.5 * cm  # Margen superior
+    bottom_margin = 0.5 * cm  # Margen inferior
+    current_y = top_margin  # Posición inicial en la página (comienza en el margen superior)
 
     document = SimpleDocTemplate(pdf_file, pagesize=letter, **margins)
     document.title = f"Monthly Sales Report - {report_data['headers']['mes']}" 
@@ -146,25 +170,25 @@ def generar_pdf_ventas(report_data, pdf_filename):
 
     # Estilo de la tabla
     style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#85170e')),  # Fila de encabezado
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1D2D44')),  # Fila de encabezado
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#f1e5c6')),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#fae8d4')), 
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f1e5c6')), 
         ('GRID', (0, 0), (-1, -1), 1, colors.black),  # Líneas de la tabla
         ('WORDWRAP', (1, 1), (-2, -1), 'ON'),
     ])
 
     style1 = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#525050')),  # Fila de encabezado
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#657891')),  # Fila de encabezado
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.HexColor('#01060e')),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.HexColor('#01060e')),
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.honeydew),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f1e5c6')),
         # Líneas externas de la tabla (negras)
         ('GRID', (0, 0), (-1, -1), 1.5, colors.black),  # Líneas de la tabla
         ('WORDWRAP', (1, 1), (-2, -1), 'ON'),
@@ -175,48 +199,64 @@ def generar_pdf_ventas(report_data, pdf_filename):
 
     # Agregar el logo
     logo_path = get_logo_path("logo.jpg")  # Cambia esta ruta al logo de tu empresa
-    logo = Image(logo_path, width=5 * inch, height=0.5 * inch)
+    logo = Image(logo_path, width=4 * inch, height=0.4 * inch)
     elements.append(logo)
     elements.append(Spacer(1, 0.5 * cm))  # Espacio entre el logo y el encabezado
+    current_y += 0.4 * inch  # Espacio para el encabezado
 
     # Agregar encabezados
     header = Paragraph("Monthly Sales Report", left_align_title)
     elements.append(header)
     elements.append(linea)
+    current_y += 2 * cm  # Espacio para el encabezado
 
     # Agregar los datos del encabezado
     encabezados = [
-    Paragraph(f"<font color='#d05704'><b>Employee:</b></font> {report_data['headers']['empleado']}", styles['BodyText']),
-    Paragraph(f"<font color='#d05704'><b>Report Generation Date:</b></font> {report_data['headers']['fechareporte']}", styles['BodyText']),
-    Paragraph(f"<font color='#d05704'><b>Month:</b></font> {report_data['headers']['mes']}", styles['BodyText']),
-    Paragraph(f"<font color='#d05704'><b>Total for the Month:</b></font> <b><font color='#0c0553'>{report_data['headers']['total']}</font></b>", styles['BodyText']),
+    Paragraph(f"<font color='#9b3205'><b>Employee:</b></font> {report_data['headers']['empleado']}", styles['BodyText']),
+    Paragraph(f"<font color='#9b3205'><b>Report Generation Date:</b></font> {report_data['headers']['fechareporte']}", styles['BodyText']),
+    Paragraph(f"<font color='#9b3205'><b>Month:</b></font> {report_data['headers']['mes']}", styles['BodyText']),
+    Paragraph(f"<font color='#9b3205'><b>Total for the Month:</b></font> <b><font color='#031b4e'>{report_data['headers']['total']}</font></b>", styles['BodyText']),
     ]
 
     for item in encabezados:
         elements.append(item)
+        current_y += 0.6 * cm  # Espacio para el encabezado
 
     # Recorre las ventas
     for venta_key, data in report_data.items():
         if venta_key.startswith('venta_'):  # Asegurarte de procesar solo las entradas de venta
             # Espacio y título antes de cada tabla
+            # Calcular altura total requerida para este bloque
+            altura_titulo = 1.5 * cm  # Altura estimada del título
+            altura_tabla_cliente = len(data['data_cliente']) * 0.6 * cm  # Altura de la tabla de cliente
+            altura_tabla_ventas = len(data['data']) * 1 * cm  # Altura de la tabla de ventas
+            altura_tabla_subtotal = len(data['data_price']) * 0.6 * cm  # Altura de la tabla de subtotal
+            altura_bloque = altura_titulo + altura_tabla_cliente + altura_tabla_ventas + altura_tabla_subtotal + 1.5 * cm  # Altura total del bloque
+
+            # Verificar espacio disponible y saltar de página si no cabe
+            current_y = verificar_espacio(elements, altura_bloque, page_height, top_margin, bottom_margin, current_y)
             elements.append(Spacer(1, 0.5 * cm))
             title = Paragraph(f"Sales Table / {data['Fecha de Venta']}", styles['Heading2'])
             elements.append(title)
+            current_y += altura_titulo
 
-            # Crear tabla para el subtotal y agregarla a los elementos
+            # Crear tabla para el cliente y agregarla a los elementos
             table_tit = Table(data['data_cliente'], colWidths=[2 * cm, 16 * cm])
             table_tit.setStyle(style1)
             elements.append(table_tit)
+            current_y += altura_tabla_cliente
 
             # Crear tabla de ventas y agregarla a los elementos
             table = Table(data['data'], colWidths=[2 * cm, 3 * cm, 5 * cm, 2 * cm, 2 * cm, 2 * cm, 2 * cm])
             table.setStyle(style)
             elements.append(table)
+            current_y += altura_tabla_ventas
 
             # Crear tabla para el subtotal y agregarla a los elementos
             table_subtotal = Table(data['data_price'], colWidths=[16 * cm, 2 * cm])
             table_subtotal.setStyle(style1)
             elements.append(table_subtotal)
+            current_y += altura_tabla_subtotal
 
     # Construir el documento
     document.build(elements)
@@ -261,7 +301,7 @@ def generar_informe_ventas_mensual(empleado_id, year, month, private_key):
     pdf_filename = f"monthlyreport_{empleado_id}_{year}-{month:02d}.pdf"
     generar_pdf_ventas(ventas, pdf_filename)
     pdf_file = os.path.join(PDF_PATH, pdf_filename)
-    sign_pdf(pdf_file, pdf_file, private_key)
+    sign_pdf(pdf_file, pdf_file, private_key, ventas)
         
     # Crear fecha con base en el año y mes proporcionados
     fecha_reporte = date(year, month, 1)
@@ -290,7 +330,7 @@ def obtener_empleado_id_de_nombre_archivo(filename):
         return match.group(1)  # Devuelve el ID del empleado
     return None
 
-def sign_pdf(input_pdf_path, output_pdf_path, private_key_base64):
+def sign_pdf(input_pdf_path, output_pdf_path, private_key_base64, report_data):
     # Decodificar la clave privada desde la cadena base64
     private_key_bytes = b64decode(private_key_base64)
     
@@ -312,14 +352,8 @@ def sign_pdf(input_pdf_path, output_pdf_path, private_key_base64):
 
     # Crear un PDF con la firma visible usando ReportLab
     visible_signature_pdf = "firma_visible_temp.pdf"
-    c = canvas.Canvas(visible_signature_pdf, pagesize=letter)
-    c.setFont("Helvetica", 10)
-    c.drawString(50, 750, "Firma Digital (ECDSA):")
-    c.drawString(50, 735, signature_base64[:60])  # Primera línea
-    c.drawString(50, 720, signature_base64[60:120])  # Segunda línea
-    c.drawString(50, 705, signature_base64[120:])  # Tercera línea (si aplica)
-    c.rect(45, 700, 500, 60, stroke=1, fill=0)  # Cuadro alrededor del texto
-    c.save()
+    generar_pagina_firma(signature_base64, report_data, visible_signature_pdf)
+
 
     # Combinar el PDF original con la firma visible
     writer = PdfWriter()
@@ -335,7 +369,91 @@ def sign_pdf(input_pdf_path, output_pdf_path, private_key_base64):
     with open(output_pdf_path, "wb") as output_pdf:
         writer.write(output_pdf)
 
+    # Eliminar el archivo temporal de la firma visible
+    if os.path.exists(visible_signature_pdf):
+        os.remove(visible_signature_pdf)
+        print(f"Archivo temporal '{visible_signature_pdf}' eliminado.")
+
     print(f"PDF firmado guardado en {output_pdf_path}")
+
+def generar_pagina_firma(signature_base64, report_data, output_pdf_path):
+    """
+    Genera una página de firma visible con un estilo similar al encabezado del reporte.
+    """
+    # Configuración del PDF
+    pdf_file = output_pdf_path
+    margins = {
+        'topMargin': 0.5 * cm,    # Margen superior
+        'bottomMargin': 0.5 * cm,  # Margen inferior
+        'leftMargin': 1.5 * cm,    # Margen izquierdo
+        'rightMargin': 1.5 * cm     # Margen derecho
+    }
+
+    document = SimpleDocTemplate(pdf_file, pagesize=letter, **margins)
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Estilo del título
+    left_align_title = ParagraphStyle(
+        name="LeftAlignedTitle",
+        parent=styles["Title"],
+        alignment=0
+    )
+
+    linea = Drawing(500, 1)
+    linea.add(Line(0, 0, 500, 0))
+
+    # Agregar el logo
+    logo_path = get_logo_path("logo.jpg")  # Cambia esta ruta al logo de tu empresa
+    logo = Image(logo_path, width=4 * inch, height=0.4 * inch)
+    elements.append(logo)
+    elements.append(Spacer(1, 0.5 * cm))  # Espacio entre el logo y el encabezado
+
+    # Agregar encabezados
+    header = Paragraph("Monthly Sales Report", left_align_title)
+    elements.append(header)
+    elements.append(linea)
+
+    # Agregar los datos del encabezado
+    encabezados = [
+    Paragraph(f"<font color='#9b3205'><b>Employee:</b></font> {report_data['headers']['empleado']}", styles['BodyText']),
+    Paragraph(f"<font color='#9b3205'><b>Report Generation Date:</b></font> {report_data['headers']['fechareporte']}", styles['BodyText']),
+    Paragraph(f"<font color='#9b3205'><b>Month:</b></font> {report_data['headers']['mes']}", styles['BodyText']),
+    Paragraph(f"<font color='#9b3205'><b>Total for the Month:</b></font> <b><font color='#031b4e'>{report_data['headers']['total']}</font></b>", styles['BodyText']),
+    ]
+
+    for item in encabezados:
+        elements.append(item)
+
+    elements.append(Spacer(1, 1.2 * cm))
+
+    # Agregar una línea horizontal antes de la firma
+    linea = Drawing(500, 1)
+    linea.add(Line(0, 0, 500, 0))
+
+    # Agregar la firma
+    leyenda_seguridad_texto = """
+    This document has been digitally signed with ECDSA by the author. The verification of this signature ensures the authenticity of the sales data and guarantees non-repudiation, meaning the author cannot deny the validity of the signature or the transaction.
+    """
+    leyenda_seguridad = Paragraph(leyenda_seguridad_texto, styles['BodyText'])
+    elements.append(leyenda_seguridad)
+    elements.append(Spacer(1, 0.3 * cm))
+    elements.append(linea)
+    elements.append(Spacer(1, 0.3 * cm))
+    firma_titulo = Paragraph("<b>Digital Signature:</b>", styles['BodyText'])
+    elements.append(firma_titulo)
+    firma_parrafos = [
+        Paragraph(signature_base64[:80], styles['BodyText']),
+        Paragraph(signature_base64[80:160], styles['BodyText']),
+        Paragraph(signature_base64[160:], styles['BodyText']),
+    ]
+    for parrafo in firma_parrafos:
+        elements.append(parrafo)
+
+    # Generar PDF
+    document.build(elements)
+    print(f"Página de firma visible generada en {output_pdf_path}")
+
 
 def verify_pdf(pdf_path, public_key_base64):
     # Leer el PDF firmado
