@@ -86,9 +86,10 @@ footer {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: var(--color-background);
+    background-color: var(--color-background-dark);
     padding: 13px;
-    border-bottom: 4px solid var(--color-secondary);
+    border-bottom: 4px solid var(--color-box-shadow);
+    box-shadow: 0px -4px 12px 4px rgb(231 220 178 / 30%);
 }
 
 .nav-left, .nav-right {
@@ -127,12 +128,12 @@ footer {
 }
 
 footer {
-    background-color: var(--color-background); /* Color de fondo */
+    background-color: #0e1527; /* Color de fondo */
     padding: 20px; /* Espaciado interno */
     text-align: center; /* Centrar el contenido */
-    border-top: 4px solid var(--color-secondary); /* Línea superior */
+    border-top: 4px solid var(--color-box-shadow); /* Línea superior */
     margin-top: 40px;
-}
+    box-shadow: 0px 4px 12px 4px rgb(231 220 178 / 30%);
 
 .footer-content {
     max-width: 800px; /* Ancho máximo del contenido */
@@ -141,7 +142,7 @@ footer {
 
 .footer-content p {
     margin: 0; /* Elimina margen */
-    color: #333; /* Color del texto */
+    color: var(--color-text-light); /* Color del texto */
 }
 
 .social-links {
@@ -150,7 +151,7 @@ footer {
 
 .social-links a {
     text-decoration: none; /* Sin subrayado */
-    color: black; /* Color del texto */
+    color: var(--color-text-inverted);; /* Color del texto */
     margin: 0 10px; /* Espacio entre los enlaces */
     transition: color 0.3s; /* Suaviza el cambio de color */
 }
