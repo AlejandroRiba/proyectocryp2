@@ -1,5 +1,8 @@
+from base64 import b64encode
 from datetime import date, datetime
 import re
+
+from PyPDF2 import PdfReader, PdfWriter
 from models.Database import getDatabase
 from models.Usuario import Usuario, obtener_usuario_por_id
 from models.Transaccion import Transaccion
@@ -18,6 +21,14 @@ from reportlab.graphics.shapes import Drawing, Line
 from reportlab.pdfgen import canvas
 from pyFunctions.cryptoUtils import sign_message_ECDSA, verify_signature_ECDSA
 from models.Reporte import crear_reporte
+
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.serialization import (
+    Encoding, PrivateFormat, PublicFormat, NoEncryption,  load_pem_private_key, load_pem_public_key
+)
+from cryptography.exceptions import InvalidSignature
+from base64 import b64encode, b64decode
 
 # Define la ruta base para el directorio de imágenes
 BASE_IMAGE_PATH = os.path.join("static", "images", "products")
@@ -231,15 +242,15 @@ def verificar_firma(pdf_filename, empleado_id):
     # Leer la clave pública desde el archivo
     pdf_file = os.path.join(PDF_PATH, pdf_filename)
     # Leer el contenido del PDF
-    with open(pdf_file, "rb") as f:
-        contenido = f.read().split(b'\n')
-        pdf_content = b'\n'.join(contenido[:-1])  # Combinar todo menos la última línea (la firma)
-        firma = contenido[-1] #firma por separado
+    # with open(pdf_file, "rb") as f:
+    #    contenido = f.read().split(b'\n')
+    #    pdf_content = b'\n'.join(contenido[:-1])  # Combinar todo menos la última línea (la firma)
+    #    firma = contenido[-1] #firma por separado
 
     usuario = obtener_usuario_por_id(empleado_id)
     public_key = usuario.publickey
 
-    verificado = verify_signature_ECDSA(public_key, pdf_content, firma)
+    verificado = verify_pdf(pdf_file, public_key)
     return verificado
     
 
@@ -250,7 +261,7 @@ def generar_informe_ventas_mensual(empleado_id, year, month, private_key):
     pdf_filename = f"monthlyreport_{empleado_id}_{year}-{month:02d}.pdf"
     generar_pdf_ventas(ventas, pdf_filename)
     pdf_file = os.path.join(PDF_PATH, pdf_filename)
-    agregar_firma(pdf_file, private_key)
+    sign_pdf(pdf_file, pdf_file, private_key)
         
     # Crear fecha con base en el año y mes proporcionados
     fecha_reporte = date(year, month, 1)
@@ -278,3 +289,82 @@ def obtener_empleado_id_de_nombre_archivo(filename):
     if match:
         return match.group(1)  # Devuelve el ID del empleado
     return None
+
+def sign_pdf(input_pdf_path, output_pdf_path, private_key_base64):
+    # Decodificar la clave privada desde la cadena base64
+    private_key_bytes = b64decode(private_key_base64)
+    
+    # Cargar la clave privada desde los bytes decodificados
+    private_key = load_pem_private_key(private_key_bytes, password=None)
+
+    # Leer el contenido del PDF original
+    reader = PdfReader(input_pdf_path)
+    pdf_data = b"".join([page.extract_text().encode() for page in reader.pages])
+
+    # Calcular el hash del contenido
+    digest = hashes.Hash(hashes.SHA256())
+    digest.update(pdf_data)
+    pdf_hash = digest.finalize()
+
+    # Generar la firma con la clave privada
+    signature = private_key.sign(pdf_hash, ec.ECDSA(hashes.SHA256()))
+    signature_base64 = b64encode(signature).decode()
+
+    # Crear un PDF con la firma visible usando ReportLab
+    visible_signature_pdf = "firma_visible_temp.pdf"
+    c = canvas.Canvas(visible_signature_pdf, pagesize=letter)
+    c.setFont("Helvetica", 10)
+    c.drawString(50, 750, "Firma Digital (ECDSA):")
+    c.drawString(50, 735, signature_base64[:60])  # Primera línea
+    c.drawString(50, 720, signature_base64[60:120])  # Segunda línea
+    c.drawString(50, 705, signature_base64[120:])  # Tercera línea (si aplica)
+    c.rect(45, 700, 500, 60, stroke=1, fill=0)  # Cuadro alrededor del texto
+    c.save()
+
+    # Combinar el PDF original con la firma visible
+    writer = PdfWriter()
+    for page in reader.pages:
+        writer.add_page(page)
+    signature_reader = PdfReader(visible_signature_pdf)
+    writer.add_page(signature_reader.pages[0])
+
+    # Agregar la firma a los metadatos
+    writer.add_metadata({"/ECDSASignature": signature_base64})
+
+    # Guardar el PDF firmado
+    with open(output_pdf_path, "wb") as output_pdf:
+        writer.write(output_pdf)
+
+    print(f"PDF firmado guardado en {output_pdf_path}")
+
+def verify_pdf(pdf_path, public_key_base64):
+    # Leer el PDF firmado
+    reader = PdfReader(pdf_path)
+
+    # Extraer la firma de los metadatos
+    metadata = reader.metadata
+    signature_base64 = metadata.get("/ECDSASignature")
+    if not signature_base64:
+        raise ValueError("No se encontró la firma en los metadatos del PDF.")
+    signature_bytes = b64decode(signature_base64)
+
+    # Extraer el contenido del PDF para calcular el hash
+    pdf_data = b"".join([page.extract_text().encode() for page in reader.pages[:-1]])  # Excluir la página de firma visible
+    digest = hashes.Hash(hashes.SHA256())
+    digest.update(pdf_data)
+    pdf_hash = digest.finalize()
+
+    # Decodificar la cadena base64 de la clave pública
+    public_key_bytes = b64decode(public_key_base64)
+
+    # Cargar la clave pública desde los bytes decodificados
+    public_key = load_pem_public_key(public_key_bytes)
+
+    # Verificar la firma con la clave pública
+    try:
+        public_key.verify(signature_bytes, pdf_hash, ec.ECDSA(hashes.SHA256()))
+        print("La firma es válida.")
+        return True
+    except InvalidSignature:
+        print("La firma no es válida.")
+        return False
