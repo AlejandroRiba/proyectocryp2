@@ -28,6 +28,7 @@
     --color-dark: #031b4e;
     /* Fondos */
     --color-background: #dae2da; /* Fondo principal muy claro */
+    --color-background-navbar : #0e1523;   
     --color-background-light: #c4d2e6; /* Fondo secundario */
     --color-backgorund-gradient-light: linear-gradient(to right, #adbdd3, #73aabb);
     --color-background-dark: #0e1523; /* Fondo oscuro para secciones destacadas */
@@ -86,7 +87,7 @@ footer {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: var(--color-background);
+    background-color: var(--color-background-navbar);
     padding: 13px;
     border-bottom: 4px solid var(--color-secondary);
 }
@@ -103,7 +104,7 @@ footer {
 
 .navbar a {
     text-decoration: none;
-    color: var(--color-text-primary);
+    color: var(--color-text-inverted);
     font-size: 2em;
     font-weight: bold;
     padding: 4px 6px;
@@ -127,7 +128,7 @@ footer {
 }
 
 footer {
-    background-color: var(--color-background); /* Color de fondo */
+    background-color: var(--color-background-navbar); /* Color de fondo */
     padding: 20px; /* Espaciado interno */
     text-align: center; /* Centrar el contenido */
     border-top: 4px solid var(--color-secondary); /* Línea superior */
@@ -141,7 +142,7 @@ footer {
 
 .footer-content p {
     margin: 0; /* Elimina margen */
-    color: #333; /* Color del texto */
+    color: var(--color-text-light); /* Color del texto */
 }
 
 .social-links {
@@ -150,7 +151,7 @@ footer {
 
 .social-links a {
     text-decoration: none; /* Sin subrayado */
-    color: black; /* Color del texto */
+    color: rgb(141, 141, 141); /* Color del texto */
     margin: 0 10px; /* Espacio entre los enlaces */
     transition: color 0.3s; /* Suaviza el cambio de color */
 }
@@ -243,7 +244,8 @@ footer {
     width: 50vw; /* Ocupa todo el ancho de la pantalla */
     height: 80vh;
     top: 100%; /* Coloca el contenido debajo del menú */
-    background-color: var(--color-background);
+    filter: drop-shadow(0 0 2px rgba(187, 167, 129, 0.6));
+    background-color: var(--color-background-navbar);
     z-index: 3; /* Asegura que el menú esté sobre otros elementos */
 }
 
