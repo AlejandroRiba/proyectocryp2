@@ -1,6 +1,7 @@
 from flask import redirect, render_template, request, session
 from models.Database import getDatabase
 from init import getApp
+import os
 
 
 from routes.login import login_blueprint
@@ -53,4 +54,5 @@ def home():
     return render_template("index.html", status=username)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    debug_mode = os.getenv('FLASK_DEBUG', 'True') == 'True'
+    app.run(debug=debug_mode)

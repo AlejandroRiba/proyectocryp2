@@ -403,5 +403,8 @@ venv/
 .venv/
 /.venv
 
+#Variables de entorno
+.env
+
 # PDF files
 *.pdf
