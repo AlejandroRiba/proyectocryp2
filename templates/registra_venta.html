@@ -9,6 +9,38 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='buttons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='sweetalert2.min.css') }}">
+    <style>
+      .contenedor_tabla1 div{
+          padding: 0 100px;
+      }
+  
+      .container_cols {
+          padding: 40px 30px;
+      }
+  
+      .columna_formulario{
+          text-align: center; 
+          align-items: center; 
+          padding-left: 40px;
+      }
+  
+      @media (max-width: 768px) {
+          .contenedor_tabla1 div{
+              padding: 0 50px;
+          }
+          
+          .container_cols {
+              padding: 20px 10px;
+              grid-template-columns: repeat(1, 1fr);
+          }
+  
+          .columna_formulario{
+              padding-left: 10px;
+              justify-items: normal;
+          }
+          
+      }
+  </style>
 </head>
 <body>
     {% if status == 'admin' %}
@@ -39,8 +71,8 @@
         {% include "shared/carrito.html" %}
         <!-- FIN TABLA carrito -->
         <form id="ventaForm" method="post" action="/procesar_venta">
-            <div class="container_cols" style="padding: 40px 30px;">
-                <div class="columna" style="text-align: center; align-items: center; padding-left: 40px;">
+            <div class="container_cols">
+                <div class="columna columna_formulario">
                     <div class="input-box">
                         <input type="text" id="nombre" name="nombre" required oninput="validarLetras(this), this.setCustomValidity('')" title="Customer name" oninvalid="this.setCustomValidity('Customer name')">
                         <label for="nombre">Customer Name</label><br>
