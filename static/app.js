@@ -225,7 +225,7 @@ function manejarEnvioFormulario(formId, ruta) {
         console.log(formId + "");
 
         if(formId == 'form-signup' || formId == 'editform'){
-            const form = document.getElementById('form-signup');
+            const form = document.getElementById(formId);
             const errorMessage = document.getElementById('error_message');
     
             errorMessage.textContent = ''; // Limpiar el mensaje de error
