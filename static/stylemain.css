@@ -306,10 +306,6 @@ footer {
         height: auto;
     }
 
-    .category h1 {
-        font-size: 2.5em; /* Reduce el tamaño del texto */
-    }
-
     .navbar {
         flex-wrap: wrap;
     }
@@ -345,19 +341,19 @@ footer {
         border-radius: 5%; /* Ajuste para bordes más redondeados en móviles */
     }
 
-    .category h1 {
-        font-size: 2em; /* Texto más pequeño en móviles */
-    }
-
     .navbar {
         flex-direction: column; /* Apilar los elementos verticalmente */
         align-items: center;
     }
 
-    .nav-left, .nav-right, .nav-logo {
+    .nav-left, .nav-right {
         flex: 1 1 auto;
         text-align: center;
         margin-top: 5px;
+    }
+
+    .nav-logo{
+        display: none;
     }
 
     .menu-container a {
