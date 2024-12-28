@@ -255,7 +255,22 @@ function manejarEnvioFormulario(formId, ruta) {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
+        .then(response =>{
+            if (!response.ok) {
+                // Si no es exitoso, analiza el cuerpo de la respuesta como texto primero.
+                return response.text().then(text => {
+                    try {
+                        // Intenta parsear el texto como JSON
+                        const errorData = JSON.parse(text);
+                        throw new Error(errorData.message || 'Unknown error');
+                    } catch {
+                        // Si no es JSON válido, lanza el texto como error
+                        throw new Error(text);
+                    }
+                });
+            }
+            return response.json(); // Parsear JSON si el estado es exitoso
+        })
         .then(data => {
 
             // Restaura el botón al estado original
