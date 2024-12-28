@@ -150,6 +150,9 @@ def filtrar_productos():
         else:
             query = query.filter(Producto.categoria == categoria)
 
+    # Ordenar alfabéticamente por ID
+    query = query.order_by(Producto.id)
+
     # Aplicar paginación a la consulta
     productos = query.paginate(page=pagina_actual, per_page=elementos_por_pagina)
         
