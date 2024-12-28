@@ -88,7 +88,7 @@ function agregarVariante(contador) {
         oninput="this.setCustomValidity('')">
             <option value="" disabled selected>Selecciona una talla</option>
         </select>
-        <label for="talla-${varianteCount}">Talla:</label>
+        <label for="talla-${varianteCount}">Size:</label>
         </div>
         </div>
         <div class="columna">
@@ -249,7 +249,6 @@ function manejarEnvioFormulario(formId, ruta) {
         submitButton.disabled = true;
 
         const formData = new FormData(this);
-        console.log(formData);
 
         fetch(ruta, {
             method: 'POST',

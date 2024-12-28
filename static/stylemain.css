@@ -291,3 +291,86 @@ footer {
     padding: 20px !important;  
     color: var(--color-text-inverted);
 }
+
+/* Media Query para tablets (pantallas medianas) */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        height: auto;
+    }
+
+    .image-container img {
+        width: 80%;
+        height: auto;
+    }
+
+    .category h1 {
+        font-size: 2.5em; /* Reduce el tamaño del texto */
+    }
+
+    .navbar {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .navbar a {
+        font-size: 1.5em;
+    }
+}
+
+/* Media Query para móviles (pantallas pequeñas) */
+@media (max-width: 480px) {
+    .container {
+        flex-direction: column;
+        padding: 10px;
+        height: auto;
+        gap: 15px;
+    }
+
+    .category {
+        width: 100%;
+    }
+
+    .image-container img {
+        width: 100%;
+        height: auto;
+        border-radius: 5%; /* Ajuste para bordes más redondeados en móviles */
+    }
+
+    .category h1 {
+        font-size: 2em; /* Texto más pequeño en móviles */
+    }
+
+    .navbar {
+        flex-direction: column;
+        padding: 5px;
+        gap: 5px;
+    }
+
+    .navbar a {
+        font-size: 1.2em;
+        text-align: center;
+    }
+
+    footer {
+        font-size: 0.8em; /* Texto más pequeño en el footer */
+    }
+}
+
+/* Ajustes adicionales para pantallas muy grandes */
+@media (min-width: 1200px) {
+    .container {
+        gap: 20px;
+    }
+
+    .image-container img {
+        width: 500px;
+    }
+
+    .category h1 {
+        font-size: 4em; /* Texto más grande en pantallas grandes */
+    }
+}
