@@ -6,6 +6,8 @@ from models.Database import getDatabase
 db = getDatabase()
 
 class Usuario(db.Model):
+    __tablename__ = 'usuario'
+    
     id = db.Column(db.String(10), primary_key=True)
     nombre = db.Column(db.String(30), nullable=False)
     apellido = db.Column(db.String(30), nullable=False)

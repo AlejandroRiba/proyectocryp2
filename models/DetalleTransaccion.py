@@ -4,6 +4,7 @@ from models.Database import getDatabase
 db = getDatabase()
 
 class DetalleTransaccion(db.Model):
+    __tablename__ = 'detalle_transaccion'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     transaccion_id = db.Column(db.Integer, db.ForeignKey('transaccion.id'), nullable=False)
     producto_id = db.Column(db.String(6), db.ForeignKey('producto.id'), nullable=False)

@@ -5,6 +5,7 @@ db = getDatabase()
 
 # Clase para los reportes
 class Reporte(db.Model):
+    __tablename__ = 'reporte'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     empleado_id = db.Column(db.String(10), db.ForeignKey('usuario.id'), nullable=False)
     fecha = db.Column(db.Date, nullable=False)

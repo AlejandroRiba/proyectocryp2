@@ -5,6 +5,7 @@ db = getDatabase()
 
 # Clase para las tarjetas de crédito
 class Tarjeta(db.Model):
+    __tablename__ = 'tarjeta'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     numero_tarjeta = db.Column(db.String(16), nullable=False)
     cliente_id = db.Column(db.Integer, db.ForeignKey('cliente.id'), nullable=False)  # Cambiado a Integer

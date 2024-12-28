@@ -6,6 +6,7 @@ db = getDatabase()
 
 # Clase para las transacciones
 class Transaccion(db.Model):
+    __tablename__ = 'transaccion'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     empleado_id = db.Column(db.String(10), db.ForeignKey('usuario.id'), nullable=False)
     tarjeta_id = db.Column(db.Integer, db.ForeignKey('tarjeta.id'), nullable=False)
