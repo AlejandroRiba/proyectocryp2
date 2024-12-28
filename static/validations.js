@@ -68,7 +68,7 @@ function validarNumeros(input){
 
 function validateForm(formId) {
     // Realiza las validaciones de los campos
-    if(formId === 'form-signup' || formId === 'editform'){
+    if(formId === 'form-signup' || formId === 'editform' || formId == 'form-admin'){
         const correo = document.getElementById('email');
         const phone = document.getElementById('number');
         if (!validatePasswords()) {
