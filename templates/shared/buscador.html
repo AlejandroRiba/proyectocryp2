@@ -45,7 +45,7 @@
         <div class="group">
             <button id="btn_shproductos" class="productos" type="button" onclick="ocultarProductos(this)">Show/Hide products</button>
         </div>
-        <div class="group">
+        <div class="group" id="carritoClass">
             <button id="btn_shcart" class="productos active" type="button" onclick="ocultarCarrito(this)">Cart <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor">
                 <circle r="1" cy="21" cx="9"></circle>
                 <circle r="1" cy="21" cx="20"></circle>
@@ -95,11 +95,11 @@
                 </div>
             </div>
         </div>
-        <div class="group">
+        <div class="group" id="btn_new">
             <button id="btn_shproductos" class="productos" type="button" onclick="redireccion('/crear_producto')">New product</button>
         </div>
     {% endif %}
-    <div class="group">
+    <div class="group" id="scrollBottom">
         <button class="productos" type="button" style="text-transform: none;" onclick="scrollToBottom()">↓ Bottom</button>
     </div>
 </div>

@@ -87,3 +87,18 @@
 .ui-menu-item {
     font-family: 'Barlow Condensed', sans-serif;
 }
+
+
+/* Media Query para móviles (pantallas pequeñas) */
+@media (max-width: 480px) {
+    .filtros {
+        flex-wrap: wrap;
+        gap: 10px; /* Menor espacio entre filas */
+        justify-content: flex-start;
+        align-self: center;
+    }
+
+    .reports-main-container{
+        min-width: auto;
+    }
+}

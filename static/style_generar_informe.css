@@ -12,7 +12,6 @@ input[type="tel"] {
     height: 80vh;
     width: 100%;
     margin: 10px 0;
-    overflow: hidden;
 }
 
 .login-box {
@@ -287,4 +286,17 @@ input[type="tel"] {
     pointer-events: none;
     transition: 0.3s ease;
     font-weight: 500;
+}
+
+/* Estilo responsivo para orientación horizontal */
+@media (max-height: 500px) and (orientation: landscape) {
+    .login-container {
+        height: auto; /* Permite que el contenedor crezca si es necesario */
+        margin-top: 60px; /* Asegura que no se superponga al navbar */
+    }
+
+    .login-box {
+        padding: 15px 30px;
+        font-size: 14px; /* Ajusta el tamaño del texto */
+    }
 }

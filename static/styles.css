@@ -327,6 +327,7 @@ input[type="search"]::-webkit-search-cancel-button {
     background-color: transparent;
     padding: 20px 0;
     width: 100%;
+    margin-right: 20px 0;
 }
 
 .contenedor_tabla table{
@@ -378,4 +379,34 @@ input[type="search"]::-webkit-search-cancel-button {
 
 .contenedor_tabla1 th{
     font-weight: normal;
+}
+
+.padding_carrito{
+    padding: 0 100px;
+}
+
+/* Media Query para móviles (pantallas pequeñas) */
+@media (max-width: 480px) {
+    .login-box{
+        min-height: 100px;
+        overflow: hidden;
+        justify-content: center;
+    }
+    .padding_carrito{
+        padding: 0;
+        margin: o;
+    }
+}
+
+/* Estilo responsivo para orientación horizontal */
+@media (max-height: 500px) and (orientation: landscape) {
+    .login-container {
+        height: auto; /* Permite que el contenedor crezca si es necesario */
+        margin-top: 60px; /* Asegura que no se superponga al navbar */
+    }
+
+    .login-box {
+        padding: 15px 30px;
+        font-size: 14px; /* Ajusta el tamaño del texto */
+    }
 }

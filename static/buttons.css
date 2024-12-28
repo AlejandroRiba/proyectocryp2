@@ -637,16 +637,42 @@ input[type="number"]::-webkit-outer-spin-button {
     cursor: pointer;
 }
 
+.filtros_ventas{
+    display: flex; 
+    gap: 30px;
+}
 
 /* Media Query para móviles (pantallas pequeñas) */
 @media (max-width: 480px) {
     /* Ajustar los botones */
     .group {
-        min-width: 10px; /* Tamaño mínimo para los botones */
+        min-width: 140px; /* Tamaño mínimo para los botones */
         height: 40px; /* Altura consistente */
-        font-size: 16px; /* Tamaño de fuente ajustado */
         padding: 0 10px; /* Espaciado interno */
         box-sizing: border-box; /* Incluir padding y borde en el ancho total */
+    }
+
+    #carritoClass, #scrollBottom{
+        min-width: 45px;
+    }
+
+    #btn_new{
+        min-width: 50px;
+    }
+
+    .input-search, .select-button{
+        min-width: 150px;
+    }
+
+    .filtros_ventas {
+        flex-wrap: wrap;
+        gap: 10px; /* Menor espacio entre filas */
+        justify-content: flex-start;
+        align-self: center;
+    }
+
+    .filtros_ventas .group{
+        margin-bottom: 10px;
     }
 
     /* Ajustar el comportamiento en contenedores flex */
@@ -669,5 +695,9 @@ input[type="number"]::-webkit-outer-spin-button {
         font-size: 0.8em;
         padding: 8px;
     } 
+
+    .button_item{
+        min-width: 150px;
+    }
 
 }
