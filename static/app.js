@@ -264,7 +264,7 @@ function manejarEnvioFormulario(formId, ruta) {
             }
         
             // Validar contraseña
-            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._;:,\-_\[\]{}+])[A-Za-z\d@$!%*?&._;:,\-_\[\]{}+]{8,}$/;
             if (password && !passwordRegex.test(password)) {
                 errors.push('Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.');
             }
