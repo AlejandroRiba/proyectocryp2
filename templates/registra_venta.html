@@ -21,7 +21,6 @@
       .columna_formulario{
           text-align: center; 
           align-items: center; 
-          justify-items: center;
           padding-left: 40px;
       }
   
@@ -72,7 +71,7 @@
         {% include "shared/carrito.html" %}
         <!-- FIN TABLA carrito -->
         <form id="ventaForm" method="post" action="/procesar_venta">
-            <div class="container_cols" style="padding: 40px 30px;">
+            <div class="container_cols">
                 <div class="columna columna_formulario">
                     <div class="input-box">
                         <input type="text" id="nombre" name="nombre" required oninput="validarLetras(this), this.setCustomValidity('')" title="Customer name" oninvalid="this.setCustomValidity('Customer name')">
