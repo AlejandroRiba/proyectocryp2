@@ -85,6 +85,9 @@ def confirma_existencia_admin():
         else:
             return False #si existe el usuario admin pero aún no ha iniciado sesión para cambiar de contraseña
     else:
+        nuevo_usuario = Usuario(id='admin', nombre='', apellido='', email='', phone='', cargo='admin', password='admin', publickey='')
+        db.session.add(nuevo_usuario)
+        db.session.commit()
         return False
 
 
