@@ -262,7 +262,7 @@ function manejarEnvioFormulario(formId, ruta) {
                     try {
                         // Intenta parsear el texto como JSON
                         const errorData = JSON.parse(text);
-                        throw new Error(errorData.message || 'Unknown error');
+                        document.getElementById('error_message').innerText =  errorData.message || 'Unknown error'
                     } catch {
                         // Si no es JSON válido, lanza el texto como error
                         throw new Error(text);
