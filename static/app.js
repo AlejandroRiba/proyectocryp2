@@ -224,8 +224,8 @@ function manejarEnvioFormulario(formId, ruta) {
         e.preventDefault();
         console.log(formId + "");
 
-        if(formId == 'form-signup'){
-            const form = document.getElementById('form-signup');
+        if(formId == 'form-signup' || formId == 'editform'){
+            const form = document.getElementById(formId);
             const errorMessage = document.getElementById('error_message');
     
             errorMessage.textContent = ''; // Limpiar el mensaje de error
@@ -258,17 +258,19 @@ function manejarEnvioFormulario(formId, ruta) {
                 errors.push('Phone number must be 10 digits.');
             }
         
-            // Validar ID (opcional: solo números)
+            /* Validar ID (opcional: solo números)
             if (id && isNaN(id)) {
                 errors.push('Employee ID must be numeric.');
+            }*/
+            
+            if(formId == 'form-signup'){
+                // Validar contraseña
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._;:,\-_\[\]{}+])[A-Za-z\d@$!%*?&._;:,\-_\[\]{}+]{8,}$/;
+                if (password && !passwordRegex.test(password)) {
+                    errors.push('Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.');
+                }
             }
-        
-            // Validar contraseña
-            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._;:,\-_\[\]{}+])[A-Za-z\d@$!%*?&._;:,\-_\[\]{}+]{8,}$/;
-            if (password && !passwordRegex.test(password)) {
-                errors.push('Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.');
-            }
-        
+            
             // Mostrar errores si los hay
             if (errors.length > 0) {
                 e.preventDefault();
