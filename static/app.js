@@ -258,10 +258,10 @@ function manejarEnvioFormulario(formId, ruta) {
                 errors.push('Phone number must be 10 digits.');
             }
         
-            // Validar ID (opcional: solo números)
+            /* Validar ID (opcional: solo números)
             if (id && isNaN(id)) {
                 errors.push('Employee ID must be numeric.');
-            }
+            }*/
             
             if(formId == 'form-signup'){
                 // Validar contraseña
