@@ -262,13 +262,15 @@ function manejarEnvioFormulario(formId, ruta) {
             if (id && isNaN(id)) {
                 errors.push('Employee ID must be numeric.');
             }
-        
-            // Validar contraseña
-            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._;:,\-_\[\]{}+])[A-Za-z\d@$!%*?&._;:,\-_\[\]{}+]{8,}$/;
-            if (password && !passwordRegex.test(password)) {
-                errors.push('Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.');
+            
+            if(formId == 'form-signup'){
+                // Validar contraseña
+                const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._;:,\-_\[\]{}+])[A-Za-z\d@$!%*?&._;:,\-_\[\]{}+]{8,}$/;
+                if (password && !passwordRegex.test(password)) {
+                    errors.push('Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.');
+                }
             }
-        
+            
             // Mostrar errores si los hay
             if (errors.length > 0) {
                 e.preventDefault();
