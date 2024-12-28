@@ -220,11 +220,64 @@ function manejarEnvioFormulario(formId, ruta) {
     const submitButton = form.querySelector('button[type="submit"]');
     const originalText = submitButton.innerText; // Guarda el texto original del botón
 
-
-
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         console.log(formId + "");
+
+        if(formId == 'form-signup'){
+            const form = document.getElementById('form-signup');
+            const errorMessage = document.getElementById('error_message');
+    
+            errorMessage.textContent = ''; // Limpiar el mensaje de error
+            let errors = []; // Lista de errores
+    
+            const name = form.elements['name'].value.trim();
+            const lastName = form.elements['lstname'].value.trim();
+            const email = form.elements['email'].value.trim();
+            const number = form.elements['number'].value.trim();
+            const id = form.elements['id'].value.trim();
+            const password = form.elements['password'].value.trim();
+        
+            // Validar campos vacíos
+            if (!name) errors.push('Name is required.');
+            if (!lastName) errors.push('Last name is required.');
+            if (!email) errors.push('Email is required.');
+            if (!number) errors.push('Phone number is required.');
+            if (!id) errors.push('Employee ID is required.');
+            if (!password) errors.push('Password is required.');
+        
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                errors.push('Email format is invalid.');
+            }
+        
+            // Validar número de teléfono (10 dígitos)
+            const phoneRegex = /^\d{10}$/;
+            if (number && !phoneRegex.test(number)) {
+                errors.push('Phone number must be 10 digits.');
+            }
+        
+            // Validar ID (opcional: solo números)
+            if (id && isNaN(id)) {
+                errors.push('Employee ID must be numeric.');
+            }
+        
+            // Validar contraseña
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._;:,\-_\[\]{}+])[A-Za-z\d@$!%*?&._;:,\-_\[\]{}+]{8,}$/;
+            if (password && !passwordRegex.test(password)) {
+                errors.push('Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character.');
+            }
+        
+            // Mostrar errores si los hay
+            if (errors.length > 0) {
+                e.preventDefault();
+                errorMessage.textContent = errors.join(' ');
+                errorMessage.style.color = 'red';
+                return;
+            }
+        }
+
         // Realiza las validaciones telefono e email, si no son el form correspondiente devuelve true
         if(formId != 'editProductForm'){
             if (!validateForm(formId)) {
