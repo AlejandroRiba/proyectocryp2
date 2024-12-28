@@ -37,7 +37,7 @@ def auth(id, password, data_file):
     usuario = obtener_usuario_por_id(id)
     verif = True
     if usuario:
-        if usuario.cargo != 'Fired':
+        if (usuario.cargo == 'admin') or (usuario.cargo == 'Employee'):
             real_password = hasheo(password)
 
             if data_file != None:
@@ -53,10 +53,10 @@ def auth(id, password, data_file):
     else:
         return False
     
-def autoriza_edit(id, password, nombre, apellido,email,phone,newpassword,userid):
+def autoriza_edit(id, password, nombre, apellido,email,phone,newpassword,userid,cargo):
     usuario = obtener_usuario_por_id(id)
     if userid == 'admin':
-        autentica = obtener_password(userid) #si el cambio lo solicita el admin, se usa la contraseña del 
+        autentica = obtener_password(userid) #si el cambio lo solicita el admin, se usa la contraseña de él 
     else:
         #sino se declara como autentica (valor para verificar) la del usuario que lo solicita
         autentica = usuario.password
@@ -65,9 +65,9 @@ def autoriza_edit(id, password, nombre, apellido,email,phone,newpassword,userid)
         if real_password == autentica: #si la confirmación es correcta
             if newpassword != None: #si se detecta un cambio de contraseña
                 newpassword = hasheo(newpassword)
-                return editar_usuario(usuario,nombre,apellido,email,phone,newpassword, None)
+                return editar_usuario(usuario,nombre,apellido,email,phone,newpassword, None, cargo)
             else:
-                return editar_usuario(usuario,nombre,apellido,email,phone,newpassword, None)
+                return editar_usuario(usuario,nombre,apellido,email,phone,newpassword, None, cargo)
         else:
             return False
     else:

@@ -37,14 +37,20 @@ def editar_empleado():
     email = request.form['email']
     password = request.form['password']
     newpassword = None
+    cargo = None
     userid = session['username']
+
+    if 'cargo' in request.form:
+        cargo = request.form['cargo']
+        if cargo != 'Employee':
+            return jsonify({"success": False, "message": "It is necessary to select a position for the employee.", "destino": None}), 400
 
     if 'newpassword' in request.form:
         newpassword = request.form['newpassword']
         if newpassword == 'admin':
             return jsonify({"success": False, "message": "The password cannot be <<admin>>.", "destino": None}), 400
         
-    if mainfunc.autoriza_edit(id,password,nombre,apellido,email,number,newpassword,userid):
+    if mainfunc.autoriza_edit(id,password,nombre,apellido,email,number,newpassword,userid, cargo):
         return jsonify({"success": True, "message": None, "destino": '/'}), 200
     else:
         return jsonify({"success": False, "message": "Incorrect password.", "destino": None}), 400

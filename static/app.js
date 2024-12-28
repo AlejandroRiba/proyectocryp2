@@ -446,12 +446,16 @@ function deleteEmployee(idEmpleado, status){
                             title: 'Deleted!',
                             text: data.message,
                             icon: 'success',
+                            showCancelButton: false,
                             customClass: {
                                 confirmButton: 'loading send_btn',
                                 cancelButton: 'loading cancel_btn',
                                 actions: 'button-actions',
                                 popup: 'swal_popup'
                             },
+                        }).then(() => {
+                            // Recargar la página al cerrar el SweetAlert
+                            location.reload();
                         });
                     } else {
                         Swal.fire({

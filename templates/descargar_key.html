@@ -33,7 +33,16 @@
                 {% if status == 'admin' %}
                     <p style="margin-top: 10px; font-size: 16px">Important Notice: <span style="color: beige; font-family: sans-serif; font-size: 14px;"> This private key is essential for accessing secure parts of the system. Please be aware that once this page is closed, there is no backup available for the key, as per security protocols. Losing this key would jeopardize the entire system's security. To prevent any risks, it is strongly recommended to download and securely store this key on an external USB drive.</span> </p>
                 {% else %}
-                    <p style="margin-top: 10px; font-size: 16px">Important Notice: <span style="color: beige; font-family: sans-serif; font-size: 14px;">Please be aware that once you close this page, your private key cannot be recovered. In the event that you misplace your key, you'll need to contact the store manager for assistance in generating a new one. To ensure the safe storage of your key, we highly recommend having a USB drive ready for the download.</span> </p>
+                    <p style="margin-top: 10px; font-size: 16px">
+                        Important Notice: 
+                        <span style="color: beige; font-family: sans-serif; font-size: 14px;">
+                            Please be aware that once you close this page, your private key cannot be recovered. 
+                            In the event that you misplace your key, you'll need to contact the store manager for assistance in generating a new one. 
+                            To ensure the safe storage of your key, we highly recommend having a USB drive ready for the download. 
+                            Additionally, you will not be able to log in until the administrator grants permission. 
+                            Until then, please safeguard your credentials carefully.
+                        </span>
+                    </p>
                 {% endif %}
                 <div class="input-box">
                     <button type="button" id="customButton" class="customButton" onclick='redireccion("/descargar_clave")'>Download Key</button>

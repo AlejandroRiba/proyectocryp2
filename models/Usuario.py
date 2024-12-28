@@ -32,7 +32,7 @@ def crear_usuario(id, nombre, apellido, email, phone, password, key):
             usuario = obtener_usuario_por_id(id)
             editar_usuario(usuario, nombre, apellido, email, phone, password, key)
         else:
-            nuevo_usuario = Usuario(id=id, nombre=nombre, apellido=apellido, email=email, phone=phone, cargo='Employee', password=password, publickey=key)
+            nuevo_usuario = Usuario(id=id, nombre=nombre, apellido=apellido, email=email, phone=phone, cargo='Pending', password=password, publickey=key)
             db.session.add(nuevo_usuario)
             db.session.commit()
         return True
@@ -46,12 +46,17 @@ def crear_usuario(id, nombre, apellido, email, phone, password, key):
         return False
 
 def obtener_empleados():
-    return Usuario.query.filter(Usuario.cargo.in_(['Employee', 'Fired'])) \
+    return Usuario.query.filter(Usuario.cargo.in_(['Employee', 'Fired', 'Pending'])) \
         .order_by(case(
             (Usuario.cargo == 'Employee', 1),
-            (Usuario.cargo == 'Fired', 2),
-            else_=3
+            (Usuario.cargo == 'Pending', 2),
+            (Usuario.cargo == 'Fired', 3),
+            else_=4
         )).all()
+
+def contar_empleados():
+    return Usuario.query.filter(Usuario.cargo == 'Employee').count()
+
 
 def obtener_password(id):
     usuario = obtener_usuario_por_id(id)
@@ -64,7 +69,7 @@ def obtener_pub_key(id):
 def obtener_usuario_por_id(id):
     return Usuario.query.get(id)
 
-def editar_usuario(usuario, nombre, apellido, email, phone, password, key): #edita el usuario habiendo hecho la consulta antes
+def editar_usuario(usuario, nombre, apellido, email, phone, password, key, cargo): #edita el usuario habiendo hecho la consulta antes
     if usuario:
         usuario.nombre = nombre
         usuario.apellido = apellido
@@ -74,6 +79,8 @@ def editar_usuario(usuario, nombre, apellido, email, phone, password, key): #edi
             usuario.password = password
         if key != None:
             usuario.publickey = key
+        if cargo != None:
+            usuario.cargo = cargo
         db.session.commit()
         return True
     else:

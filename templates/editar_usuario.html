@@ -89,6 +89,19 @@
                                         <div class="custom-checkbox" onclick="togglecheckBox('editpassword'), edit_password(), ocultaError()"></div>
                                     </div>
                                 {% endif %}
+                                {% if solicitud != 'personal' and usuario.cargo == 'Pending' %}
+                                    <div class="columna">
+                                        <div class="input-box">
+                                            <select id="cargo" name="cargo" required title="Select a position" 
+                                            oninvalid="this.setCustomValidity('Please select an option')" 
+                                            oninput="this.setCustomValidity('')">
+                                                <option value="" disabled selected hidden></option>
+                                                <option value="Employee">Employee</option>
+                                            </select>
+                                            <label for="cargo">Select a Position:</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
                         </div>
                         <!-- Mensaje de error -->
                         <p id="error_message"></p>

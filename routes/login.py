@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, jsonify, make_response, redirect, render_template, request, send_file, session
-from models.Usuario import confirma_existencia_admin
+from models.Usuario import confirma_existencia_admin, contar_empleados
 from pyFunctions import mainfunc
 
 login_blueprint = Blueprint('login', __name__)
@@ -79,6 +79,9 @@ def new_user():
         if not confirma_existencia_admin(): #Si el administrador no se ha registrado
             return jsonify({"success": False, "message": "The admin has not registered yet. Please try again later.", "destino": None}), 400
         
+        if contar_empleados() >= 5: #si ya hay al menos 5 empleados
+            return jsonify({"success": False, "message": "The employee limit has been reached. Please contact support for a solution.", "destino": None}), 400
+        
         data = request.form
         private_key_path, private_key = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
         
@@ -120,5 +123,7 @@ def descargar_clave():
 def confirmar_descarga():
     if 'private_key_path' in session:
         os.remove(session['private_key_path'])
+        session.pop('username', None)
+        session.pop('private_key', None)
         session.pop('private_key_path', None)
     return redirect('/')

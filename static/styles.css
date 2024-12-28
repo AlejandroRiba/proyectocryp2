@@ -32,6 +32,27 @@ input[type="search"]::-webkit-search-cancel-button {
     cursor: pointer;
 }
 
+.input-box select:focus ~ label,
+.input-box select:valid ~ label,
+.input-box select:disabled ~ label {
+    top: -20px;
+    font-size: 14px;
+}
+
+/* Estilo para el select */
+.input-box select {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--color-text-inverted);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    position: relative; /* Para que el label se pueda mover en relación con el select */
+    transition: all 0.3s ease;
+}
+
 .login-container {
     position: relative;
     display: flex;
