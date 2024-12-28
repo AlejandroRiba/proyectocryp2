@@ -249,7 +249,7 @@ function manejarEnvioFormulario(formId, ruta) {
         submitButton.disabled = true;
 
         const formData = new FormData(this);
-        console.log(JSON.stringify(formData));
+        console.log(formData);
 
         fetch(ruta, {
             method: 'POST',
