@@ -57,7 +57,7 @@ def datos_admin():
         private_key_path, private_key = mainfunc.nuevo_empleado(data['name'],data['lstname'],data['email'],data['number'],data['id'],data['password'])
         
         if private_key_path == None: # Si no se pudo crear el usuario
-            redirect('/')
+            return jsonify({"success": False, "message": "Something wet wrong.", "destino": None}), 400
 
         session['username'] = data['id']
         session['private_key_path'] = private_key_path
