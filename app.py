@@ -54,5 +54,4 @@ def home():
     return render_template("index.html", status=username)
 
 if __name__ == "__main__":
-    debug_mode = os.getenv('FLASK_DEBUG', 'True') == 'True'
-    app.run(debug=debug_mode)
+    app.run(debug=False)
