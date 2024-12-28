@@ -1,30 +1,32 @@
 <div class="navbar">
     <!-- Logo centrado -->
     <div class="nav-left">
-        <span>&nbsp;</span>
+        <span class="espacios">&nbsp;</span>
         {% if status %}
-            <div class="menu-container">
-                <a>MENU</a>
-                <div class="menuContent">
-                    <ul>
-                        <li><a href="{{ url_for('products.consulta_productos')}}">Consult Products</a></li>
-                        <li><a href="{{ url_for('products.crear_producto')}}">Register Products</a></li>
-                        {% if status != 'admin' %} 
-                            <li><a href="{{ url_for('clients_transactions.registra_venta')}}">Register Sale</a></li>
-                        {% endif %}
-                        <li><a href="{{ url_for('clients_transactions.consulta_venta')}}">Consult Sales</a></li>
-                        <li><a href="{{ url_for('reports.consulta_informes')}}">Consult Sales Reports</a></li>
-                        {% if status != 'admin' %} 
-                            <li><a href="{{ url_for('reports.generar_informe')}}">Generate Sales Report</a></li>
-                        {% endif %}
-                        <li><a href="{{ url_for('users.edit_user', id=status)}}">Edit my Data</a></li>
-                        {% if status == 'admin' %} 
-                            <li><a href="{{ url_for('users.consulta_empleado')}}">Consult Employees</a></li>
-                        {% endif %}
-                        <li><a href="{{ url_for('login.logout')}}">Sign Out</a></li>
-                    </ul>
-                </div>
-            </div>            
+            <div class="big-menu">
+                <div class="menu-container">
+                    <a>MENU</a>
+                    <div class="menuContent">
+                        <ul>
+                            <li><a href="{{ url_for('products.consulta_productos')}}">Consult Products</a></li>
+                            <li><a href="{{ url_for('products.crear_producto')}}">Register Products</a></li>
+                            {% if status != 'admin' %} 
+                                <li><a href="{{ url_for('clients_transactions.registra_venta')}}">Register Sale</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('clients_transactions.consulta_venta')}}">Consult Sales</a></li>
+                            <li><a href="{{ url_for('reports.consulta_informes')}}">Consult Sales Reports</a></li>
+                            {% if status != 'admin' %} 
+                                <li><a href="{{ url_for('reports.generar_informe')}}">Generate Sales Report</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('users.edit_user', id=status)}}">Edit my Data</a></li>
+                            {% if status == 'admin' %} 
+                                <li><a href="{{ url_for('users.consulta_empleado')}}">Consult Employees</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('login.logout')}}">Sign Out</a></li>
+                        </ul>
+                    </div>
+                </div>            
+            </div>
         {% else %}
             <img src="{{ url_for('static', filename='images/logo_edited.png') }}" style="height: 40px; filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.7));">
         {% endif %}            
@@ -41,11 +43,37 @@
     <!-- Enlaces del lado derecho -->
     <div class="nav-right">
         {% if status %} 
-            <a href="{{ url_for('login.logout')}}">SIGN OUT</a>
+            <div class="small-menu">
+                <div class="menu-container">
+                    <a>MENU</a>
+                    <div class="menuContent">
+                        <ul>
+                            <li><a href="{{ url_for('products.consulta_productos')}}">Consult Products</a></li>
+                            <li><a href="{{ url_for('products.crear_producto')}}">Register Products</a></li>
+                            {% if status != 'admin' %} 
+                                <li><a href="{{ url_for('clients_transactions.registra_venta')}}">Register Sale</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('clients_transactions.consulta_venta')}}">Consult Sales</a></li>
+                            <li><a href="{{ url_for('reports.consulta_informes')}}">Consult Sales Reports</a></li>
+                            {% if status != 'admin' %} 
+                                <li><a href="{{ url_for('reports.generar_informe')}}">Generate Sales Report</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('users.edit_user', id=status)}}">Edit my Data</a></li>
+                            {% if status == 'admin' %} 
+                                <li><a href="{{ url_for('users.consulta_empleado')}}">Consult Employees</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('login.logout')}}">Sign Out</a></li>
+                        </ul>
+                    </div>
+                    <span>&nbsp;&nbsp;</span>
+                    <a href="{{ url_for('login.logout')}}" style="margin-left: 20px;">SIGN OUT</a>
+                </div>           
+            </div>
+            <a href="{{ url_for('login.logout')}}" class="espacios">SIGN OUT</a>
         {% else %}
             <a href="{{ url_for('login.login_route') }}">SIGN IN</a>
             <a href="{{ url_for('login.new_user')}}">SIGN UP</a>
         {% endif %}
-        <span>&nbsp;</span>
+        <span class="espacios">&nbsp;</span>
     </div>
 </div>

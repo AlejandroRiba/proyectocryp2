@@ -636,3 +636,38 @@ input[type="number"]::-webkit-outer-spin-button {
 #toggleDropdown {
     cursor: pointer;
 }
+
+
+/* Media Query para móviles (pantallas pequeñas) */
+@media (max-width: 480px) {
+    /* Ajustar los botones */
+    .group {
+        min-width: 10px; /* Tamaño mínimo para los botones */
+        height: 40px; /* Altura consistente */
+        font-size: 16px; /* Tamaño de fuente ajustado */
+        padding: 0 10px; /* Espaciado interno */
+        box-sizing: border-box; /* Incluir padding y borde en el ancho total */
+    }
+
+    /* Ajustar el comportamiento en contenedores flex */
+    .buscador_producto {
+        flex-wrap: wrap; /* Permitir que los elementos pasen a nuevas filas */
+        gap: 20px; /* Espaciado entre elementos */
+        justify-content: flex-start; /* Distribuir uniformemente */
+        align-self: center;
+    }
+
+    .wrapper1{
+        min-width: max-content;
+    }
+
+    .option1{
+        min-width: 100px;
+    }
+
+    .productos {
+        font-size: 0.8em;
+        padding: 8px;
+    } 
+
+}

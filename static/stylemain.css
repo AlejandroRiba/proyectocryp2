@@ -102,6 +102,10 @@ footer {
     flex-grow: 1;
 }
 
+.small-menu{
+    display: none;
+}
+
 .navbar a {
     text-decoration: none;
     color: var(--color-text-inverted);
@@ -241,8 +245,10 @@ footer {
 .menuContent {
     display: none;
     position: absolute;
-    width: 50vw; /* Ocupa todo el ancho de la pantalla */
-    height: 80vh;
+    width: 40vw; /* Ocupa todo el ancho de la pantalla */
+    height: auto;
+    padding-bottom: 20px;
+    padding-top: 8px;
     top: 100%; /* Coloca el contenido debajo del menú */
     filter: drop-shadow(0 0 2px rgba(187, 167, 129, 0.6));
     background-color: var(--color-background-navbar);
@@ -294,31 +300,23 @@ footer {
 
 /* Media Query para tablets (pantallas medianas) */
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        height: auto;
+    .category h1{
+        font-size: 3.3em;
     }
 
     .image-container img {
-        width: 80%;
-        height: auto;
+        width: 100%;
+        border-radius: 5%; /* Ajuste para bordes más redondeados en móviles */
     }
 
-    .navbar {
-        flex-wrap: wrap;
-    }
-
-    .nav-left, .nav-right {
-        flex: 1 1 100%;
-        justify-content: center;
-        margin-top: 10px;
+    .menu-container {
+        display: inline-block;
     }
 
     .menuContent {
-        left: auto;
-        right: 0;
+        left: 0;
+        right: 0; /* Centra el menú desplegable */
+        width: 100%;
     }
 }
 
@@ -341,9 +339,27 @@ footer {
         border-radius: 5%; /* Ajuste para bordes más redondeados en móviles */
     }
 
+    .image-container h1 {
+        font-size: 4.5em; /* Texto más grande en pantallas grandes */
+    }
+
+    footer {
+        font-size: 0.8em; /* Texto más pequeño en el footer */
+    }
+
     .navbar {
         flex-direction: column; /* Apilar los elementos verticalmente */
         align-items: center;
+        font-size: 14px;
+    }
+
+    .small-menu{
+        display: inline;
+        padding-top: 6px;
+    }
+
+    .big-menu{
+        display: none;
     }
 
     .nav-left, .nav-right {
@@ -352,39 +368,27 @@ footer {
         margin-top: 5px;
     }
 
-    .nav-logo{
+    .menu-responsive{
+        display: block;
+    }
+
+    .espacios{
         display: none;
     }
 
-    .menu-container a {
-        font-size: 14px; /* Reducir tamaño del texto */
+    .menu-container {
+        display: inline-block;
+        margin-left: 10px; /* Separación del borde izquierdo */
     }
 
-    .nav-right a {
-        padding: 5px 8px; /* Ajustar espacio de los botones */
-        font-size: 13px;
+    .nav-right {
+        justify-content: flex-end; /* Asegura que "Logout" quede a la derecha */
+        margin-right: 10px; /* Separación del borde derecho */
     }
 
-    .menuContent li a {
-        font-size: 14px;
-    }
-
-    footer {
-        font-size: 0.8em; /* Texto más pequeño en el footer */
-    }
-}
-
-/* Ajustes adicionales para pantallas muy grandes */
-@media (min-width: 1200px) {
-    .container {
-        gap: 20px;
-    }
-
-    .image-container img {
-        width: 500px;
-    }
-
-    .category h1 {
-        font-size: 4em; /* Texto más grande en pantallas grandes */
+    .menuContent {
+        width: 100%;
+        left: 0;
+        right: 0; /* Centra el menú en pantallas pequeñas */
     }
 }
