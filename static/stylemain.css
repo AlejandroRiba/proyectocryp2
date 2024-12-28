@@ -311,13 +311,18 @@ footer {
     }
 
     .navbar {
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
+        flex-wrap: wrap;
     }
 
-    .navbar a {
-        font-size: 1.5em;
+    .nav-left, .nav-right {
+        flex: 1 1 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .menuContent {
+        left: auto;
+        right: 0;
     }
 }
 
@@ -345,14 +350,27 @@ footer {
     }
 
     .navbar {
-        flex-direction: column;
-        padding: 5px;
-        gap: 5px;
+        flex-direction: column; /* Apilar los elementos verticalmente */
+        align-items: center;
     }
 
-    .navbar a {
-        font-size: 1.2em;
+    .nav-left, .nav-right, .nav-logo {
+        flex: 1 1 auto;
         text-align: center;
+        margin-top: 5px;
+    }
+
+    .menu-container a {
+        font-size: 14px; /* Reducir tamaño del texto */
+    }
+
+    .nav-right a {
+        padding: 5px 8px; /* Ajustar espacio de los botones */
+        font-size: 13px;
+    }
+
+    .menuContent li a {
+        font-size: 14px;
     }
 
     footer {
