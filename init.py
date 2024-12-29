@@ -27,6 +27,10 @@ db = getDatabase()
 # Inicializar la base de datos
 db.init_app(app)
 
+# Crea la carpeta si no existe
+if not os.path.exists(REPORTS_DIR):
+    os.makedirs(REPORTS_DIR)
+
 # Crear las tablas en la base de datos
 with app.app_context():
     db.create_all()
